@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import icon from "./Images/logo.png"
+import icon from "../Images/logo.png"
 const Logo: React.FC = () => {
   return (
     <div className="flex gap-1.5 self-stretch my-auto text-base whitespace-nowrap text-neutral-700">
