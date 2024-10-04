@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { PluginAPI } from 'tailwindcss/types/config';
 
 const config: Config = {
   content: [
@@ -27,6 +28,16 @@ const config: Config = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }: PluginAPI) {
+      const newUtilities = {
+        '.mask-gradient': {
+          '-webkit-mask': 'linear-gradient(90deg, transparent, white 20%, white 80%, transparent)',
+          'mask': 'linear-gradient(90deg, transparent, white 20%, white 80%, transparent)',
+        },
+      };
+      addUtilities(newUtilities);
+    },
+  ],
 };
 export default config;

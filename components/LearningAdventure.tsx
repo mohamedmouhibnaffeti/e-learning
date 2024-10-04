@@ -21,7 +21,7 @@ const LearningAdventure: React.FC = () => {
     <main className="flex flex-col bg-opacity-0 bg-white pt-5 items-center mx-auto max-w-[70%]">
         <HeroSection />
         <h1 className="lg:text-4xl md:text-2xl text-xl text-neutral-600 max-w-[50%] text-center" style={{fontFamily: condensedFont.style.fontFamily}}> Over 100 Collaborations Across the World </h1>
-        <div className="flex overflow-hidden group gap-3 max-w-[90%] mt-12">
+        <div className="flex overflow-hidden group gap-3 max-w-[90%] mt-12 mask-gradient">
           <div className="flex space-x-4 gap-3 animate-loop-scroll group-hover:paused items-center">
             {
               images.map((image, index) => (
