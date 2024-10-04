@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from './Logo';
-import Navigation from '../Navigation';
+import Navigation from './Navigation';
 import AuthButtons from './AuthButton';
 
 const Header: React.FC = () => {

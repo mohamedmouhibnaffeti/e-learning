@@ -34,7 +34,6 @@ const HeroContent: React.FC = () => {
               <StatisticItem key={index} {...stat} />
             ))}
           </div>
-          <CourseraInfo />
         </div>
       </div>
     </div>
