@@ -1,14 +1,15 @@
 import React from 'react';
-import Header from './Nav/Header';
 import HeroSection from './Hero';
-
+import duo from "./Images/svg/logotype-dark.svg"
+import Image from 'next/image';
 const LearningAdventure: React.FC = () => {
   return (
-    <main className="flex flex-col bg-opacity-0 h-screen bg-white">
-      <div className="flex relative flex-col pt-5 w-full min-h-[714px] max-md:max-w-full">
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/dce96131edf9b551233fa1b6c6487735ac09c7a94f49ea07ba15647395bd3b0a?placeholderIfAbsent=true&apiKey=fc6efef34e3641e0a00c3c8aba71e737" className="object-cover absolute inset-0 size-full" alt="Background" />
+    <main className="flex flex-col bg-opacity-0 bg-white pt-5 items-center mx-auto">
         <HeroSection />
-      </div>
+        <h1></h1>
+        <div className="w-full max-w-[1089px] max-md:max-w-full mx-auto flex gap-4q">
+          <Image src={duo} alt="" className="h-12" />
+        </div>
     </main>
   );
 };

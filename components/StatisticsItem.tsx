@@ -15,7 +15,7 @@ const StatisticItem: React.FC<StatisticItemProps> = ({ icon, rating, count, labe
         <div className={`self-start text-base ${rating ? 'text-stone-500' : 'text-neutral-600'}`}>
           {rating || count}
         </div>
-        <div className="mt-3 text-xs text-neutral-400">
+        <div className="text-xs text-neutral-400">
           {label}
         </div>
       </div>

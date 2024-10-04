@@ -1,6 +1,5 @@
 import React from 'react';
 import StatisticItem from './StatisticsItem';
-import CourseraInfo from './CourseraInfo';
 
 const HeroContent: React.FC = () => {
   const statistics = [
@@ -21,10 +20,10 @@ const HeroContent: React.FC = () => {
           knowledge at your own pace, all from the comfort of your digital classroom
         </p>
         <div className="flex gap-3 mt-10 max-w-full text-xs w-[309px] max-md:mt-10">
-          <button className="flex-1 px-7 py-3.5 bg-violet-400 rounded border border-violet-400 border-solid text-violet-200 max-md:px-5">
+          <button className="flex-1 px-7 py-3.5 bg-violet-400 hover:bg-violet-400/90 active:bg-violet-400 transition duration-150 rounded border border-violet-400 border-solid text-violet-100 max-md:px-5">
             Explore More
           </button>
-          <button className="flex-1 px-7 py-3.5 bg-white rounded border border-solid border-stone-500 text-neutral-500 max-md:px-5">
+          <button className="flex-1 px-7 py-3.5  rounded border border-solid border-stone-500 bg-white text-neutral-500 hover:bg-neutral-500 active:bg-neutral-500/80 hover:text-white transition duration-150 max-md:px-5">
             Financial Aid
           </button>
         </div>

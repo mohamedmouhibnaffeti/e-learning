@@ -1,15 +1,18 @@
 import React from 'react';
-
+import Image from 'next/image';
+import landing from "./Images/landing.png"
 const HeroImage: React.FC = () => {
   return (
-    <div className="flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full">
-      <img 
-        loading="lazy" 
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/03f41cf57d9c42abb33e1c767b192142fcd9c6949fb92ee968bcd2ad0fd082f2?placeholderIfAbsent=true&apiKey=fc6efef34e3641e0a00c3c8aba71e737" 
-        className="object-contain grow w-full aspect-[0.96] max-md:mt-8 max-md:max-w-full" 
-        alt="Learning adventure illustration"
-      />
-    </div>
+    <div className="relative flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full items-center">
+  <div className="absolute -z-40 p-48 w-fit rounded-full bg-orange-400/60 blur-xl" />
+  <Image 
+    loading="lazy" 
+    src={landing} 
+    className="relative object-contain grow w-full aspect-[0.96] max-md:mt-8 max-md:max-w-full drop-shadow-2xl shadow-orange-400 z-40" 
+    alt="Learning adventure illustration"
+  />
+</div>
+
   );
 };
 
