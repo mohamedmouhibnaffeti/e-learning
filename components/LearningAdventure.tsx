@@ -171,11 +171,11 @@ const LearningAdventure: React.FC = () => {
   const resetAutoTransition = () => {
       setAutoTransitionEnabled(false);
       if (autoTransitionInterval.current !== null) {
-          clearInterval(autoTransitionInterval.current); // Clear the interval if it exists
+          clearInterval(autoTransitionInterval.current)
       }
       setTimeout(() => {
           setAutoTransitionEnabled(true);
-      }, 100); // Add a small delay before enabling auto transition again
+      }, 100)
   };
 
   const getVisibleTestimonials = () => {
@@ -193,12 +193,12 @@ const LearningAdventure: React.FC = () => {
               setCurrentIndex((prevIndex) =>
                   prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
               );
-          }, 3000); // Transition every 3 seconds
+          }, 3000)
       }
 
       return () => {
           if (autoTransitionInterval.current !== null) {
-              clearInterval(autoTransitionInterval.current); // Cleanup interval on unmount
+              clearInterval(autoTransitionInterval.current)
           }
       };
   }, [isAutoTransitionEnabled, testimonials.length]);
