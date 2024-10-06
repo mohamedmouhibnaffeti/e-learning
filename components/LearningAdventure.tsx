@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HeroSection from './Hero';
 import duo from "./Images/svg/Duolingo.svg"
 import codeCov from "./Images/svg/codecov.svg"
@@ -97,6 +97,8 @@ import mentor1 from "./Images/mentors/mentor1.jpg"
 import mentor2 from "./Images/mentors/mentor2.jpg"
 import mentor3 from "./Images/mentors/mentor3.jpg"
 import mentor4 from "./Images/mentors/mentor4.jpg"
+import TestimonialCard from './TestimonialCard';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const mentors = [
   {
@@ -126,6 +128,80 @@ const filters = [
 ]
 
 const LearningAdventure: React.FC = () => {
+  const testimonials = [
+    {
+      name: "Mouhib Naffeti",
+      text: "This guide demonstrates how to get coding suggestions from GitHub Copilot in Visual Studio Code. To see instructions for other popular coding environments, use the tool switcher at the top of the page.",
+      image: mentor1
+    },
+    {
+      name: "Moussa Oussama",
+      text: "This guide demonstrates how to get coding suggestions from GitHub Copilot in Visual Studio Code. To see instructions for other popular coding environments, use the tool switcher at the top of the page.",
+      image: mentor3
+    },
+    {
+      name: "Meddeb Naffeti",
+      text: "This guide demonstrates how to get coding suggestions from GitHub Copilot in Visual Studio Code. To see instructions for other popular coding environments, use the tool switcher at the top of the page.",
+      image: mentor4
+    },
+    {
+      name: "Oussama Moussa",
+      text: "This guide demonstrates how to get coding suggestions from GitHub Copilot in Visual Studio Code. To see instructions for other popular coding environments, use the tool switcher at the top of the page.",
+      image: mentor2
+    },
+  ]
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoTransitionEnabled, setAutoTransitionEnabled] = useState(true);
+  const autoTransitionInterval = useRef<number | null>(null); // Type declaration for useRef
+
+  const handlePrevClick = () => {
+      setCurrentIndex((prevIndex) =>
+          prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+      );
+      resetAutoTransition();
+  };
+
+  const handleNextClick = () => {
+      setCurrentIndex((prevIndex) =>
+          prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+      );
+      resetAutoTransition();
+  };
+
+  const resetAutoTransition = () => {
+      setAutoTransitionEnabled(false);
+      if (autoTransitionInterval.current !== null) {
+          clearInterval(autoTransitionInterval.current); // Clear the interval if it exists
+      }
+      setTimeout(() => {
+          setAutoTransitionEnabled(true);
+      }, 100); // Add a small delay before enabling auto transition again
+  };
+
+  const getVisibleTestimonials = () => {
+      const prevIndex = currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1;
+      const nextIndex = currentIndex === testimonials.length - 1 ? 0 : currentIndex + 1;
+
+      return [prevIndex, currentIndex, nextIndex];
+  };
+
+  const visibleTestimonials = getVisibleTestimonials();
+
+  useEffect(() => {
+      if (isAutoTransitionEnabled) {
+          autoTransitionInterval.current = window.setInterval(() => { // Use window.setInterval
+              setCurrentIndex((prevIndex) =>
+                  prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+              );
+          }, 3000); // Transition every 3 seconds
+      }
+
+      return () => {
+          if (autoTransitionInterval.current !== null) {
+              clearInterval(autoTransitionInterval.current); // Cleanup interval on unmount
+          }
+      };
+  }, [isAutoTransitionEnabled, testimonials.length]);
   return (
     <main className="flex flex-col bg-opacity-0 bg-white pt-5 items-center mx-auto sm:max-w-[70%] pb-16">
       <HeroSection />
@@ -217,14 +293,14 @@ const LearningAdventure: React.FC = () => {
           </div>
         </div>
       </section>
-      <h1 className="text-5xl max-md:text-2xl max-w-2xl text-center text-black font-bold" style={{fontFamily: condensedFont.style.fontFamily}}> Search Among <span className="text-violet-600"> 5900 </span> Courses and Find Your Favourite Course </h1>
+      <h1 className="text-5xl mt-8 max-md:text-2xl max-w-2xl text-center text-black font-bold" style={{fontFamily: condensedFont.style.fontFamily}}> Search Among <span className="text-violet-600"> 5900 </span> Courses and Find Your Favourite Course </h1>
       <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1089px] max-md:max-w-full justify-center items-center flex flex-col">
-          <div className="max-w-xl flex w-full mt-8">
+          <div className="max-w-xl flex w-full mt-12">
             <SearchComponent />
           </div>
         </div>
-        <div className="w-full flex justify-between items-center mt-8">
+        <div className="w-full flex justify-between items-center mt-16">
           <h1 className="font-bold text-black flex items-center gap-1 text-lg" style={{fontFamily: robotomono.style.fontFamily}}> <span className="p-[2px] rounded-full w-fit h-fit bg-violet-600" /> Popular Courses </h1>
           <div className="flex gap-4 items-center font-semibold translate-y-[2px]">
             {
@@ -242,8 +318,8 @@ const LearningAdventure: React.FC = () => {
           }
         </div>
       </section>
-      <h1 className="text-5xl max-md:text-2xl max-w-2xl text-center text-black font-bold mt-8" style={{fontFamily: condensedFont.style.fontFamily}}> Our Experienced Mentors </h1>
-      <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
+      <h1 className="text-5xl max-md:text-2xl max-w-2xl text-center text-black font-bold mt-16" style={{fontFamily: condensedFont.style.fontFamily}}> Our Experienced Mentors </h1>
+      <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 mt-8 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
         <div className="grid grid-cols-4 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2 mt-8 max-2xl:w-full"> 
           {
             mentors.map((mentor, index) => (
@@ -252,6 +328,45 @@ const LearningAdventure: React.FC = () => {
           }
         </div>
       </section>
+      <h1 className="text-5xl max-md:text-2xl max-w-2xl text-center text-black font-bold mt-16" style={{fontFamily: condensedFont.style.fontFamily}}> Testimonials </h1>
+      <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 mt-8 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full mask-gradient">
+            <div className="relative w-full flex justify-center items-center overflow-hidden">
+                <button
+                    onClick={handlePrevClick}
+                    className="absolute left-4 text-white bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 z-10"
+                >
+                    <ChevronLeft size={24} />
+                </button>
+
+                <div className="flex w-full justify-center items-center">
+                    {visibleTestimonials.map((testimonialIndex, i) => (
+                        <div
+                            key={testimonialIndex}
+                            className={`testimonial-slide transform transition-transform duration-200 ${
+                                i === 1 ? 'opacity-100' : 'opacity-50'
+                            }`}
+                            style={{
+                                margin: i === 1 ? '0 30px' : '0 -20px',
+                            }}
+                        >
+                            <TestimonialCard
+                                name={testimonials[testimonialIndex].name}
+                                text={testimonials[testimonialIndex].text}
+                                image={testimonials[testimonialIndex].image}
+                                key={testimonialIndex}
+                            />
+                        </div>
+                    ))}
+                </div>
+
+                <button
+                    onClick={handleNextClick}
+                    className="absolute right-4 text-white bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 z-10"
+                >
+                    <ChevronRight size={24} />
+                </button>
+            </div>
+        </section>
     </main>
   );
 };
