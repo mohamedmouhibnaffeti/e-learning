@@ -41,6 +41,15 @@ const config: Config = {
           '-webkit-mask': 'linear-gradient(90deg, transparent, white 20%, white 80%, transparent)',
           'mask': 'linear-gradient(90deg, transparent, white 20%, white 80%, transparent)',
         },
+        '.text-shadow-sm': {
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow': {
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)',
+        },
+        '.text-shadow-lg': {
+          textShadow: '3px 3px 5px rgba(0, 0, 0, 0.7)',
+        },
       };
       addUtilities(newUtilities);
     },

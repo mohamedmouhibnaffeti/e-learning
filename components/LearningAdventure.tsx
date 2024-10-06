@@ -26,6 +26,7 @@ import ionic from "./Images/Courses/ionic.png"
 import marketing from "./Images/Courses/marketing.png"
 import mobile from "./Images/Courses/mobile.png"
 import python from "./Images/Courses/python.png"
+import MentorCard from './MentorCard';
 
 const condensedFont = Roboto_Condensed({weight: "700", subsets: ["cyrillic", "cyrillic-ext"]})
 const robotomono = Roboto_Mono({weight: "700", subsets: ["greek"]})
@@ -92,6 +93,33 @@ const courses = [
   }
 ]
 
+import mentor1 from "./Images/mentors/mentor1.jpg"
+import mentor2 from "./Images/mentors/mentor2.jpg"
+import mentor3 from "./Images/mentors/mentor3.jpg"
+import mentor4 from "./Images/mentors/mentor4.jpg"
+
+const mentors = [
+  {
+    image: mentor1,
+    name: "Jack Daniels",
+    job: "Full Stack Developer"
+  },
+  {
+    image: mentor2,
+    name: "Linda Smith",
+    job: "Data Scientist"
+  },
+  {
+    image: mentor3,
+    name: "Robert Brown",
+    job: "UX/UI Designer"
+  },
+  {
+    image: mentor4,
+    name: "Susan Johnson",
+    job: "DevOps Engineer"
+  }
+];
 
 const filters = [
   "All Courses", "Design", "Development", "Photography", "Music"
@@ -210,6 +238,16 @@ const LearningAdventure: React.FC = () => {
           {
             courses.map((course, index) => (
               <CourseCard image={course.image} difficulty={course.difficulty} lessons={course.lessons} title={course.title} users={course.users} key={index} />
+            ))
+          }
+        </div>
+      </section>
+      <h1 className="text-5xl max-md:text-2xl max-w-2xl text-center text-black font-bold mt-8" style={{fontFamily: condensedFont.style.fontFamily}}> Our Experienced Mentors </h1>
+      <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
+        <div className="grid grid-cols-4 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2 mt-8 max-2xl:w-full"> 
+          {
+            mentors.map((mentor, index) => (
+              <MentorCard image={mentor.image} name={mentor.name} job={mentor.job} key={index} />
             ))
           }
         </div>
