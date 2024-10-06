@@ -25,7 +25,13 @@ const config: Config = {
             transform: "translateX(-100%)"
           }
         }
-      }
+      },
+      boxShadow: {
+        'course-card': 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+      },
+      fontSize: {
+        'xxs': ['0.675rem', { lineHeight: '1rem' }], // 10px font size with 16px line height
+      },
     },
   },
   plugins: [

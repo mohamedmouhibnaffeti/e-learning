@@ -19,7 +19,7 @@ const HeroContent: React.FC = () => {
           online courses. Explore new subjects, acquire valuable skills, and shape your <br />
           knowledge at your own pace, all from the comfort of your digital classroom
         </p>
-        <div className="flex gap-3 mt-10 max-w-full text-xs w-[309px] max-md:mt-10">
+        <div className="flex gap-3 mt-10 max-w-full text-xs w-[309px] max-md:mt-10 max-sm:flex-col">
           <button className="flex-1 px-7 py-3.5 bg-violet-400 hover:bg-violet-400/90 active:bg-violet-400 transition duration-150 rounded border border-violet-400 border-solid text-violet-100 max-md:px-5">
             Explore More
           </button>
@@ -27,7 +27,7 @@ const HeroContent: React.FC = () => {
             Financial Aid
           </button>
         </div>
-        <div className="flex flex-col mt-8 max-w-full w-[391px]">
+        <div className="flex flex-col mt-8 max-w-full w-[391px] max-sm:hidden">
           <div className="flex gap-5 justify-between">
             {statistics.map((stat, index) => (
               <StatisticItem key={index} {...stat} />

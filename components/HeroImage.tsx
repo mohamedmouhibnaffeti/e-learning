@@ -4,7 +4,7 @@ import landing from "./Images/landing.png"
 const HeroImage: React.FC = () => {
   return (
     <div className="relative flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full items-center">
-      <div className="absolute -z-40 p-48 w-fit rounded-full bg-orange-400/60 blur-xl" />
+      <div className="absolute -z-40 p-48 max-sm:p-36 w-fit rounded-full bg-orange-400/60 blur-xl" />
       <Image 
         loading="lazy" 
         src={landing} 
