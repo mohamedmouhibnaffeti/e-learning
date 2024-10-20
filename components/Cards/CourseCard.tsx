@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { BookMarkedIcon, ChevronRightIcon, ChartColumnIncreasingIcon , LibraryBig, User2Icon, ZapIcon } from 'lucide-react'
-import StarsComponent from './StarsComponent'
+import StarsComponent from '../Rating/StarsComponent'
 interface CourseCardProps {
     image: any
     title: string
@@ -32,7 +32,7 @@ function CourseCard({image, title, lessons, users, difficulty}: CourseCardProps)
                 <span className="text-xxs text-neutral-600 font-semibold"> {users} </span>
             </div>
         </div>
-        <button className="flex items-center justify-center text-xs bg-violet-500 hover:bg-violet-500/95 group py-2 px-2 font-semibold rounded-md w-full mt-1"> Start Course <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition duration-200" /> </button>
+        <button className="flex items-center justify-center text-xs text-white bg-violet-500 hover:bg-violet-500/95 group py-2 px-2 font-semibold rounded-md w-full mt-1"> Start Course <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition duration-200" /> </button>
     </div>
   )
 }

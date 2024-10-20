@@ -10,13 +10,13 @@ import magicLeap from "./Images/svg/magicLeap.svg"
 import udemy from "./Images/svg/udemy.svg"
 import userTesting from "./Images/svg/usertesting.svg"
 import {Roboto_Condensed, Roboto_Mono} from "next/font/google"
-import Image from 'next/image';
+import Image from 'next/image'
 import HeroContent from './HeroContent';
 import landing from "./Images/landing2.png"
 import landing3 from "./Images/landing3.png"
 import HeroDescriptionCard from './HeroDescriptionCard';
 import SearchComponent from './SearchComponent';
-import CourseCard from './CourseCard';
+import CourseCard from './Cards/CourseCard';
 
 import ui from "./Images/Courses/UI.png"
 import sport from "./Images/Courses/sports.png"
@@ -229,7 +229,7 @@ const LearningAdventure: React.FC = () => {
                 className="h-12 w-auto max-w-none" 
               />
             ))
-          }
+          } 
         </div>
       </div>
       <section className="flex relative flex-col justify-center items-center px-16 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
@@ -304,8 +304,8 @@ const LearningAdventure: React.FC = () => {
           <h1 className="font-bold text-black flex items-center gap-1 text-lg" style={{fontFamily: robotomono.style.fontFamily}}> <span className="p-[2px] rounded-full w-fit h-fit bg-violet-600" /> Popular Courses </h1>
           <div className="flex gap-4 items-center font-semibold translate-y-[2px]">
             {
-              filters.map((filter) => (
-                <span className="text-black text-sm cursor-pointer hover:text-violet-700 transition duration-200" style={{fontFamily: robotomono.style.fontFamily}}> {filter} </span>
+              filters.map((filter, index) => (
+                <span key={index} className="text-black text-sm cursor-pointer hover:text-violet-700 transition duration-200" style={{fontFamily: robotomono.style.fontFamily}}> {filter} </span>
               ))
             }
           </div>
