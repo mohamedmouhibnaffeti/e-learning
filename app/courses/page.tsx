@@ -75,7 +75,7 @@ const courses = [
     difficulty: "EASY"
   }
 ]
-function page() {
+function CoursesPage() {
   return (
     <div className="w-full h-full flex mb-16">
       <ProductsFiltersSideBar className='w-80 md:flex flex-col hidden min-h-screen border-r dark:border-r-gray-400 border-r-infinity-border px-4' inputClassName='' setExpanded={() => {}} getNeonsByFilter={()=>{}} />
@@ -137,4 +137,4 @@ function page() {
   )
 }
 
-export default page
+export default CoursesPage
