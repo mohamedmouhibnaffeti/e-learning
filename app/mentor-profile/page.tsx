@@ -33,10 +33,10 @@ function MentorProfile() {
     <div className="w-full mb-6 flex">
         <MentorProfileSidebar />
         <div className="w-full h-full max-md:p-2 p-12 bg-[#C0C0C0]/15">
-          <h1 className="font-semibold text-2xl max-md:text-lg">
+          <h1 className="font-semibold text-2xl max-md:text-lg md:pl-8">
             Edit Profile
           </h1>
-          <div className="grid lg:grid-cols-5 gap-4 w-full">
+          <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center">
             <div className="py-14 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3">
               <div className="flex gap-4 items-center px-14 max-sm:px-2 max-sm:justify-center">
                 <DragAndDrop preview={preview} setPreview={setPreview} />
@@ -110,7 +110,7 @@ function MentorProfile() {
                 </p>
               </div>
             </div>
-            <div className="p-8 rounded-3xl bg-white mt-4 flex flex-col justify-center items-center gap-4 h-fit">
+            <div className="p-8 rounded-3xl bg-white mt-4 flex flex-col justify-center items-center gap-4 h-fit w-max col-span-2">
               <h1 className="text-lg font-semibold">
                 Complete your profile
               </h1>
