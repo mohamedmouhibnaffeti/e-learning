@@ -7,12 +7,12 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
-import { MultiSlider } from "./ui/multiple-slider";
+import { MultiSlider } from "../ui/multiple-slider";
 //import InputWithSuggestions from "./InputWithSuggestions";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 //import { NeonContext } from "@/app/context/neons";
 import axios from "axios";
-import StarsComponent from "./Rating/StarsComponent";
+import StarsComponent from "../Rating/StarsComponent";
 export default function ProductsFiltersSideBar({getNeonsByFilter, className, inputClassName, setExpanded}: {className: string, inputClassName: string, setExpanded: any, getNeonsByFilter: any}){
 //    const { selectedPriceRange, setSelectedPriceRange, handleCheckboxChange, selectedCategories, handleStyleCheckboxChange, selectedStyle, query, setQuery } = useContext(NeonContext)
     const [allNeonNames, setAllNeonNames] = useState<Array<string>>([])

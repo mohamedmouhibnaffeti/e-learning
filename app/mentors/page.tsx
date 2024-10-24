@@ -6,7 +6,7 @@ import mentor1 from "../../components/Images/mentors/mentor1.jpg"
 import mentor2 from "../../components/Images/mentors/mentor2.jpg"
 import mentor3 from "../../components/Images/mentors/mentor3.jpg"
 import mentor4 from "../../components/Images/mentors/mentor4.jpg"
-import MentorCard from '@/components/Cards/MentorCard'
+import MentorCard from '@/components/Cards/MentorsPageMentorCard'
 
 const mentors = [
     {

@@ -1,6 +1,6 @@
 "use client"
 import CourseCard from '@/components/Cards/CourseCard'
-import ProductsFiltersSideBar from '@/components/CoursesFilterSidebar'
+import ProductsFiltersSideBar from '@/components/sidebars/CoursesFilterSidebar'
 import SmallLoader3Points from '@/components/loaders/SmallLoader3Points'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import React from 'react'

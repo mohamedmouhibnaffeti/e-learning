@@ -26,7 +26,7 @@ import ionic from "./Images/Courses/ionic.png"
 import marketing from "./Images/Courses/marketing.png"
 import mobile from "./Images/Courses/mobile.png"
 import python from "./Images/Courses/python.png"
-import MentorCard from './MentorCard';
+import MentorCard from './Cards/MentorCard';
 
 const condensedFont = Roboto_Condensed({weight: "700", subsets: ["cyrillic", "cyrillic-ext"]})
 const robotomono = Roboto_Mono({weight: "700", subsets: ["greek"]})
