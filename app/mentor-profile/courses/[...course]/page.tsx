@@ -8,7 +8,7 @@ import DragAndDrop from "@/components/Inputs/DragAndDrop";
 import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragAndDrop";
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
 
-function MentorCourses() {
+function Course() {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
     image.src
   );
@@ -66,7 +66,6 @@ function MentorCourses() {
                 <CourseThumbnailDragAndDrop preview={preview} setPreview={setPreview} />
               </div>
             </div>
-            <hr className="mt-8" />
             <div className="gap-4 grid mx-4 px-8 max-sm:px-2 border rounded-xl mt-8 py-8">
               <div className="flex justify-between w-full items-center">
                 <p className="text-slate-800 font-semibold text-lg">
@@ -131,4 +130,4 @@ function MentorCourses() {
   );
 }
 
-export default MentorCourses;
+export default Course;

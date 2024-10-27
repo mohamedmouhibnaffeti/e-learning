@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, ImageUpIcon } from "lucide-react";
 
 interface ImageUploaderProps {
   preview: string | ArrayBuffer | null
@@ -34,7 +34,7 @@ const CourseThumbnailDragAndDrop: React.FC<ImageUploaderProps> = ({ preview, set
     <div className="w-full">
       <div
         {...getRootProps()}
-        className="flex lg:h-[25rem] cursor-pointer flex-col items-center justify-center rounded-full shadow-sm"
+        className="flex lg:h-[25rem] cursor-pointer flex-col items-center justify-center rounded-xl shadow-sm border"
       >
         {preview && (
           <img
@@ -43,7 +43,17 @@ const CourseThumbnailDragAndDrop: React.FC<ImageUploaderProps> = ({ preview, set
             className="w-full h-full object-cover rounded-3xl"
           />
         )}
-        <ImagePlus className={`size-40 ${preview ? "hidden" : "block"}`} />
+        {
+          !preview && (
+            <>
+            <div className="flex flex-col items-center justify-center gap-2">
+              <ImageUpIcon className="size-20 text-gray-500" />
+              <p className="text-sm text-gray-500">Click or Drag and drop an image here</p>
+              <p className="text-sm text-gray-500"> Image should be of type <span> JPG, JPEG, PNG </span> </p>
+            </div>
+            </>
+          )
+        }
         <input {...getInputProps()} type="file" />
       </div>
 

@@ -51,7 +51,6 @@ function AddLesson() {
                 </button>
               </div>
             </div>
-            <hr className="mt-8" />
             <div className="gap-4 grid mx-4 px-8 max-sm:px-2 border rounded-xl mt-8 py-8">
                 <div className="flex justify-between w-full items-center">
                     <p className="text-slate-800 font-semibold text-lg">

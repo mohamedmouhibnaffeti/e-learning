@@ -11,7 +11,7 @@ function MentorProfileSidebar() {
         <DashSidebarItem icon={<ChartBarBig />} text={"Statistics"} alert={false} route="/mentor-profile/stats" />
         <p className="text-sm text-gray-400 mt-2"> Course </p>
         <DashSidebarItem icon={<LibraryBigIcon />} text={"Courses"} alert={false} route="/mentor-profile/courses" />
-        <DashSidebarItem icon={<BookCopyIcon /> } text={"New Course"} alert={false} route="/mentor-profile/newcourse" />
+        <DashSidebarItem icon={<BookCopyIcon /> } text={"New Course"} alert={false} route="/mentor-profile/new-course" />
         <DashSidebarItem icon={<CaptionsIcon /> } text={"Submissions"} alert={false} route="/mentor-profile/submissions" />
     </DashSidebar>
   )
