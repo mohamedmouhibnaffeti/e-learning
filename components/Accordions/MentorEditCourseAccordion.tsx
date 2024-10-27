@@ -62,7 +62,7 @@ function MentorEditCourseAccordion() {
                 </div>
                 <div className="flex justify-end gap-2 max-sm:justify-center w-full max-sm:flex-col-reverse">
                     <button className="max-sm:w-full w-fit h-fit py-2 px-4 bg-red-600 text-white hover:bg-red-500 active:bg-red-600 transition-all duration-150 rounded-lg"> Delete Lesson </button>
-                    <button className="max-sm:w-full w-fit h-fit py-2 px-4 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 rounded-lg"> Edit Lesson </button>
+                    <a className="max-sm:w-full w-fit h-fit py-2 px-4 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 rounded-lg" href="/mentor-profile/courses/editlesson"> Edit Lesson </a>
                 </div>
             </AccordionContent>
         </AccordionItem>
@@ -120,7 +120,7 @@ function MentorEditCourseAccordion() {
                 </div>
                 <div className="flex justify-end gap-2 max-sm:justify-center w-full max-sm:flex-col-reverse">
                     <button className="max-sm:w-full w-fit h-fit py-2 px-4 bg-red-600 text-white hover:bg-red-500 active:bg-red-600 transition-all duration-150 rounded-lg"> Delete Lesson </button>
-                    <button className="max-sm:w-full w-fit h-fit py-2 px-4 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 rounded-lg"> Edit Lesson </button>
+                    <a className="max-sm:w-full w-fit h-fit py-2 px-4 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 rounded-lg" href="/mentor-profile/courses/editlesson"> Edit Lesson </a>
                 </div>
             </AccordionContent>
         </AccordionItem>

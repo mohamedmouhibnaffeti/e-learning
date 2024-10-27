@@ -72,10 +72,10 @@ function MentorCourses() {
                 <p className="text-slate-800 font-semibold text-lg">
                   Lessons
                 </p>
-                <button className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                <a className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150" href="/mentor-profile/courses/addlesson">
                   <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
                   Add Lesson
-                </button>
+                </a>
               </div>
               <MentorEditCourseAccordion />
             </div>
