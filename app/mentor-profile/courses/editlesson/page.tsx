@@ -62,7 +62,7 @@ function EditLesson() {
               </div>
               <div className="grid gap-4">
                   <div className="w-full flex justify-between px-8">
-                    <div className="flex gap-1 items-center text-base"> <div className="w-2 h-2 bg-black rounded-full -translate-y-px" /> HTML For Beginners </div>
+                    <div className="flex gap-1 items-center text-base"> <div className="w-2 h-2 bg-black rounded-full -translate-y-px" /> HTML For Beginners <span className="text-sm text-gray-500"> (27 minutes) </span> </div>
                     <p className="text-sm text-gray-500"> 20 / 100 </p>
                   </div>
                   <div className="w-full px-8">
