@@ -32,7 +32,15 @@ export default function ProductsFiltersSideBar({getNeonsByFilter, className, inp
                 <InputWithSuggestions query={query} setQuery={setQuery} allNames={allNeonNames}  className={`${inputClassName} mx-auto  mt-2 `} />
                 */
             }
-            <div className="w-full h-px dark:bg-gray-400 bg-infinity-border mt-6 " />      
+            <p className="text-gray-400 font-medium mt-8">Filtres</p>
+            <div className="flex gap-2 items-center mt-4">
+                <Checkbox
+                    checked={true}
+                    onCheckedChange={(checked) => {}}
+                />
+                <span className="text-sm capitalize"> Nos Recommendations </span>
+            </div>
+            <div className="w-full h-px bg-gray-300 mt-4 " />      
             <Accordion type="single" collapsible>
                 <AccordionItem value="Category">
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"><div className="flex gap-2 items-center"> <AlbumIcon className="text-infinity-purple w-5 h-5" /> All Courses </div></AccordionTrigger>
