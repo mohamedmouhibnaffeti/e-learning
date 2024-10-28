@@ -16,7 +16,7 @@ function Login() {
                       <GoogleButton />
                       <FacebookButton />
                     </div>
-                    <p className="text-sm mt-4"> Vous n&apos;avez pas de compte? <br /><Link href="/auth/sign-up" className="font-semibold underline"> Créer un Compte. </Link> </p>
+                    <p className="text-sm mt-4"> Don&apos;t have an account? <br /><Link href="/auth/sign-up" className="font-semibold underline"> Create Account. </Link> </p>
                 </div>
             </div>
         </div>

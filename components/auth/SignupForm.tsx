@@ -53,7 +53,7 @@ function SignupForm() {
                     <label
                     htmlFor="email"
                      className="absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-700"
-                    >Adresse Email</label
+                    >Email Address</label
                     >
                 </div>
             </div>
@@ -70,7 +70,7 @@ function SignupForm() {
                     <label
                     htmlFor="passwd"
                     className="absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
-                    > Mot de Passe </label>
+                    > Password </label>
                 </div>
                 {
                     passwdOpen ?
@@ -79,7 +79,29 @@ function SignupForm() {
                         <EyeIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
                 }
             </div>
-            <Button className="font-medium w-full mt-5 z-10 mb-3"> Se Connecter </Button>
+            <div className="flex items-center justify-center mt-5 z-10 w-full">
+                <div className="relative w-full">
+                    <input
+                    id="passwd"
+                    name="passwd"
+                    type={`${passwdOpen ? "text" : "password"}`}
+                    className="border-b peer border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    required
+                    placeholder=" "
+                    />
+                    <label
+                    htmlFor="passwd"
+                    className="absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
+                    > Connfirm Password </label>
+                </div>
+                {
+                    passwdOpen ?
+                        <EyeOffIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                    :
+                        <EyeIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                }
+            </div>
+            <Button className="font-medium w-full mt-5 z-10 mb-3 bg-[#1f342d] hover:bg-[#1f342d]/95"> Create Account </Button>
         </form>
     )
 }
