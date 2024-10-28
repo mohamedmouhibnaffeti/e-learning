@@ -1,9 +1,13 @@
+"use client"
 import React from 'react'
+import { usePathname } from 'next/navigation'
 
 function Footer() {
+    const path = usePathname()
+    if(path.startsWith("/auth")){
+        return null
+    }
   return (
-    
-
 <footer className="bg-white dark:bg-gray-900">
     <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">

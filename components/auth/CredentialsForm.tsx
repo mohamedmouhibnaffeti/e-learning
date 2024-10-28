@@ -1,0 +1,109 @@
+"use client"
+import React, { useState } from 'react'
+import { Button } from '../ui/button'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+
+function CredentialsLoginForm() {
+    const [passwdOpen, setPasswdOpen] = useState(false)
+    const router = useRouter()
+    return (
+        <form className="flex flex-col justify-start items-start sm:w-[18rem]" action={async(formData: FormData) =>{
+            try{
+                const email = formData.get("email") as string
+                const password = formData.get("passwd") as string
+                const response = await signIn("credentials", {
+                    email: email,
+                    password: password,
+                    redirect: false
+                })
+                if(response?.ok){
+                    router.push("/")
+                }else{
+                    toast("Vérifiez les informations", {
+                        description: response?.error,
+                        action: {
+                            label: "Réessayer",
+                            onClick: () => {},
+                        },
+                    })
+                }
+            }catch(err: any){
+                toast("Désolé", {
+                    description: "Désolé, une erreur système est survenue.",
+                    action: {
+                        label: "Réessayer",
+                        onClick: () => window.location.reload(),
+                    },
+                })
+            }
+        } }>
+            <div className="flex items-center justify-center  z-10 w-full">
+                <div className="relative w-full">
+                    <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    required
+                    className="border-b border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    placeholder=" "
+                    />
+                    <label
+                    htmlFor="email"
+                     className="absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-700"
+                    >Adresse Email</label
+                    >
+                </div>
+            </div>
+            <div className="flex items-center justify-center mt-5 z-10 w-full">
+                <div className="relative w-full">
+                    <input
+                    id="passwd"
+                    name="passwd"
+                    type={`${passwdOpen ? "text" : "password"}`}
+                    className="border-b peer border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    required
+                    placeholder=" "
+                    />
+                    <label
+                    htmlFor="passwd"
+                    className="absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
+                    > Mot de Passe </label>
+                </div>
+                {
+                    passwdOpen ?
+                        <EyeOffIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                    :
+                        <EyeIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                }
+            </div>
+            <div className="flex items-center justify-center mt-5 z-10 w-full">
+                <div className="relative w-full">
+                    <input
+                    id="passwd"
+                    name="passwd"
+                    type={`${passwdOpen ? "text" : "password"}`}
+                    className="border-b peer border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    required
+                    placeholder=" "
+                    />
+                    <label
+                    htmlFor="passwd"
+                    className="absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
+                    > Confirmer mot de passe </label>
+                </div>
+                {
+                    passwdOpen ?
+                        <EyeOffIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                    :
+                        <EyeIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
+                }
+            </div>
+            <Button className="font-medium w-full mt-5 z-10 mb-3 bg-[#1f342d] hover:bg-[#1f342d]/95"> Create Account </Button>
+        </form>
+    )
+}
+
+export default CredentialsLoginForm
