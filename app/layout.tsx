@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Nav/Header";
 import Footer from "@/components/Footer";
 import { Roboto } from "next/font/google";
+import AuthSessionProvider from "@/Providers/auth-session-provider";
 
 const condensedFont = Roboto({weight: "500", subsets: ["cyrillic-ext"]})
 
@@ -22,9 +23,11 @@ export default function RootLayout({
       <body
         className={`${condensedFont.className} antialiased bg-white`}
       >
-        <Header />
-        {children}
-        <Footer />
+        <AuthSessionProvider>
+          <Header />
+          {children}
+          <Footer />
+        </AuthSessionProvider>
       </body>
     </html>
   );

@@ -52,7 +52,7 @@ function CredentialsLoginForm() {
                     />
                     <label
                     htmlFor="email"
-                     className="absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-700"
+                     className="text-white absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-700"
                     >Email Address</label
                     >
                 </div>
@@ -69,7 +69,7 @@ function CredentialsLoginForm() {
                     />
                     <label
                     htmlFor="passwd"
-                    className="absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
+                    className="text-white absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
                     > Password </label>
                 </div>
                 {

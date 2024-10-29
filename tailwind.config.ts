@@ -95,7 +95,7 @@ const config: Config = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		backgroundImage: {
-			"authbg": "url('../components/Images/authbg.jpg')"
+			"authbg": "url('../components/Images/authbg2.jpg')"
 		}
   	}
   },
