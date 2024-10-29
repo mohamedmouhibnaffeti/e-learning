@@ -56,11 +56,6 @@ const AuthOptions = {
     ],
     callbacks: {
         async signIn({user, account, profile}: {user: User | AdapterUser, account: Account | null, profile?: Profile | undefined}){
-            console.log({
-                profile,
-                account,
-                user
-            })
             const FoundUser = await prisma.user.findFirst({where: {email: user?.email as string, provider: account?.provider as string}})
             if(FoundUser){
                 return true
