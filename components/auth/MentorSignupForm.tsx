@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { isValidEmail } from '@/lib/util/String'
-import { Register } from '@/app/actions/UserActions/Register'
+import { RegisterMentor } from '@/app/actions/UserActions/RegisterMentor'
 
 const verifyForm = (formData: FormData) => {
     if (formData.get("passwd") !== formData.get("confirmpasswd")) {
@@ -14,6 +14,9 @@ const verifyForm = (formData: FormData) => {
     }
     if (!isValidEmail(formData.get("email") as string)) {
         throw new Error("L'adresse e-mail est invalide.");
+    }
+    if ((formData.get("job") as string).length < 3) {
+        throw new Error("job is required.");
     }
     if ((formData.get("username") as string).length < 3) {
         throw new Error("Le nom d'utilisateur est trop court, au moins 4 caractères.");
@@ -24,7 +27,7 @@ const verifyForm = (formData: FormData) => {
 };
 
 
-function SignupForm() {
+function SignupFormMentor() {
     const [confirmpasswdOpen, setConfirmPasswdOpen] = useState(false)
     const [passwdOpen, setPasswdOpen] = useState(false)
     const router = useRouter()
@@ -32,7 +35,7 @@ function SignupForm() {
         <form className="flex flex-col justify-start items-start sm:w-[18rem]" action={async(formData: FormData) =>{
             try{
                 verifyForm(formData)
-                const result = await Register(formData);
+                const result = await RegisterMentor(formData);
                 if(result?.success === false){
                     toast("Désolé", {
                         description: result?.error || "Une erreur est survenue.",
@@ -109,6 +112,23 @@ function SignupForm() {
                     >
                 </div>
             </div>
+            <div className="flex items-center justify-center  z-10 w-full mt-5">
+                <div className="relative w-full">
+                    <input
+                    id="job"
+                    name="job"
+                    type="text"
+                    required
+                    className="border-b text-white border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-400 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    placeholder=" "
+                    />
+                    <label
+                    htmlFor="job"
+                     className="text-white absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-400"
+                    >Job Title</label
+                    >
+                </div>
+            </div>
             <div className="flex items-center justify-center mt-5 z-10 w-full">
                 <div className="relative w-full">
                     <input
@@ -158,4 +178,4 @@ function SignupForm() {
     )
 }
 
-export default SignupForm
+export default SignupFormMentor

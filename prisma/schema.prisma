@@ -29,6 +29,10 @@ model User {
   password            String?
   preferredLanguages  String[]
   preferredCategories  String[]
+  job                 String?
+  location            String?
+  phone               String? 
+  bio                 String? @db.VarChar(500)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@id([email, provider])
