@@ -14,45 +14,37 @@ import {
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
+const existingcategories = ["AI", "Deep Learning", "Machine Learning", "DevOps", "Cloud"]
 
-function CategoriesSelect() {
-    const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
-    const [showPanel, setShowPanel] = React.useState<Checked>(false)
-  return (
-    <DropdownMenu>
-        <DropdownMenuTrigger asChild className="w-fit">
+function CategoriesSelect({categories, setcategories}: {categories: string[], setcategories: any}) {
+    const handleToggleCategory = (category: string, isChecked: boolean) => {
+        setcategories((prevSelected: string[]) => 
+          isChecked 
+            ? [...prevSelected, category] 
+            : prevSelected.filter(selected => selected !== category)
+        );
+      };
+    
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className="w-fit">
             <Button variant="outline">Choose categories</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Categories</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
-            >
-                English
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showPanel}
-                onCheckedChange={setShowPanel}
-            >
-                Artificial Intelligence
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
-            >
-                Machine Learning
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showPanel}
-                onCheckedChange={setShowPanel}
-            >
-                Devops
-            </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
-export default CategoriesSelect
+            {existingcategories.map(category => (
+              <DropdownMenuCheckboxItem
+                key={category}
+                checked={categories.includes(category)}
+                onCheckedChange={(isChecked) => handleToggleCategory(category, isChecked)}
+              >
+                {category}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+    
+    export default CategoriesSelect;

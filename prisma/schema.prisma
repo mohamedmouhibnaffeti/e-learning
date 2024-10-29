@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -20,14 +20,16 @@ enum Roles {
 }
 
 model User {
-  id        String   @unique @default(cuid())
-  email     String   @unique
-  name      String?
-  provider  String   @default("")
+  id                  String   @unique @default(cuid())
+  email               String   @unique
+  name                String?
+  provider            String   @default("")
+  image               String   @default("")
+  role                Roles   @default(client)
+  password            String?
+  preferredLanguages  String[]
+  preferredCategories  String[]
   createdAt DateTime @default(now())
-  image     String   @default("")
-  role      Roles   @default(client)
-  password  String?
   updatedAt DateTime @updatedAt
   @@id([email, provider])
 }

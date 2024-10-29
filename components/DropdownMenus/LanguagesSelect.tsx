@@ -12,47 +12,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-type Checked = DropdownMenuCheckboxItemProps["checked"]
+const existinglanguages = ["English", "French", "Spanish", "German", "Italian"]
 
-
-function LanguagesSelect() {
-    const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
-    const [showPanel, setShowPanel] = React.useState<Checked>(false)
-  return (
+function LanguagesSelect({languages, setlanguages}: {languages: string[], setlanguages: any}) {
+    const handleToggleLanguage = (language: string, isChecked: boolean) => {
+        setlanguages((prevSelected: string[]) => 
+          isChecked 
+            ? [...prevSelected, language] 
+            : prevSelected.filter(selected => selected !== language)
+        );
+    };
+    return (
     <DropdownMenu>
         <DropdownMenuTrigger asChild className="w-fit">
-            <Button variant="outline">Choose languages</Button>
+        <Button variant="outline">Choose languages</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Languages</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+        <DropdownMenuLabel>Languages</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {existinglanguages.map(language => (
             <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
+            key={language}
+            checked={languages.includes(language)}
+            onCheckedChange={(isChecked) => handleToggleLanguage(language, isChecked)}
             >
-                English
+            {language}
             </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showPanel}
-                onCheckedChange={setShowPanel}
-            >
-                Spanish
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
-            >
-                French
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-                checked={showPanel}
-                onCheckedChange={setShowPanel}
-            >
-                Arabic
-            </DropdownMenuCheckboxItem>
+        ))}
         </DropdownMenuContent>
     </DropdownMenu>
-  )
+    );
 }
 
 export default LanguagesSelect
