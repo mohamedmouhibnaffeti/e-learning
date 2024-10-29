@@ -21,7 +21,7 @@ enum Roles {
 
 model User {
   id                  String   @unique @default(cuid())
-  email               String   @unique
+  email               String
   name                String?
   provider            String   @default("")
   image               String   @default("")
