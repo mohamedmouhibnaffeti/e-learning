@@ -3,9 +3,11 @@ import { Account, Profile, Session, User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 import FacebookProvider from "next-auth/providers/facebook"
 import GoogleProvider from "next-auth/providers/google"
+import CredentialsProvider from "next-auth/providers/credentials"
 import prisma from "./db"
 import { Roles } from "@prisma/client"
 import { JWT } from "next-auth/jwt"
+import { compare } from "bcryptjs"
 
 export interface CustomUser {
     name?: string | null;
@@ -33,6 +35,23 @@ const AuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_ID as string,
             clientSecret: process.env.GOOGLE_SECRET as string,
+        }),
+        CredentialsProvider({
+            credentials: {
+                email: {},
+                password: {}
+            },
+            async authorize(credentials, req) {
+                const user = await prisma.user.findUnique({where: {email_provider: {email: credentials?.email as string, provider: "credentials"}}})
+                if(!user){
+                  throw new Error("L'utilisateur n'existe pas.");
+                }
+                const passwdMatch = await compare(credentials?.password as string, user.password as string )
+                if(!passwdMatch){
+                  throw new Error("Le mot de passe est incorrect.");
+                }
+                return {...user, id: user.id.toString()}
+              }
         })
     ],
     callbacks: {
@@ -61,13 +80,13 @@ const AuthOptions = {
               token.role = FoundUser?.role
             }
             return token;
-          },
-          async session({session, token}: {session: CustomSession, token: JWT}){
-            if(token){
-              session.user = {...session.user, provider: token.provider as string, role: token.role as Roles}
-            }
-            return session
-          }
+        },
+        async session({session, token}: {session: CustomSession, token: JWT}){
+        if(token){
+            session.user = {...session.user, provider: token.provider as string, role: token.role as Roles}
+        }
+        return session
+        }
     },
     secret: process.env.JWT_SECRET as string,
 }

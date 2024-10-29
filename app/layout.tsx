@@ -5,6 +5,8 @@ import Header from "@/components/Nav/Header";
 import Footer from "@/components/Footer";
 import { Roboto } from "next/font/google";
 import AuthSessionProvider from "@/Providers/auth-session-provider";
+import { Toaster } from "@/components/ui/sonner";
+
 
 const condensedFont = Roboto({weight: "500", subsets: ["cyrillic-ext"]})
 
@@ -27,6 +29,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <Toaster />
         </AuthSessionProvider>
       </body>
     </html>

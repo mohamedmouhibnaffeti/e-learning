@@ -47,12 +47,12 @@ function CredentialsLoginForm() {
                     name="email"
                     type="text"
                     required
-                    className="border-b border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    className="border-b text-white border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-400 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
                     placeholder=" "
                     />
                     <label
                     htmlFor="email"
-                     className="text-white absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-700"
+                     className="text-white absolute left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200 peer-focus:text-indigo-400"
                     >Email Address</label
                     >
                 </div>
@@ -63,13 +63,13 @@ function CredentialsLoginForm() {
                     id="passwd"
                     name="passwd"
                     type={`${passwdOpen ? "text" : "password"}`}
-                    className="border-b peer border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-700 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
+                    className="border-b peer text-white border-gray-300 py-1 focus:border-b-2 dark:focus:border-gray-200 focus:border-indigo-400 transition-colors focus:outline-none peer bg-inherit w-full placeholder-transparent"
                     required
                     placeholder=" "
                     />
                     <label
                     htmlFor="passwd"
-                    className="text-white absolute peer-focus:text-indigo-700 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
+                    className="text-white absolute peer-focus:text-indigo-400 left-0 top-1 cursor-text font-medium text-sm transition-all peer-valid:hidden peer-invalid:block peer-focus:text-xs peer-focus:-top-4 dark:peer-focus:text-gray-200"
                     > Password </label>
                 </div>
                 {

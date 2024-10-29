@@ -27,6 +27,7 @@ model User {
   createdAt DateTime @default(now())
   image     String   @default("")
   role      Roles   @default(client)
+  password  String?
   updatedAt DateTime @updatedAt
   @@id([email, provider])
 }
