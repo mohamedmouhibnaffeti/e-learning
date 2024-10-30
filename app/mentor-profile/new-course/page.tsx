@@ -1,6 +1,6 @@
 "use client";
 import MentorProfileSidebar from "@/components/sidebars/MentorProfileSidebar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import image from "@/components/Images/Courses/UI.png";
 import { CaptionsIcon, CheckIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilLineIcon, PlusCircle, UserPenIcon } from "lucide-react";
@@ -9,28 +9,52 @@ import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragA
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
 import CourseDetailsInput from "@/components/Inputs/CourseDetailsInput";
 import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
+import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail } from "@/types/types";
 
 function CreateCourse() {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
     null
   );
-  const [lessons, setLessons] = useState<any>([]);
+
+  const [CourseDetails, setCourseDetails] = useState<Course>({
+    title: '',
+    price: 0,
+    language: '',
+    difficulty: '',
+    image: null
+  });
+
+  const updateCourseDetail: UpdateCourseDetail = (field: keyof Course, value: string | number | ArrayBuffer | null) => {
+    setCourseDetails((prevDetails) => ({
+      ...prevDetails,
+      [field]: value
+    }));
+  };  
+
+
+  const [lessons, setLessons] = useState<Lesson[]>([]);
 
   const addLesson = () => {
-    setLessons((prevLessons: any) => [
+    setLessons((prevLessons) => [
       ...prevLessons,
-      { id: prevLessons.length + 1, price: '', chapters: [] }
+      { title: '', chapters: [] }
     ]);
   };
-  const addChapter = (lessonId: any) => {
-    setLessons((prevLessons: any) =>
-      prevLessons.map((lesson: any) =>
-        lesson.id === lessonId
+
+  const addChapter = (lessonIndex: number) => {
+    setLessons((prevLessons) =>
+      prevLessons.map((lesson, index) =>
+        index === lessonIndex
           ? {
               ...lesson,
               chapters: [
                 ...lesson.chapters,
-                { id: lesson.chapters.length + 1, title: '' }
+                {
+                  title: '',
+                  videoUrl: '',
+                  duration: 0,
+                  score: 0
+                }
               ]
             }
           : lesson
@@ -38,11 +62,33 @@ function CreateCourse() {
     );
   };
 
-  const handlePriceChange = (e: any, lessonId: any) => {
+  const handleLessonTitleChange = (e: React.ChangeEvent<HTMLInputElement>, lessonIndex: number) => {
     const { value } = e.target;
-    setLessons((prevLessons: any) =>
-      prevLessons.map((lesson: any) =>
-        lesson.id === lessonId ? { ...lesson, price: value } : lesson
+    setLessons((prevLessons) =>
+      prevLessons.map((lesson, index) =>
+        index === lessonIndex ? { ...lesson, title: value } : lesson
+      )
+    );
+  };
+
+  const updateChapterValue: UpdateChapterValue = (
+    lessonIndex: number,
+    chapterIndex: number,
+    field: keyof Chapter,
+    value: string | number
+  ) => {
+    setLessons((prevLessons) =>
+      prevLessons.map((lesson, lIndex) =>
+        lIndex === lessonIndex
+          ? {
+              ...lesson,
+              chapters: lesson.chapters.map((chapter, cIndex) =>
+                cIndex === chapterIndex
+                  ? { ...chapter, [field]: value }
+                  : chapter
+              )
+            }
+          : lesson
       )
     );
   };
@@ -62,69 +108,66 @@ function CreateCourse() {
                   </p>
               </div>
               <div className="mt-4">
-                <CourseThumbnailDragAndDrop preview={preview} setPreview={setPreview} />
+                <CourseThumbnailDragAndDrop preview={CourseDetails.image} setPreview={updateCourseDetail} />
               </div>
             </div>
             <div className="gap-4 grid mx-4 px-8 max-sm:px-2 border rounded-xl mt-8 py-8">
                 <p className="text-slate-800 font-semibold text-lg">
                   Course Details
                 </p>
-              <CourseDetailsInput />
+              <CourseDetailsInput course={CourseDetails} changeCourseDetails={updateCourseDetail} />
             </div>
             <div className="gap-4 grid mx-4 px-8 max-sm:px-2 border rounded-xl mt-8 py-8">
-      <div className="flex justify-between w-full items-center">
-        <p className="text-slate-800 font-semibold text-lg">Lessons</p>
-        <button
-          className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
-          onClick={addLesson}
-        >
-          <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
-          Add Lesson
-        </button>
-      </div>
-
-        {lessons.map((lesson: any, index: number) => (
-          <div key={lesson.id} className="my-2">
-            <div className="flex max-sm:flex-col gap-4 items-center w-full md:px-4 px-2">
-              <p className="whitespace-nowrap sm:w-[25%]">Lesson Title</p>
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  value={lesson.price}
-                  onChange={(e) => handlePriceChange(e, lesson.id)}
-                  className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
-                />
-                <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+              <div className="flex justify-between w-full items-center">
+                <p className="text-slate-800 font-semibold text-lg">Lessons</p>
+                <button
+                  className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
+                  onClick={addLesson}
+                >
+                  <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
+                  Add Lesson
+                </button>
               </div>
+
+              {lessons.map((lesson, lessonIndex) => (
+                <div key={lessonIndex} className="my-2">
+                  <div className="flex max-sm:flex-col gap-4 items-center w-full md:px-4 px-2">
+                    <p className="whitespace-nowrap sm:w-[25%]">Lesson Title</p>
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        value={lesson.title}
+                        onChange={(e) => handleLessonTitleChange(e, lessonIndex)}
+                        className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
+                      />
+                      <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between w-full items-center mt-4">
+                    <p className="text-slate-800 font-semibold text-lg">Chapters</p>
+                    <button
+                      className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
+                      onClick={() => addChapter(lessonIndex)}
+                    >
+                      <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
+                      Add Chapter
+                    </button>
+                  </div>
+                  <div className="flex flex-col w-full mt-2">
+                    {lesson.chapters.map((chapter, chapterIndex) => (
+                      <div key={chapterIndex}>
+                        {chapterIndex > 0 && <hr className="mx-8 my-3" />}
+                        <ChapterDetailsInput chapter={chapter} lessonindex={lessonIndex} chapterindex={chapterIndex} changeChapterValue={updateChapterValue} />
+                      </div>
+                    ))}
+                  </div>
+                  {lessonIndex < lessons.length - 1 && <hr className="mt-8 border-indigo-600" />}
+                </div>
+              ))}
             </div>
-            <div className="flex justify-between w-full items-center mt-4">
-              <p className="text-slate-800 font-semibold text-lg">Chapters</p>
-              <button
-                className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
-                onClick={() => addChapter(lesson.id)}
-              >
-                <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
-                Add Chapter
-              </button>
-            </div>
-            <div className="flex flex-col gap-2 w-full mt-2">
-              {lesson.chapters.map((chapter: any, index: number) => {
-                console.log(index)
-                return(
-                  <>
-                  {index > 0 && <hr className="mt- mx-8" />}
-                  <ChapterDetailsInput key={index} chapter={chapter} />
-                  </>
-                )
-              })}
-            </div>
-            { (index < lessons.length - 1) && <hr className="mt-8 border-indigo-600" />}
-          </div>
-        ))}
-      </div>
-    
+
             <div className="w-full sm:justify-end flex px-4 mt-4">
-              <button className="bg-blue-600 hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 flex gap-1 text-white px-4 py-2 rounded-lg max-sm:w-full justify-center items-center"> Save <CheckIcon className="w-5 h-5 translate-y-px" />  </button>
+              <button onClick={()=>console.log({lessons, CourseDetails})} className="bg-blue-600 hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 flex gap-1 text-white px-4 py-2 rounded-lg max-sm:w-full justify-center items-center"> Save <CheckIcon className="w-5 h-5 translate-y-px" />  </button>
             </div>
           </div>
         </div>

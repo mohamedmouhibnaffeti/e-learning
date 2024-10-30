@@ -2,10 +2,11 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { ImagePlus, ImageUpIcon } from "lucide-react";
+import { UpdateCourseDetail } from "@/types/types";
 
 interface ImageUploaderProps {
   preview: string | ArrayBuffer | null
-  setPreview: any
+  setPreview: UpdateCourseDetail
 }
 
 const CourseThumbnailDragAndDrop: React.FC<ImageUploaderProps> = ({ preview, setPreview }) => {
@@ -13,10 +14,10 @@ const CourseThumbnailDragAndDrop: React.FC<ImageUploaderProps> = ({ preview, set
     (acceptedFiles: File[]) => {
       const reader = new FileReader();
       try {
-        reader.onload = () => setPreview(reader.result);
+        reader.onload = () => setPreview("image",reader.result);
         reader.readAsDataURL(acceptedFiles[0]);
       } catch (error) {
-        setPreview(null);
+        setPreview("image", null);
       }
     },
     [setPreview],
