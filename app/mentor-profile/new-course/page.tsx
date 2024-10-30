@@ -1,9 +1,9 @@
 "use client";
 import MentorProfileSidebar from "@/components/sidebars/MentorProfileSidebar";
-import React from "react";
+import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import image from "@/components/Images/Courses/UI.png";
-import { CheckIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilLineIcon, PlusCircle, UserPenIcon } from "lucide-react";
+import { CaptionsIcon, CheckIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilLineIcon, PlusCircle, UserPenIcon } from "lucide-react";
 import DragAndDrop from "@/components/Inputs/DragAndDrop";
 import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragAndDrop";
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
@@ -14,26 +14,38 @@ function CreateCourse() {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
     null
   );
-  const onDrop = React.useCallback(
-    (acceptedFiles: File[]) => {
-      const reader = new FileReader();
-      try {
-        reader.onload = () => setPreview(reader.result);
-        reader.readAsDataURL(acceptedFiles[0]);
-      } catch (error) {
-        setPreview(null);
-      }
-    },
-    [setPreview]
-  );
+  const [lessons, setLessons] = useState<any>([]);
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      onDrop,
-      maxFiles: 1,
-      maxSize: 1000000,
-      accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
-    });
+  const addLesson = () => {
+    setLessons((prevLessons: any) => [
+      ...prevLessons,
+      { id: prevLessons.length + 1, price: '', chapters: [] }
+    ]);
+  };
+  const addChapter = (lessonId: any) => {
+    setLessons((prevLessons: any) =>
+      prevLessons.map((lesson: any) =>
+        lesson.id === lessonId
+          ? {
+              ...lesson,
+              chapters: [
+                ...lesson.chapters,
+                { id: lesson.chapters.length + 1, title: '' }
+              ]
+            }
+          : lesson
+      )
+    );
+  };
+
+  const handlePriceChange = (e: any, lessonId: any) => {
+    const { value } = e.target;
+    setLessons((prevLessons: any) =>
+      prevLessons.map((lesson: any) =>
+        lesson.id === lessonId ? { ...lesson, price: value } : lesson
+      )
+    );
+  };
   return (
     <div className="w-full mb-6 flex">
       <MentorProfileSidebar />
@@ -60,39 +72,57 @@ function CreateCourse() {
               <CourseDetailsInput />
             </div>
             <div className="gap-4 grid mx-4 px-8 max-sm:px-2 border rounded-xl mt-8 py-8">
-                <div className="flex justify-between w-full items-center">
-                  <p className="text-slate-800 font-semibold text-lg">
-                    Lessons
-                  </p>
-                  <a className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150" href="/mentor-profile/courses/addlesson">
-                    <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
-                    Add Lesson
-                  </a>
-                </div>
-                <div className="flex max-sm:flex-col gap-4 items-center w-full md:px-4 px-2">
-                    <p className="whitespace-nowrap sm:w-[25%]">
-                        Price
-                    </p>
-                    <div className="relative w-full">
-                        <input
-                        type="text"
-                        className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
-                        />
-                        <CircleDollarSignIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
-                    </div>
-                </div>
-                <hr className="my-2" />
-                <div className="flex justify-between w-full items-center">
-                  <p className="text-slate-800 font-semibold text-lg">
-                    Chapters
-                  </p>
-                  <a className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150" href="/mentor-profile/courses/addlesson">
-                    <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
-                    Add Chapter
-                  </a>
-                </div>
-                <ChapterDetailsInput />
+      <div className="flex justify-between w-full items-center">
+        <p className="text-slate-800 font-semibold text-lg">Lessons</p>
+        <button
+          className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
+          onClick={addLesson}
+        >
+          <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
+          Add Lesson
+        </button>
+      </div>
+
+        {lessons.map((lesson: any, index: number) => (
+          <div key={lesson.id} className="my-2">
+            <div className="flex max-sm:flex-col gap-4 items-center w-full md:px-4 px-2">
+              <p className="whitespace-nowrap sm:w-[25%]">Lesson Title</p>
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  value={lesson.price}
+                  onChange={(e) => handlePriceChange(e, lesson.id)}
+                  className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
+                />
+                <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+              </div>
             </div>
+            <div className="flex justify-between w-full items-center mt-4">
+              <p className="text-slate-800 font-semibold text-lg">Chapters</p>
+              <button
+                className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
+                onClick={() => addChapter(lesson.id)}
+              >
+                <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
+                Add Chapter
+              </button>
+            </div>
+            <div className="flex flex-col gap-2 w-full mt-2">
+              {lesson.chapters.map((chapter: any, index: number) => {
+                console.log(index)
+                return(
+                  <>
+                  {index > 0 && <hr className="mt- mx-8" />}
+                  <ChapterDetailsInput key={index} chapter={chapter} />
+                  </>
+                )
+              })}
+            </div>
+            { (index < lessons.length - 1) && <hr className="mt-8 border-indigo-600" />}
+          </div>
+        ))}
+      </div>
+    
             <div className="w-full sm:justify-end flex px-4 mt-4">
               <button className="bg-blue-600 hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 flex gap-1 text-white px-4 py-2 rounded-lg max-sm:w-full justify-center items-center"> Save <CheckIcon className="w-5 h-5 translate-y-px" />  </button>
             </div>
@@ -104,3 +134,4 @@ function CreateCourse() {
 }
 
 export default CreateCourse;
+

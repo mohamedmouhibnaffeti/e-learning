@@ -1,5 +1,5 @@
 import { Link1Icon } from '@radix-ui/react-icons'
-import { BoltIcon, CaptionsIcon } from 'lucide-react'
+import { BoltIcon, CaptionsIcon, Clock10Icon } from 'lucide-react'
 import React from 'react'
 
 function ChapterDetailsInput() {
@@ -38,7 +38,7 @@ function ChapterDetailsInput() {
                 type="text"
                 className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
                 />
-                <Link1Icon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+                <Clock10Icon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
             </div>
         </div>
         <div className="flex max-sm:flex-col gap-4 items-center w-full">
