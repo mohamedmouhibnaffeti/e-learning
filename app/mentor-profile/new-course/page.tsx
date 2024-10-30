@@ -10,6 +10,7 @@ import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseA
 import CourseDetailsInput from "@/components/Inputs/CourseDetailsInput";
 import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
 import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail } from "@/types/types";
+import { toast } from "sonner";
 
 function CreateCourse() {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
@@ -35,15 +36,59 @@ function CreateCourse() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
 
   const addLesson = () => {
-    setLessons((prevLessons) => [
-      ...prevLessons,
-      { title: '', chapters: [] }
-    ]);
+    setLessons((prevLessons) => {
+      if (prevLessons.length > 0) {
+        const lastLesson = prevLessons[prevLessons.length - 1];
+  
+        if (!lastLesson.title) {
+          toast("Can't add a new lesson", {
+            description: "Please fill in the title for the last lesson before adding a new lesson.",
+            action: {
+                label: "Retry",
+                onClick: () => {},
+            },
+          })
+          return prevLessons
+        }
+  
+        const lastChapter = lastLesson.chapters[lastLesson.chapters.length - 1];
+        if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+          toast("Can't add a new lesson", {
+            description: "Please fill in all values for the last chapter before adding a new lesson.",
+            action: {
+                label: "Retry",
+                onClick: () => {},
+            },
+          })
+          return prevLessons
+        }
+      }
+  
+      return [
+        ...prevLessons,
+        { title: '', chapters: [] }
+      ];
+    });
   };
+  
 
   const addChapter = (lessonIndex: number) => {
-    setLessons((prevLessons) =>
-      prevLessons.map((lesson, index) =>
+    setLessons((prevLessons) => {
+      const lesson = prevLessons[lessonIndex];
+      
+      const lastChapter = lesson.chapters[lesson.chapters.length - 1];
+      if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+        toast("Can't add a new chapter", {
+          description: "Please fill in all values for the previous chapter before adding a new one.",
+          action: {
+              label: "Retry",
+              onClick: () => {},
+          },
+        })
+        return prevLessons;
+      }
+  
+      return prevLessons.map((lesson, index) =>
         index === lessonIndex
           ? {
               ...lesson,
@@ -58,9 +103,10 @@ function CreateCourse() {
               ]
             }
           : lesson
-      )
-    );
+      );
+    });
   };
+  
 
   const handleLessonTitleChange = (e: React.ChangeEvent<HTMLInputElement>, lessonIndex: number) => {
     const { value } = e.target;
