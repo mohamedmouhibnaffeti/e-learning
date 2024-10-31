@@ -1,3 +1,7 @@
+export interface Quiz{
+    
+}
+
 export interface Chapter {
     title: string;
     videoUrl: string;

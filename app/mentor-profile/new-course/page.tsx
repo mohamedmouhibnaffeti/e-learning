@@ -13,9 +13,6 @@ import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail } from 
 import { toast } from "sonner";
 
 function CreateCourse() {
-  const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
-    null
-  );
 
   const [CourseDetails, setCourseDetails] = useState<Course>({
     title: '',

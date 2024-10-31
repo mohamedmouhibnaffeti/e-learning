@@ -19,13 +19,29 @@ enum Roles {
   mentor
 }
 
+enum ImageLocation {
+  local
+  online
+}
+
+model Image {
+  id                  String          @unique @default(cuid())
+  path                String          @default("")
+  user                User?           @relation("UserImage", fields: [userID], references: [id])
+  userID              String?         @unique 
+  course              Course?         @relation("CourseImage", fields: [courseID], references: [id])
+  courseID            String?         @unique
+  location            ImageLocation    @default(online)
+  createdAt           DateTime        @default(now())
+}
+
 model User {
-  id                  String   @unique @default(cuid())
+  id                  String          @unique @default(cuid())
   email               String
   name                String?
-  provider            String   @default("")
-  image               String   @default("")
-  role                Roles   @default(client)
+  provider            String          @default("")
+  image               Image?          @relation("UserImage")
+  role                Roles           @default(client)
   password            String?
   preferredLanguages  String[]
   preferredCategories  String[]
@@ -33,7 +49,38 @@ model User {
   location            String?
   phone               String? 
   bio                 String? @db.VarChar(500)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
   @@id([email, provider])
 }
+
+model Course {
+  id                  String  @unique @default(cuid())
+  title               String
+  price               Float 
+  language            String
+  description         String  @db.VarChar(500)
+  category            String
+  image               Image?  @relation("CourseImage")
+  lessons             Lesson[]
+}
+
+model Lesson {
+  id                  String  @unique @default(cuid())
+  title               String
+  course              Course?  @relation(fields: [courseID], references: [id])
+  courseID            String?
+  chapters            Chapter[]
+}
+
+model Chapter {
+  id                  String  @unique @default(cuid())
+  title               String
+  videoUrl            String
+  duration            Int
+  score               Float
+  lesson              Lesson?  @relation(fields: [lessonID], references: [id])
+  lessonID            String?
+}
+
+
