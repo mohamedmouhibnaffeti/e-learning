@@ -19,7 +19,9 @@ function CreateCourse() {
     price: 0,
     language: '',
     difficulty: '',
-    image: null
+    image: null,
+    description: '',
+    category: ''
   });
 
   const updateCourseDetail: UpdateCourseDetail = (field: keyof Course, value: string | number | ArrayBuffer | null) => {

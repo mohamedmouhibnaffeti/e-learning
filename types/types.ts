@@ -27,6 +27,8 @@ export type Course = {
     language: string;
     difficulty: string;
     image: string | ArrayBuffer | null
+    description: string;
+    category: string;
 };
 
 export type UpdateCourseDetail = (field: keyof Course, value: string | number | ArrayBuffer | null) => void;

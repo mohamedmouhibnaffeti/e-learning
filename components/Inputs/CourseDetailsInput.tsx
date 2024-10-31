@@ -5,6 +5,7 @@ import {
   CircleDollarSignIcon,
   LanguagesIcon,
   LibraryBigIcon,
+  TextIcon,
 } from "lucide-react";
 import React from "react";
 import { Label } from "@/components/ui/label";
@@ -62,7 +63,7 @@ function CourseDetailsInput({
         <DropdownMenuTrigger asChild className="w-full">
           <Button variant="outline" className="flex items-center justify-start gap-2"> 
             <LanguagesIcon className="w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" /> 
-            Choose language
+            { course.language ? course.language :  "Choose language"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
@@ -70,6 +71,7 @@ function CourseDetailsInput({
           <DropdownMenuSeparator />
           {existinglanguages.map((language) => (
             <DropdownMenuItem
+            onSelect={() => changeCourseDetails("language", language)}
               key={language}
             >
               {language}
@@ -84,7 +86,7 @@ function CourseDetailsInput({
         <DropdownMenuTrigger asChild className="w-full">
           <Button variant="outline" className="flex items-center justify-start gap-2"> 
             <LibraryBigIcon className="w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" /> 
-            Choose Category
+            { course.category ? course.category : "Choose Category"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
@@ -92,6 +94,7 @@ function CourseDetailsInput({
           <DropdownMenuSeparator />
           {existingCategories.map((category) => (
             <DropdownMenuItem
+              onSelect={() => changeCourseDetails("category", category)}
               key={category}
             >
               {category}
@@ -120,6 +123,15 @@ function CourseDetailsInput({
             <Label htmlFor="r3">Advanced</Label>
           </div>
         </RadioGroup>
+      </div>
+      <p className="mt-2"> Course Description </p>
+      <div className="relative w-full">
+        <textarea
+          value={course.description}
+          onChange={(e) => changeCourseDetails("description", e.target.value)}
+          className="border-2 rounded-xl peer w-full h-32 outline-none focus:border-blue-500 pl-10 pt-2"
+        />
+        <TextIcon className="peer-focus:text-blue-500 top-0 translate-y-[12px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] transition-all duration-100" />
       </div>
     </div>
   );
