@@ -11,8 +11,58 @@ import CourseDetailsInput from "@/components/Inputs/CourseDetailsInput";
 import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
 import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail } from "@/types/types";
 import { toast } from "sonner";
+import { CreateCourse } from "@/app/actions/CourseActions/CreateCourse";
 
-function CreateCourse() {
+const validateData = (course: Course, lessons: Lesson[]): boolean => {
+  if (!course.title || !course.price || !course.language || !course.difficulty || !course.image || !course.description || !course.category) {
+    toast("Invalid Course Details", {
+      description: "Please fill in all the fields for the course details.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false;
+  }
+
+    if(lessons.length === 0){
+      toast("Can't process request", {
+        description: "Please create one lesson or more.",
+        action: {
+            label: "Retry",
+            onClick: () => {},
+        },
+      })
+      return false
+    }
+    const lastLesson = lessons[lessons.length - 1];
+
+    if (!lastLesson.title) {
+      toast("Can't process request", {
+        description: "Please fill in the title for the last lesson before adding a new lesson.",
+        action: {
+            label: "Retry",
+            onClick: () => {},
+        },
+      })
+      return false
+    }
+
+    const lastChapter = lastLesson.chapters[lastLesson.chapters.length - 1];
+    if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+      toast("Can't process request", {
+        description: "Please fill in all values for the last chapter before adding a new lesson.",
+        action: {
+            label: "Retry",
+            onClick: () => {},
+        },
+      })
+      return false
+  }
+  return true;
+}
+
+function CreateCoursePage() {
 
   const [CourseDetails, setCourseDetails] = useState<Course>({
     title: '',
@@ -145,7 +195,48 @@ function CreateCourse() {
           New Course
         </h1>
         <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
-          <div className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full">
+          <form action={
+            async(formdata: FormData) => {
+              try{
+                const validation = validateData(CourseDetails, lessons);
+                console.log(validation)
+                if(!validation) return;
+                formdata.append("course", JSON.stringify(CourseDetails));
+                formdata.append("lessons", JSON.stringify(lessons));
+                const response = await CreateCourse(formdata);
+                if(response.success){
+                  toast("Success", {
+                    description: "Course created successfully.",
+                    action: {
+                        label: "View Course",
+                        onClick: () => window.location.reload(),
+                    },
+                  })
+                  window.location.reload();
+                }
+                if(!response.success){
+                  toast("Sorry", {
+                    description: "an error has occured while creating a new course. Please try again.",
+                    action: {
+                        label: "Retry",
+                        onClick: () => window.location.reload(),
+                    },
+                  })
+                  return
+                }
+              }catch(err: any){
+                toast("Sorry", {
+                  description: err?.message || "an internal error has occured while creating a new course.",
+                  action: {
+                      label: "Retry",
+                      onClick: () => window.location.reload(),
+                  },
+                })
+              }
+            }
+            } 
+            className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full"
+          >
             <div className="grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8">
               <div className="">
                   <p className="text-slate-800 font-semibold text-lg">
@@ -212,14 +303,14 @@ function CreateCourse() {
             </div>
 
             <div className="w-full sm:justify-end flex px-4 mt-4">
-              <button onClick={()=>console.log({lessons, CourseDetails})} className="bg-blue-600 hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 flex gap-1 text-white px-4 py-2 rounded-lg max-sm:w-full justify-center items-center"> Save <CheckIcon className="w-5 h-5 translate-y-px" />  </button>
+              <button type="submit" className="bg-blue-600 hover:bg-blue-500 active:bg-blue-600 transition-all duration-150 flex gap-1 text-white px-4 py-2 rounded-lg max-sm:w-full justify-center items-center"> Save <CheckIcon className="w-5 h-5 translate-y-px" />  </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
   );
 }
 
-export default CreateCourse;
+export default CreateCoursePage;
 

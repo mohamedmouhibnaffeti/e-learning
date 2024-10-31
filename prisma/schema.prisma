@@ -61,6 +61,7 @@ model Course {
   language            String
   description         String  @db.VarChar(500)
   category            String
+  difficulty          String
   image               Image?  @relation("CourseImage")
   lessons             Lesson[]
 }
