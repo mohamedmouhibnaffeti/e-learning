@@ -9,9 +9,11 @@ import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragA
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
 import CourseDetailsInput from "@/components/Inputs/CourseDetailsInput";
 import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
-import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail } from "@/types/types";
+import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail, Question, UpdateQuizQuestionValue } from "@/types/types";
 import { toast } from "sonner";
 import { CreateCourse } from "@/app/actions/CourseActions/CreateCourse";
+import { set } from "react-hook-form";
+import QuizQuestionDetailsInput from "@/components/Inputs/QuizQuestionDetailsInput";
 
 const validateData = (course: Course, lessons: Lesson[]): boolean => {
   if (!course.title || !course.price || !course.language || !course.difficulty || !course.image || !course.description || !course.category) {
@@ -25,40 +27,74 @@ const validateData = (course: Course, lessons: Lesson[]): boolean => {
     return false;
   }
 
-    if(lessons.length === 0){
-      toast("Can't process request", {
-        description: "Please create one lesson or more.",
-        action: {
-            label: "Retry",
-            onClick: () => {},
-        },
-      })
-      return false
-    }
-    const lastLesson = lessons[lessons.length - 1];
-
-    if (!lastLesson.title) {
-      toast("Can't process request", {
-        description: "Please fill in the title for the last lesson before adding a new lesson.",
-        action: {
-            label: "Retry",
-            onClick: () => {},
-        },
-      })
-      return false
-    }
-
-    const lastChapter = lastLesson.chapters[lastLesson.chapters.length - 1];
-    if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
-      toast("Can't process request", {
-        description: "Please fill in all values for the last chapter before adding a new lesson.",
-        action: {
-            label: "Retry",
-            onClick: () => {},
-        },
-      })
-      return false
+  if(lessons.length === 0){
+    toast("Can't process request", {
+      description: "Please create one lesson or more.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
   }
+  const lastLesson = lessons[lessons.length - 1];
+
+  if (!lastLesson.title) {
+    toast("Can't process request", {
+      description: "Please fill in the title for the last lesson before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  const lastChapter = lastLesson.chapters[lastLesson.chapters.length - 1];
+  if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+    toast("Can't process request", {
+      description: "Please fill in all values for the last chapter before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  if(!lastLesson.quiz.title){
+    toast("Can't process request", {
+      description: "Please fill in the title for the last quiz before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  if(lastLesson.quiz.questions.length === 0){
+    toast("Can't process request", {
+      description: "Please create one question or more for the last quiz.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+  const lastQuestion = lastLesson.quiz.questions[lastLesson.quiz.questions.length - 1];
+  if(lastQuestion && (!lastQuestion.content || !lastQuestion.answer || lastQuestion.max_score <= 0)){
+    toast("Can't process request", {
+      description: "Please fill in all values for the last question before adding a new one.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
   return true;
 }
 
@@ -115,7 +151,7 @@ function CreateCoursePage() {
   
       return [
         ...prevLessons,
-        { title: '', chapters: [] }
+        { title: '', chapters: [], quiz: { title: '', questions: [] } }
       ];
     });
   };
@@ -154,6 +190,91 @@ function CreateCoursePage() {
           : lesson
       );
     });
+  };
+  
+  const addQuizQuestion = (lessonIndex: number) => {
+    setLessons((prevLessons) => {
+      const lesson = prevLessons[lessonIndex];
+      
+      const lastChapter = lesson.chapters[lesson.chapters.length - 1];
+      if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+        toast("Can't add a new Quiz", {
+          description: "Please fill in all values for the previous chapter before adding a new quiz question.",
+          action: {
+              label: "Retry",
+              onClick: () => {},
+          },
+        })
+        return prevLessons;
+      }
+
+      const lastQuestion = lesson.quiz.questions[lesson.quiz.questions.length - 1];
+      if (lastQuestion && (!lastQuestion.content || !lastQuestion.answer || lastQuestion.max_score <= 0)) {
+        toast("Can't add a new question", {
+          description: "Please fill in all values for the previous question before adding a new one.",
+          action: {
+              label: "Retry",
+              onClick: () => {},
+          },
+        })
+        return prevLessons;
+      }
+  
+      return prevLessons.map((lesson, index) =>
+        index === lessonIndex
+          ? {
+              ...lesson,
+              quiz: {
+                ...lesson.quiz,
+                questions: [
+                  ...lesson.quiz.questions,
+                  {
+                    content: '',
+                    answer: '',
+                    max_score: 0
+                  }
+                ]
+              }
+            }
+          : lesson
+      );
+    })
+  }
+
+  const handleQuizTitleChange = (e: React.ChangeEvent<HTMLInputElement>, lessonIndex: number) => {
+    const { value } = e.target;
+    setLessons((prevLessons) =>
+      prevLessons.map((lesson, index) =>
+        index === lessonIndex
+          ? { ...lesson, quiz: { ...lesson.quiz, title: value } }
+          : lesson
+      )
+    );
+  }
+
+  const updateQuizQuestionValue: UpdateQuizQuestionValue = (
+    lessonIndex: number,
+    questionIndex: number,
+    field: keyof Question,
+    value: string | number
+  ) => {
+    setLessons((prevLessons) =>
+      prevLessons.map((lesson, lIndex) =>
+        lIndex === lessonIndex
+          ? {
+              ...lesson,
+              quiz: {
+                ...lesson.quiz,
+                questions: lesson.quiz.questions.map((question, qIndex) =>
+                  qIndex === questionIndex
+                    ? { ...question, [field]: value }
+                    : question
+                )
+              }
+            }
+          : lesson
+      )
+    );
   };
   
 
@@ -258,7 +379,7 @@ function CreateCoursePage() {
                 <p className="text-slate-800 font-semibold text-lg">Lessons</p>
                 <button
                   className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
-                  onClick={addLesson}
+                  onClick={(e) => {e.preventDefault();addLesson()}}
                 >
                   <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
                   Add Lesson
@@ -273,7 +394,7 @@ function CreateCoursePage() {
                       <input
                         type="text"
                         value={lesson.title}
-                        onChange={(e) => handleLessonTitleChange(e, lessonIndex)}
+                        onChange={(e) => {e.preventDefault(); handleLessonTitleChange(e, lessonIndex)}}
                         className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
                       />
                       <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
@@ -283,7 +404,7 @@ function CreateCoursePage() {
                     <p className="text-slate-800 font-semibold text-lg">Chapters</p>
                     <button
                       className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
-                      onClick={() => addChapter(lessonIndex)}
+                      onClick={(e) => {e.preventDefault(); addChapter(lessonIndex)}}
                     >
                       <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
                       Add Chapter
@@ -294,6 +415,37 @@ function CreateCoursePage() {
                       <div key={chapterIndex}>
                         {chapterIndex > 0 && <hr className="mx-8 my-3" />}
                         <ChapterDetailsInput chapter={chapter} lessonindex={lessonIndex} chapterindex={chapterIndex} changeChapterValue={updateChapterValue} />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-slate-800 font-semibold text-lg mt-4">Quiz</p>
+                  <div className="flex max-sm:flex-col gap-4 items-center w-full md:px-4 px-2">
+                    <p className="whitespace-nowrap sm:w-[25%]">Quiz Title</p>
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        value={lesson.quiz.title}
+                        onChange={(e) => {e.preventDefault(); handleQuizTitleChange(e, lessonIndex)}}
+                        className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
+                      />
+                      <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between w-full items-center mt-4">
+                    <p className="text-slate-800 font-semibold text-lg">Quiz Questions</p>
+                    <button
+                      className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150"
+                      onClick={(e) => {e.preventDefault(); addQuizQuestion(lessonIndex)}}
+                    >
+                      <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
+                      Add Question
+                    </button>
+                  </div>
+                  <div className="flex flex-col w-full mt-2">
+                    {lesson.quiz.questions.map((question, questionIndex) => (
+                      <div key={questionIndex}>
+                        {questionIndex > 0 && <hr className="mx-8 my-3" />}
+                        <QuizQuestionDetailsInput question={question} lessonindex={lessonIndex} questionIndex={questionIndex} changeQuestionValue={updateQuizQuestionValue} />
                       </div>
                     ))}
                   </div>

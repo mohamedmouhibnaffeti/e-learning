@@ -67,21 +67,40 @@ model Course {
 }
 
 model Lesson {
-  id                  String  @unique @default(cuid())
+  id                  String    @unique @default(cuid())
   title               String
-  course              Course?  @relation(fields: [courseID], references: [id])
+  course              Course?   @relation(fields: [courseID], references: [id])
   courseID            String?
   chapters            Chapter[]
+  quiz                Quiz?     @relation("LessonQuiz")
 }
 
 model Chapter {
-  id                  String  @unique @default(cuid())
+  id                  String    @unique @default(cuid())
   title               String
   videoUrl            String
   duration            Int
   score               Float
-  lesson              Lesson?  @relation(fields: [lessonID], references: [id])
+  lesson              Lesson?   @relation(fields: [lessonID], references: [id])
   lessonID            String?
+}
+
+model Quiz {
+  id                  String    @unique @default(cuid())
+  title               String
+  lesson              Lesson    @relation("LessonQuiz", fields: [lessonID], references: [id])
+  lessonID            String    @unique
+  questions           Question[]
+}
+
+model Question {
+  id                  String    @unique @default(cuid())
+  content             String
+  quiz                Quiz      @relation(fields: [quizID], references: [id])
+  quizID              String
+  answer              String
+  max_score           Float
+  model_score         Float?
 }
 
 

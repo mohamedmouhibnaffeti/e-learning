@@ -1,6 +1,3 @@
-export interface Quiz{
-    
-}
 
 export interface Chapter {
     title: string;
@@ -12,6 +9,7 @@ export interface Chapter {
 export interface Lesson {
     title: string;
     chapters: Chapter[];
+    quiz: Quiz
 }
 
 export type UpdateChapterValue = (
@@ -31,4 +29,16 @@ export type Course = {
     category: string;
 };
 
+export type Quiz = {
+    title: string;
+    questions: Question[];
+}
+
+export type Question = {
+    content: string;
+    answer: string
+    max_score: number;
+}
+
 export type UpdateCourseDetail = (field: keyof Course, value: string | number | ArrayBuffer | null) => void;
+export type UpdateQuizQuestionValue = (lessonIndex: number, questionIndex: number, field: keyof Question, value: string | number) => void;

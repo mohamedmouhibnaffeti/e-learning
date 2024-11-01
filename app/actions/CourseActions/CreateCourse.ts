@@ -19,7 +19,7 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
         const newCourse = await prisma.course.create({
             data: {
                 title: coursedatails.title,
-                price: coursedatails.price,
+                price: parseFloat(coursedatails.price.toString()),
                 language: coursedatails.language,
                 difficulty: coursedatails.difficulty,
                 category: coursedatails.category,
@@ -31,9 +31,21 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
                             create: lesson.chapters.map(chapter => ({
                                 title: chapter.title,
                                 videoUrl: chapter.videoUrl,
-                                duration: chapter.duration,
-                                score: chapter.score,
+                                duration: parseInt(chapter.duration.toString()),
+                                score: parseFloat(chapter.score.toString()),
                             })),
+                        },
+                        quiz: {
+                            create: {
+                                title: lesson.quiz.title,
+                                questions: {
+                                    create: lesson.quiz.questions.map(question => ({
+                                        content: question.content,
+                                        answer: question.answer,
+                                        max_score: parseFloat(question.max_score.toString()),
+                                    }))
+                                }
+                            }
                         }
                     })),
                 },
@@ -42,7 +54,7 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
                         path: courseimagepath,
                         location: "local"
                     }
-                },
+                }
             }
         })
 
@@ -50,6 +62,7 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
 
         return {success: true}
     }catch(err: any){
+        console.log(err)
         return {success: false, error: err.message}
     }
 }
