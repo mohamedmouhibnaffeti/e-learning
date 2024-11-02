@@ -18,40 +18,6 @@ const existingCategories = ["Web Development", "Mobile Development", "Data Scien
 
 function EditCoursePageMentor({course}: {course: any}) {
 
-    const getCourseThumbnail = async() => {
-        const response = await axios.post("/api/courses/getcoursethumbnail", {courseID: course.id})
-        const {ImageData} = response.data
-        setPreview(ImageData)
-    }
-
-    useLayoutEffect(()=>{
-        getCourseThumbnail()
-    }, [])
-
-    const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
-        null
-    );
-    const onDrop = React.useCallback(
-    (acceptedFiles: File[]) => {
-        const reader = new FileReader();
-        try {
-        reader.onload = () => setPreview(reader.result);
-        reader.readAsDataURL(acceptedFiles[0]);
-        } catch (error) {
-        setPreview(null);
-        }
-    },
-    [setPreview]
-    );
-
-    const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-        onDrop,
-        maxFiles: 1,
-        maxSize: 1000000,
-        accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
-    });
-
     const [courseForm, setCurseForm] = React.useState({
         title: {
             open: false,
@@ -76,6 +42,10 @@ function EditCoursePageMentor({course}: {course: any}) {
         category: {
             open: false,
             data: course.category
+        },
+        image: {
+            open: false,
+            data: null
         }
     })
 
@@ -91,7 +61,7 @@ function EditCoursePageMentor({course}: {course: any}) {
         })
     }
 
-    const changeFormData = (field: keyof typeof courseForm, value: string | number) => {
+    const changeFormData = (field: keyof typeof courseForm, value: string | number | ArrayBuffer | null) => {
         setCurseForm(prev => {
             return {
                 ...prev,
@@ -102,6 +72,37 @@ function EditCoursePageMentor({course}: {course: any}) {
             }
         })
     }
+
+    const getCourseThumbnail = async() => {
+        const response = await axios.post("/api/courses/getcoursethumbnail", {courseID: course.id})
+        const {ImageData} = response.data
+        changeFormData("image", ImageData)
+    }
+
+    useLayoutEffect(()=>{
+        getCourseThumbnail()
+    }, [course.id])
+
+    const onDrop = React.useCallback(
+    (acceptedFiles: File[]) => {
+        const reader = new FileReader();
+        try {
+        reader.onload = () => changeFormData("image", reader.result);
+        reader.readAsDataURL(acceptedFiles[0]);
+        } catch (error) {
+            changeFormData("image", null);
+        }
+    },
+    [changeFormData]
+    );
+
+    const { getRootProps, getInputProps, isDragActive, fileRejections } =
+    useDropzone({
+        onDrop,
+        maxFiles: 1,
+        maxSize: 1000000,
+        accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
+    });
 
     console.log(courseForm)
 
@@ -127,7 +128,7 @@ function EditCoursePageMentor({course}: {course: any}) {
             </div>
             </div>
             <div className="mt-4">
-            <CourseThumbnailDragAndDrop preview={preview} setPreview={setPreview} />
+            <CourseThumbnailDragAndDrop preview={courseForm.image.data} setPreview={changeFormData} />
             </div>
         </div>
         <div className={`grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8 ${!courseForm.title.open ? "bg-white" : "bg-[#C0C0C0]/15"}`}>

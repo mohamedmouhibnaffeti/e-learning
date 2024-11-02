@@ -14,7 +14,7 @@ const CourseThumbnailDragAndDrop: React.FC<ImageUploaderProps> = ({ preview, set
     (acceptedFiles: File[]) => {
       const reader = new FileReader();
       try {
-        reader.onload = () => setPreview("image",reader.result);
+        reader.onload = () => setPreview("image", reader.result);
         reader.readAsDataURL(acceptedFiles[0]);
       } catch (error) {
         setPreview("image", null);
