@@ -12,7 +12,7 @@ async function Course() {
   const params: URLSearchParams = getParams(pathname)
   const id = params.get("id") as string
   
-  const course = await prisma.course.findUnique({where: {id: id}})
+  const course = await prisma.course.findUnique({where: {id: id}, include: {lessons: {include: {quiz: true, chapters: true}}}})
   
   return (
     <div className="w-full mb-6 flex">
