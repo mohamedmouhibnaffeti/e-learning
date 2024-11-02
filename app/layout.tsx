@@ -26,7 +26,9 @@ export default function RootLayout({
         className={`${condensedFont.className} antialiased bg-white`}
       >
         <AuthSessionProvider>
-          <Header />
+          {
+            <Header />
+          }
           {children}
           <Footer />
           <Toaster />

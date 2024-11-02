@@ -65,7 +65,12 @@ const AuthOptions = {
                     email: user.email as string,
                     provider: account?.provider,
                     name: user.name as string,
-                    image: user?.image as string
+                    image: {
+                        create: {
+                            path: user.image as string,
+                            location: "online"
+                        }
+                    }
                 }
                 })
                 return true
@@ -73,17 +78,18 @@ const AuthOptions = {
         },
         async jwt({token, user, account, profile, trigger, isNewUser}: {token: JWT, user: User | AdapterUser, account: Account | null, profile?: Profile | undefined, trigger?: "signIn" | "signUp" | "update" | undefined, isNewUser?: boolean}){
             if (account) {
-              const FoundUser = await prisma.user.findFirst({where: {email: user?.email as string, provider: account?.provider as string}, select: {role: true}})
+              const FoundUser = await prisma.user.findFirst({where: {email: user?.email as string, provider: account?.provider as string}, select: {role: true, image: true}})
               const userLoggedIn = SignToken(user?.email as string)
               token.loggedUser = userLoggedIn
               token.provider = account.provider
               token.role = FoundUser?.role
+              token.image = FoundUser?.image?.path
             }
             return token;
         },
         async session({session, token}: {session: CustomSession, token: JWT}){
         if(token){
-            session.user = {...session.user, provider: token.provider as string, role: token.role as Roles}
+            session.user = {...session.user, provider: token.provider as string, role: token.role as Roles, image: token.image as string}
         }
         return session
         }
