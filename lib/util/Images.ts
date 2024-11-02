@@ -24,3 +24,22 @@ export function saveBase64Image(base64Image: string, courseName: string): string
       return undefined;
     }
 }
+
+export function getImageByPath(imagePath: string): string | undefined {
+  try {
+    const filePath = path.resolve(process.cwd(), 'uploads', imagePath);
+    
+    if (fs.existsSync(filePath)) {
+      const fileBuffer = fs.readFileSync(filePath);
+      return `data:image/png;base64,${fileBuffer.toString('base64')}`;
+      
+      //return fileBuffer;
+    } else {
+      console.error('Image not found at path:', filePath);
+      return undefined;
+    }
+  } catch (error) {
+    console.error('Failed to retrieve image:', error);
+    return undefined;
+  }
+}
