@@ -12,9 +12,10 @@ interface CourseCardProps {
     lessons: number
     users: number
     difficulty: string,
-    price: number
+    price: number,
+    id: string
   }
-function MentorCourseCard({image, title, lessons, users, difficulty, price}: CourseCardProps) {
+function MentorCourseCard({image, title, lessons, users, difficulty, price, id}: CourseCardProps) {
     const router = useRouter() 
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
@@ -24,7 +25,7 @@ function MentorCourseCard({image, title, lessons, users, difficulty, price}: Cou
                     <>
                         <Image width={100} height={100} src={image} alt='' className="object-cover w-full h-full rounded-t-lg" />
                         <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <button onClick={()=>router.push(`/mentor-profile/courses/${title.replace(" ", "-")}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                            <button onClick={()=>router.push(`/mentor-profile/courses/${title.replace(" ", "-")}?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
                                 View Course
                                 <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                             </button>
@@ -36,7 +37,7 @@ function MentorCourseCard({image, title, lessons, users, difficulty, price}: Cou
                     <>
                         <Skeleton className="w-full h-full rounded-t-lg " />
                         <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <button onClick={()=>router.push(`/mentor-profile/courses/${title.replace(" ", "-")}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                            <button onClick={()=>router.push(`/mentor-profile/courses/${title.replace(" ", "-")}?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
                                 View Course
                                 <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                             </button>

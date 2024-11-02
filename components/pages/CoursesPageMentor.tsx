@@ -26,7 +26,7 @@ function CoursesPageMentor({courses}: {courses: ExtendedCourseWithLessons[]}) {
                 courses.map((course, index) => {
                     const courseImage = thumbnails.find((thumbnail) => thumbnail.CourseID === course.id)?.data
                     return(
-                        <MentorCourseCard image={courseImage} price={course.price} title={course.title} lessons={course.lessons.length} difficulty={course.difficulty} users={100} />
+                        <MentorCourseCard id={course.id} image={courseImage} price={course.price} title={course.title} lessons={course.lessons.length} difficulty={course.difficulty} users={100} />
                     )
                 })   
             }
