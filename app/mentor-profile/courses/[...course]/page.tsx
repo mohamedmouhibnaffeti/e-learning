@@ -5,7 +5,7 @@ import { getParams } from "@/lib/util/params";
 import { headers } from "next/headers";
 import EditCoursePageMentor from "@/components/pages/EditCoursePageMentor";
 import prisma from "@/lib/util/db";
-
+ 
 async function Course() {
   const headerlist = headers()
   const pathname = headerlist.get("x-current-path")
