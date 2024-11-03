@@ -43,3 +43,21 @@ export function getImageByPath(imagePath: string): string | undefined {
     return undefined;
   }
 }
+
+export function deleteImageByPath(imagePath: string): boolean {
+  try {
+    const filePath = path.resolve(process.cwd(), 'uploads', imagePath);
+    
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log('Image deleted successfully:', filePath);
+      return true;
+    } else {
+      console.error('Image not found at path:', filePath);
+      return false;
+    }
+  } catch (error) {
+    console.error('Failed to delete image:', error);
+    return false;
+  }
+}

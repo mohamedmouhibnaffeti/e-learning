@@ -5,12 +5,13 @@ import { CaptionsIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilL
 import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragAndDrop";
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
 import axios from "axios";
-import { description } from "../Charts/BarChartCustomLabel";
-
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
+import { json } from "stream/consumers";
+import { UpdateCourse } from "@/app/actions/CourseActions/UpdateCourse";
+import { toast } from "sonner";
 
 const existinglanguages = ["English", "French", "Spanish", "German", "Italian"]
 const existingCategories = ["Web Development", "Mobile Development", "Data Science", "Machine Learning", "Artificial Intelligence"]
@@ -108,7 +109,51 @@ function EditCoursePageMentor({course}: {course: any}) {
 
   return (
     <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
-        <div className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full">
+        <form
+            action={
+                async(formdata: FormData) => {
+                    try{
+                        formdata.append("courseId", course.id)
+                        formdata.append("title", courseForm.title.data as string)
+                        formdata.append("price", courseForm.price.data as string)
+                        formdata.append("description", courseForm.description.data as string)
+                        formdata.append("language", courseForm.language.data as string)
+                        formdata.append("difficulty", courseForm.difficulty.data as string)
+                        formdata.append("category", courseForm.category.data as string)
+                        formdata.append("image", JSON.stringify(courseForm.image.data || ""))
+                        const response = await UpdateCourse(formdata)
+                        if(response?.success === false){
+                            toast("Sorry", {
+                                description: response?.error || "an error has occured.",
+                                action: {
+                                    label: "Retry",
+                                    onClick: () => {},
+                                },
+                            });
+                        }
+                        if(response.success){
+                            toast("Success", {
+                                description: "Course updated successfully",
+                                action: {
+                                    label: "Ok",
+                                    onClick: () => {},
+                                },
+                            });
+                            window.location.reload()
+                        }
+                    }catch(err: any){
+                        toast("Sorry", {
+                            description: err?.message || "an error has occured.",
+                            action: {
+                                label: "Retry",
+                                onClick: () => {},
+                            },
+                        });
+                    }
+                }
+            } 
+            className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full"
+        >
         <div className="grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8">
             <div className="">
             <div className="flex justify-between w-full items-center">
@@ -138,12 +183,12 @@ function EditCoursePageMentor({course}: {course: any}) {
             </p>
             {
                 courseForm.title.open ? (
-                    <button onClick={()=>changeFormOpenStatus("title")} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("title"); changeFormData("title", course.title);e.preventDefault() }} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
                         Cancel
                     </button>
                 )
                 :
-                    <button onClick={()=>changeFormOpenStatus("title")} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("title");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
                         <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
                         Edit
                     </button>
@@ -169,9 +214,55 @@ function EditCoursePageMentor({course}: {course: any}) {
                 }
                 {
                     courseForm.title.open && (
-                        <button onClick={()=>changeFormOpenStatus("title")} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
-                            {" "} Save Changes {" "}
+                        <button onClick={(e)=>{changeFormOpenStatus("title");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                            {" "} Confirm {" "}
                         </button>
+                    )
+                }
+            </div>
+        </div>
+        <div className={`grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8 ${!courseForm.description.open ? "bg-white" : "bg-[#C0C0C0]/15"}`}>
+            <div className="flex justify-between w-full items-center">
+            <p className="text-slate-800 font-semibold text-lg">
+                Course Description
+            </p>
+            {
+                courseForm.description.open ? (
+                    <button onClick={(e)=>{changeFormOpenStatus("description"); changeFormData("description", course.description);e.preventDefault()}} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                        Cancel
+                    </button>
+                )
+                :
+                    <button onClick={(e)=>{changeFormOpenStatus("description");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                        <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
+                        Edit
+                    </button>
+            }
+            </div>
+            <div className="flex flex-col gap-2 w-full">
+                {
+                    courseForm.description.open ? (
+                        <div className="relative w-full">
+                            <textarea
+                                className="outline-none peer focus:border-blue-500 appearance-none text-sm border-2 rounded-xl h-[8rem] pl-10 pt-2 focus:caret-indigo-500 w-full"
+                                value={courseForm.description.data}
+                                onChange={(e)=>changeFormData("description", e.target.value)}
+                            />
+                            <CaptionsIcon className="top-0 translate-y-[11px] translate-x-3 absolute w-5 h-5 peer-focus:text-blue-500" />
+                        </div>
+                    )
+                    :
+                    <p className="pl-8 font-medium text-gray-500 max-w-[48rem] break-words">
+                        {courseForm.description.data}
+                    </p>
+                }
+                {
+                    courseForm.description.open && (
+                        <div className="w-full flex sm:justify-end">
+                            <button onClick={(e)=>{changeFormOpenStatus("description");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                                {" "} Confirm {" "}
+                            </button>
+                        </div>
                     )
                 }
             </div>
@@ -195,12 +286,12 @@ function EditCoursePageMentor({course}: {course: any}) {
             </p>
             {
                 courseForm.price.open ? (
-                    <button onClick={()=>changeFormOpenStatus("price")} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("price"); changeFormData("price", course.price);e.preventDefault()}} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
                         Cancel
                     </button>
                 )
                 :
-                    <button onClick={()=>changeFormOpenStatus("price")} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("price");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
                         <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
                         Edit
                     </button>
@@ -226,8 +317,8 @@ function EditCoursePageMentor({course}: {course: any}) {
                 }
                 {
                     courseForm.price.open && (
-                        <button onClick={()=>changeFormOpenStatus("price")} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
-                            {" "} Save Changes {" "}
+                        <button onClick={(e)=>{changeFormOpenStatus("price");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                            {" "} Confirm {" "}
                         </button>
                     )
                 }
@@ -238,12 +329,12 @@ function EditCoursePageMentor({course}: {course: any}) {
             <p className="text-slate-800 font-semibold text-lg"> Course Language </p>
             {
                 courseForm.language.open ? (
-                    <button onClick={()=>changeFormOpenStatus("language")} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("language"); changeFormData("language", course.language);e.preventDefault()}} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
                         Cancel
                     </button>
                 )
                 :
-                    <button onClick={()=>changeFormOpenStatus("language")} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("language");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
                         <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
                         Edit
                     </button>
@@ -282,25 +373,86 @@ function EditCoursePageMentor({course}: {course: any}) {
             }
             {
                 courseForm.language.open && (
-                    <button onClick={()=>changeFormOpenStatus("language")} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
-                        {" "} Save Changes {" "}
+                    <button onClick={(e)=>{changeFormOpenStatus("language");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                        {" "} Confirm {" "}
                     </button>
                 )
             }
             </div>
             
         </div>
+
+
+        <div className={`grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8 ${!courseForm.category.open ? "bg-white" : "bg-[#C0C0C0]/15"}`}>
+            <div className="flex justify-between w-full items-center">
+            <p className="text-slate-800 font-semibold text-lg"> Course Category </p>
+            {
+                courseForm.category.open ? (
+                    <button onClick={(e)=>{changeFormOpenStatus("category"); changeFormData("category", course.category);e.preventDefault()}} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                        Cancel
+                    </button>
+                )
+                :
+                    <button onClick={(e)=>{changeFormOpenStatus("category");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                        <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
+                        Edit
+                    </button>
+            }
+            </div>
+            <div className="flex max-sm:flex-col gap-2 items-center w-full">
+            {
+            courseForm.category.open ?
+            <div className="relative w-full">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild className="w-full">
+                    <Button variant="outline" className="flex items-center justify-start gap-2 h-[2.6rem]"> 
+                        <LanguagesIcon className="w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" /> 
+                        { courseForm.category.data ? courseForm.category.data :  "Choose category"}
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Categories</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {existingCategories.map((category) => (
+                        <DropdownMenuItem
+                        onSelect={() => changeFormData("category", category)}
+                        key={category}
+                        >
+                        {category}
+                        </DropdownMenuItem>
+                    ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <LanguagesIcon className="top-0 peer-focus:text-blue-500 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem]" />
+            </div>
+            :
+            <p className="pl-8 font-medium text-gray-500">
+                {courseForm.category.data}
+            </p>
+            }
+            {
+                courseForm.category.open && (
+                    <button onClick={(e)=>{changeFormOpenStatus("category");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                        {" "} Confirm {" "}
+                    </button>
+                )
+            }
+            </div>
+            
+        </div>
+
+
         <div className={`grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8 ${!courseForm.difficulty.open ? "bg-white" : "bg-[#C0C0C0]/15"}`}>
             <div className="flex justify-between w-full items-center">
             <p className="text-slate-800 font-semibold text-lg"> Course Difficulty </p>
             {
                 courseForm.difficulty.open ? (
-                    <button onClick={()=>changeFormOpenStatus("difficulty")} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("difficulty"); changeFormData("difficulty", course.difficulty);e.preventDefault()}} className="w-fit h-fit py-2 px-4 text-gray-500 hover:text-gray-600 transition-all duration-150">
                         Cancel
                     </button>
                 )
                 :
-                    <button onClick={()=>changeFormOpenStatus("difficulty")} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
+                    <button onClick={(e)=>{changeFormOpenStatus("difficulty");e.preventDefault()}} className="w-fit h-fit cursor-pointer py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150">
                         <PencilLineIcon className="w-[1.1rem] h-[1.1rem] translate-y-[2px]" />
                         Edit
                     </button>
@@ -337,14 +489,19 @@ function EditCoursePageMentor({course}: {course: any}) {
             
             {
                 courseForm.difficulty.open && (
-                    <button onClick={()=>changeFormOpenStatus("difficulty")} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
-                        {" "} Save Changes {" "}
+                    <button onClick={(e)=>{changeFormOpenStatus("difficulty");e.preventDefault()}} className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150">
+                        {" "} Confirm {" "}
                     </button>
                 )
             }
             </div>
         </div>
+        <div className="w-full flex justify-center items-center mt-4">
+            <button type="submit" className="bg-violet-700 text-white px-4 py-2 max-sm:w-full w-fit max-sm:mx-4 rounded-lg">
+                Save Changes
+            </button>
         </div>
+        </form>
     </div>
   )
 }
