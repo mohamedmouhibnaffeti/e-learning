@@ -272,7 +272,7 @@ function EditCoursePageMentor({course}: {course: any}) {
             <p className="text-slate-800 font-semibold text-lg">
                 Lessons
             </p>
-            <a className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150" href={`/mentor-profile/courses/addlesson?coursename=${course.title}`}>
+            <a className="w-fit h-fit py-2 px-4 flex border rounded-lg gap-2 hover:bg-gray-200/30 transition-all duration-150" href={`/mentor-profile/courses/addlesson?coursename=${course.title}&courseid=${course.id}`}>
                 <PlusCircle className="w-[1.2rem] h-[1.2rem] translate-y-[2px]" />
                 Add Lesson
             </a>

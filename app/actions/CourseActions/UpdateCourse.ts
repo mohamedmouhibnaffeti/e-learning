@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/util/db";
 import { deleteImageByPath, saveBase64Image } from "@/lib/util/Images";
+import { Lesson } from "@/types/types";
 
 export async function UpdateCourse(formdata: FormData): Promise<{success: boolean, error?: string}> {
     try{
@@ -46,6 +47,59 @@ export async function UpdateCourse(formdata: FormData): Promise<{success: boolea
         return {success: true}
     }catch(err: any){
         console.log(err)
+        return {success: false, error: err.message}
+    }
+}
+
+
+export async function addLessons(formdata: FormData): Promise<{success: boolean, error?: string}> {
+    try{
+        const courseId = formdata.get('courseid') as string
+        const lessons = JSON.parse(formdata.get('lessons') as string) as Lesson[]
+        const courseExists = await prisma.course.findUnique({
+            where: { id: courseId },
+          });
+          
+          if (!courseExists) {
+            throw new Error("Course with the specified ID does not exist.");
+          }
+        const updatedCourse = await prisma.course.update({
+            where: {
+                id: courseId
+            },
+            data: {
+                lessons: {
+                    create: lessons.map((lesson) => ({
+                        title : lesson.title,
+                        chapters: {
+                            create: lesson.chapters.map(chapter => ({
+                                title: chapter.title,
+                                videoUrl: chapter.videoUrl,
+                                duration: parseInt(chapter.duration.toString()),
+                                score: parseFloat(chapter.score.toString())
+                            }))
+                        },
+                        quiz: {
+                            create: {
+                                title: lesson.quiz.title,
+                                questions: {
+                                    create: lesson.quiz.questions.map(question => ({
+                                        content: question.content,
+                                        answer: question.answer,
+                                        max_score: parseFloat(question.max_score.toString())
+                                    }))
+                                }
+                            }
+                        }
+                    }))
+                }
+            }
+        })
+        
+        if(!updatedCourse) throw new Error("Failed to create lesson")
+        return {success: true}
+    }catch(err: any){
+        console.log(err.message)
         return {success: false, error: err.message}
     }
 }

@@ -9,11 +9,86 @@ import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseA
 import { Link1Icon } from "@radix-ui/react-icons";
 import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
 import { useState } from "react";
-import { Chapter, Lesson, Question, UpdateChapterValue, UpdateQuizQuestionValue } from "@/types/types";
+import { Chapter, Course, Lesson, Question, UpdateChapterValue, UpdateQuizQuestionValue } from "@/types/types";
 import { toast } from "sonner";
 import QuizQuestionDetailsInput from "@/components/Inputs/QuizQuestionDetailsInput";
+import { verify } from "jsonwebtoken";
+import { addLessons } from "@/app/actions/CourseActions/UpdateCourse";
 
-function MentorAddCourseClient({coursename}: {coursename: string}) {
+const validateData = (lessons: Lesson[]): boolean => {
+
+  if(lessons.length === 0){
+    toast("Can't process request", {
+      description: "Please create one lesson or more.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+  const lastLesson = lessons[lessons.length - 1];
+
+  if (!lastLesson.title) {
+    toast("Can't process request", {
+      description: "Please fill in the title for the last lesson before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  const lastChapter = lastLesson.chapters[lastLesson.chapters.length - 1];
+  if (lastChapter && (!lastChapter.title || !lastChapter.videoUrl || lastChapter.duration <= 0 || lastChapter.score <= 0)) {
+    toast("Can't process request", {
+      description: "Please fill in all values for the last chapter before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  if(!lastLesson.quiz.title){
+    toast("Can't process request", {
+      description: "Please fill in the title for the last quiz before adding a new lesson.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  if(lastLesson.quiz.questions.length === 0){
+    toast("Can't process request", {
+      description: "Please create one question or more for the last quiz.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+  const lastQuestion = lastLesson.quiz.questions[lastLesson.quiz.questions.length - 1];
+  if(lastQuestion && (!lastQuestion.content || !lastQuestion.answer || lastQuestion.max_score <= 0)){
+    toast("Can't process request", {
+      description: "Please fill in all values for the last question before adding a new one.",
+      action: {
+          label: "Retry",
+          onClick: () => {},
+      },
+    })
+    return false
+  }
+
+  return true;
+}
+
+function MentorAddCourseClient({coursename, courseid}: {coursename: string, courseid: string}) {
 
     const [lessons, setLessons] = useState<Lesson[]>([]);
 
@@ -208,7 +283,7 @@ function MentorAddCourseClient({coursename}: {coursename: string}) {
 
     return (
         <>
-                <h1 className="text-xl font-extrabold tracking-tight text-gray-900 max-md:text-lg md:pl-8">
+          <h1 className="text-xl font-extrabold tracking-tight text-gray-900 max-md:text-lg md:pl-8">
           My Courses &gt; {" "}
           <span>
             {coursename}
@@ -218,7 +293,51 @@ function MentorAddCourseClient({coursename}: {coursename: string}) {
             Add Lesson
           </span>
         </h1>
-        <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
+        <form 
+          action={
+            async(formdata: FormData) => {
+              try{
+                const verification = validateData(lessons);
+                if(!verification) return;
+                formdata.append("lessons", JSON.stringify(lessons));
+                formdata.append("courseid", courseid);
+                const response = await addLessons(formdata)
+                if(response.success === true){
+                  toast("Success", {
+                    description: "Lessons added successfully.",
+                    action: {
+                        label: "OK",
+                        onClick: () => {},
+                    },
+                  })
+                  window.location.reload()
+                }
+                if(!response.success){
+                  toast("error", {
+                      description: response.error || "An error occured.",
+                      action: {
+                          label: "Ok",
+                          onClick: () => {},
+                      },
+                  });
+              }
+              }catch(err: any){
+                const errorMessage = err?.message
+                    ? err?.message
+                    : "an internal error has occured.";
+
+                toast(err?.message ? "Verify your information" : "Sorry", {
+                    description: errorMessage,
+                    action: {
+                        label: "Retry",
+                        onClick: () => {},
+                    },
+                });
+              }
+            }
+          }
+          className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center"
+        >
           <div className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full">
             <div className="grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8">
               <div className="">
@@ -307,7 +426,7 @@ function MentorAddCourseClient({coursename}: {coursename: string}) {
             </div>
             
           </div>
-        </div>
+        </form>
         </>
     )
 }
