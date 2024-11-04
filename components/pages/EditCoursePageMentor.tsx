@@ -277,7 +277,7 @@ function EditCoursePageMentor({course}: {course: any}) {
                 Add Lesson
             </a>
             </div>
-            <MentorEditCourseAccordion lessons={course.lessons} />
+            <MentorEditCourseAccordion lessons={course.lessons} coursename={course.title} />
         </div>
         <div className={`grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8 ${!courseForm.price.open ? "bg-white" : "bg-[#C0C0C0]/15"}`}>
             <div className="flex justify-between w-full items-center">
