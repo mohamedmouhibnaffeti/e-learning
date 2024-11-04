@@ -58,3 +58,27 @@ export async function UpdateLesson(formdata: FormData): Promise<{success: boolea
         return {success: false, error: err.message}
     }
 }
+
+export async function DeleteChapter (chapterid: string, lessonid: string): Promise<{success: boolean, error?: string}> {
+    try{
+        const updatedLesson = await prisma.lesson.update({
+            where: {
+                id: lessonid
+            },
+            data: {
+                chapters: {
+                    delete: {
+                        id: chapterid
+                    }
+                }
+            }
+        }) 
+        if(!updatedLesson){
+            return {success: false, error: "Chapter not deleted"}
+        }
+        return {success: true}
+    }catch(err: any){
+        console.log(err)
+        return {success: false, error: err.message}
+    }
+}

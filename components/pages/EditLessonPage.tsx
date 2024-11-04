@@ -1,17 +1,12 @@
 "use client";
-import MentorProfileSidebar from "@/components/sidebars/MentorProfileSidebar";
-import { useDropzone } from "react-dropzone";
-import image from "@/components/Images/Courses/UI.png";
 import { BoltIcon, CaptionsIcon, CircleDollarSignIcon, Clock10Icon, CompassIcon, HashIcon, LanguagesIcon, MessageSquareQuoteIcon, PencilLineIcon, PenSquareIcon, PlusCircle, Trash2Icon, UserPenIcon } from "lucide-react";
-import DragAndDrop from "@/components/Inputs/DragAndDrop";
-import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragAndDrop";
-import MentorEditCourseAccordion, { ExtendedLessonWithChaptersandQuiz } from "@/components/Accordions/MentorEditCourseAccordion";
 import { useState } from "react";
 import { Link1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
-import { UpdateLesson } from "@/app/actions/LessonActions/UpdateLesson";
+import { DeleteChapter, UpdateLesson } from "@/app/actions/LessonActions/UpdateLesson";
 
 function EditLessonPage({lesson}: {lesson: any}) {
+
   const [lessonDetails, setLessonDetails] = useState({
     title: {
       value: lesson.title,
@@ -177,6 +172,40 @@ function EditLessonPage({lesson}: {lesson: any}) {
   };
   
   
+  const deleteChapter = async (chapterid: string) => { 
+    try{
+      const response = await DeleteChapter(chapterid, lesson.id)
+      if(response.success){
+        toast("Success", {
+          description: "Chapter deleted successfully",
+          action: {
+              label: "Close",
+              onClick: () => {},
+          },
+        });
+        window.location.reload()
+      }
+      if(!response.success){
+        toast("Sorry", {
+          description: response.error || "an error has occured.",
+          action: {
+              label: "Retry",
+              onClick: () => {},
+          },
+        });
+      }
+    }catch(err: any){
+      toast("Sorry", {
+        description: err?.message || "an error has occured.",
+        action: {
+            label: "Retry",
+            onClick: () => {},
+        },
+      });
+    }
+
+  }
+
   return (
     <form 
       action={
@@ -362,7 +391,7 @@ function EditLessonPage({lesson}: {lesson: any}) {
                             />
                           </div>
                           <div className="w-full flex max-sm:justify-between justify-end gap-3 mt-4 px-8 items-center">
-                            <button className="text-red-600 hover:text-red-500 active:text-red-600 transition-all duration-150 flex gap-1"> Delete <Trash2Icon className="w-5 h-5" /> </button>
+                            <button onClick={(e) => {e.preventDefault(); deleteChapter(chapter.id)}} className="text-red-600 hover:text-red-500 active:text-red-600 transition-all duration-150 flex gap-1"> Delete <Trash2Icon className="w-5 h-5" /> </button>
                             <button onClick={(e) =>{e.preventDefault(); toggleOpenStatus("chapter", index)}} className="text-blue-600 hover:text-blue-500 active:text-blue-600 transition-all duration-150 flex gap-1"> Update <PenSquareIcon className="w-5 h-5 translate-y-px" />  </button>
                           </div>
                       </div>
