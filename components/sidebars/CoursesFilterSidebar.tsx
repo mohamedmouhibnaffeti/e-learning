@@ -13,14 +13,16 @@ import { Button } from "../ui/button";
 //import { NeonContext } from "@/app/context/neons";
 import axios from "axios";
 import StarsComponent from "../Rating/StarsComponent";
+import {CourseContext} from "@/app/context/CourseContext";
+
+const existingCategories = ["Web Development", "Data Science", "Machine Learning", "Artificial Intelligence"]
+const existingLanguages = ["English", "French", "Arabic", "Spanish", "German", "Italian", "Chinese", "Japanese", "Russian", "Portuguese"]
+const existinglevels = ["beginner", "intermediate", "advanced"]
+const existingDurations = ["1-3 hours", "3-6 hours", "6-12 hours", "12-24 hours", "24+ hours"]
+
 export default function ProductsFiltersSideBar({getNeonsByFilter, className, inputClassName, setExpanded}: {className: string, inputClassName: string, setExpanded: any, getNeonsByFilter: any}){
-//    const { selectedPriceRange, setSelectedPriceRange, handleCheckboxChange, selectedCategories, handleStyleCheckboxChange, selectedStyle, query, setQuery } = useContext(NeonContext)
-    const [allNeonNames, setAllNeonNames] = useState<Array<string>>([])
-    const fetchNeonNames = async() => {
-        const response = await axios.get("/api/neon/allNeonNames")
-        const {names} = response.data
-        setAllNeonNames(names)
-    }
+
+    const { courseLanguages, courseLevel, courseCategory, courseDuration, handleCategoryCheckboxChange, handleDurationCheckboxChange, handleLanguageCheckboxChange, handleLevelCheckboxChange, selectedPriceRange, setSelectedPriceRange } = useContext(CourseContext)
 
     return(
         <div className={`${className}`}>         
@@ -46,112 +48,85 @@ export default function ProductsFiltersSideBar({getNeonsByFilter, className, inp
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"><div className="flex gap-2 items-center"> <AlbumIcon className="text-infinity-purple w-5 h-5" /> All Courses </div></AccordionTrigger>
                     <AccordionContent>
                         <div className="flex flex-col gap-2 pl-4">
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={true}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium"> Resto/Café </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={false}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium"> Maison </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={true}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium capitalize"> événements </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={false}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium capitalize"> sport </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={false}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium capitalize"> gaming </span>
-                            </div>
+                            {
+                                existingCategories.map((category, index) => {
+                                    return(
+                                        <div className="flex gap-2 items-center" key={index}>
+                                            <Checkbox
+                                                checked={courseCategory.includes(category)}
+                                                onCheckedChange={(checked) => {handleCategoryCheckboxChange(category, checked)}}
+                                            />
+                                            <span className="text-infinity-text_secondary font-medium"> {category} </span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="Style">
+                <AccordionItem value="Level">
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"> <div className="flex gap-2 items-center"> <BrainIcon className="w-5 h-5 text-infinity-purple" /> Level </div> </AccordionTrigger>
                     <AccordionContent>
                         <div className="flex flex-col gap-2 pl-4">
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={false}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium"> RGB </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox
-                                    checked={true}
-                                    onCheckedChange={(checked) => {}}
-                                />
-                                <span className="text-infinity-text_secondary font-medium"> Couleurs Normales </span>
-                            </div>
+                            {
+                                existinglevels.map((level, index) => {
+                                    return(
+                                        <div className="flex gap-2 items-center" key={index}>
+                                            <Checkbox
+                                                checked={courseLevel.includes(level)}
+                                                onCheckedChange={(checked) => {handleLevelCheckboxChange(level, checked)}}
+                                            />
+                                            <span className="text-infinity-text_secondary font-medium capitalize"> {level} </span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="Rating">
+                <AccordionItem value="Duration">
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"> <div className="flex gap-2 items-center"> <CalendarIcon className="text-infinity-purple h-5 w-5" /> Duration </div> </AccordionTrigger>
                     <AccordionContent>
                         <div className="flex flex-col gap-2 pl-4">
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 5 Stars </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 4 Stars & Up </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 3 Stars & Up </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 2 Stars & Up </span>
-                            </div>
+                            {
+                                existingDurations.map((duration, index) => {
+                                    return(
+                                        <div className="flex gap-2 items-center" key={index}>
+                                            <Checkbox
+                                                checked={courseDuration.includes(duration)}
+                                                onCheckedChange={(checked) => {handleDurationCheckboxChange(duration, checked)}}
+                                            />
+                                            <span className="text-infinity-text_secondary font-medium"> {duration} </span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="Rating">
+                <AccordionItem value="Language">
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"> <div className="flex gap-2 items-center"> <LanguagesIcon className="text-infinity-purple h-5 w-5" /> Language </div> </AccordionTrigger>
                     <AccordionContent>
                         <div className="flex flex-col gap-2 pl-4">
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 5 Stars </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 4 Stars & Up </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 3 Stars & Up </span>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Checkbox />
-                                <span className="text-infinity-text_secondary font-medium"> 2 Stars & Up </span>
-                            </div>
+                            {
+                                existingLanguages.map((language, index) => {
+                                    return(
+                                        <div className="flex gap-2 items-center" key={index}>
+                                            <Checkbox
+                                                checked={courseLanguages.includes(language)}
+                                                onCheckedChange={(checked) => {handleLanguageCheckboxChange(language, checked)}}
+                                            />
+                                            <span className="text-infinity-text_secondary font-medium"> {language} </span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="Rating">
+{
+    /*
+                    <AccordionItem value="Rating">
                     <AccordionTrigger className="font-medium text-infinity-text_secondary_3"> <div className="flex gap-2 items-center"> <StarIcon className="text-infinity-purple h-5 w-5" /> Rating </div> </AccordionTrigger>
                     <AccordionContent>
                         <div className="flex flex-col gap-2 pl-4">
@@ -174,6 +149,8 @@ export default function ProductsFiltersSideBar({getNeonsByFilter, className, inp
                         </div>
                     </AccordionContent>
                 </AccordionItem>
+    */
+}
             </Accordion>
             <p className="flex justify-between w-full items-center mt-5">
                 <span className="text-infinity-text_secondary_3 text-sm font-medium flex gap-2 items-center">
@@ -181,13 +158,13 @@ export default function ProductsFiltersSideBar({getNeonsByFilter, className, inp
                     <span className="translate-y-px"> Prix </span>
                 </span>
                 <span className="font-medium text-sm text-white px-2 py-1 bg-red-500/80 rounded-md">
-                    {10} - {550}
+                    {selectedPriceRange[0]} - {[selectedPriceRange[1]]} TND
                 </span>
             </p>
-            <MultiSlider min={5} max={2500} defaultValue={[5, 2500]} onValueChange={(e)=>{}} className="mt-5" />
+            <MultiSlider min={50} max={500} defaultValue={[50, 500]} onValueChange={(e)=>{setSelectedPriceRange(e)}} className="mt-5" />
             <div className="w-full flex justify-between mt-3">
-                <span className="text-xs font-medium text-infinity-text_secondary"> Min: 5 TND </span>
-                <span className="text-xs font-medium text-infinity-text_secondary"> Max: 2500 TND </span>
+                <span className="text-xs font-medium text-infinity-text_secondary"> Min: {[selectedPriceRange[0]]} TND </span>
+                <span className="text-xs font-medium text-infinity-text_secondary"> Max: {selectedPriceRange[1]} TND </span>
             </div>
             <Button onClick={getNeonsByFilter} className="mt-6 flex items-center gap-2 group"> <span className="group-hover:opacity-80 transition duration-200"> Rechercher </span> <SearchIcon className="w-4 h-4 rotate-90 group-hover:opacity-80 transition duration-200" /> </Button>
         </div>

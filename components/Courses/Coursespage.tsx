@@ -17,6 +17,8 @@ import CoursesPageCourseCard from '@/components/Cards/CoursesPageCourseCard'
 import CourseRecommendationModal from '@/components/Modals/CourseRecommendationModal'
 
 function Coursespage({courses}: {courses: any[]}) {
+
+
   return (
     <div className="w-full h-full flex mb-16">
       <ProductsFiltersSideBar className='w-80 md:flex flex-col hidden min-h-screen border-r dark:border-r-gray-400 border-r-infinity-border px-4' inputClassName='' setExpanded={() => {}} getNeonsByFilter={()=>{}} />
