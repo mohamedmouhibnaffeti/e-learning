@@ -5,32 +5,53 @@ import React from 'react'
 import Image from 'next/image'
 import SmallStarsComponent from '../Rating/SmallStars'
 import { useRouter } from 'next/navigation'
+import { Skeleton } from '../ui/skeleton'
+import { subString } from '@/lib/util/String'
 interface CourseCardProps {
     image: any
     title: string
     lessons: number
     users: number
-    difficulty: string
+    difficulty: string,
+    price: number,
+    description: string
   }
-function CoursesPageCourseCard({image, title, lessons, users, difficulty}: CourseCardProps) {
+function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price}: CourseCardProps) {
     const router = useRouter() 
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
-        <div className="relative overflow-hidden w-full ">
-            <Image src={image} alt='' className="object-cover w-full rounded-t-lg" />
-            <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <button onClick={()=>router.push("/courses/course")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
-                    Enroll Now
-                    <ChevronRightIcon className="w-4 h-4 transition duration-200" />
-                </button>
-            </div>
+        <div className="relative overflow-hidden w-full h-[13rem] ">
+        {
+                image ? (
+                    <>
+                        <Image width={100} height={100} src={image} alt='' className="object-cover w-full h-full rounded-t-lg" />
+                        <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            <button onClick={()=>router.push(`/courses/course`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                                View Course
+                                <ChevronRightIcon className="w-4 h-4 transition duration-200" />
+                            </button>
+                        </div>
+                    </>
+                )
+                :
+                (
+                    <>
+                        <Skeleton className="w-full h-full rounded-t-lg " />
+                        <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            <button onClick={()=>router.push(`/courses/course`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                                View Course
+                                <ChevronRightIcon className="w-4 h-4 transition duration-200" />
+                            </button>
+                        </div>
+                    </>
+                )
+            }
         </div>
         <div className="w-full flex flex-col gap-3 px-2">
             <div className="gap-1 flex flex-col w-full">
                 <h1 className="text-sm self-start text-black font-semibold max-w-full truncate"> {title} </h1>
-                <p className="text-xs text-gray-600">
-                    Le lorem ipsum est, en imprimerie,
-                    une suite de mots sans signification utilisée à titre provisoire...
+                <p className="text-xs text-gray-600 max-w-full break-words">
+                    {subString(description, 150)}
                 </p>
             </div>
 
@@ -45,10 +66,10 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty}: Cours
             
             <div className="flex justify-between items-center mt-2">
                 <span className="text-sm font-semibold text-violet-600">
-                    10 Lessons
+                    {lessons} Lessons
                 </span>
                 <span className="text-sm font-semibold text-gray-600">
-                    100.45 TND
+                    {price} TND
                 </span>
             </div>
         </div>
