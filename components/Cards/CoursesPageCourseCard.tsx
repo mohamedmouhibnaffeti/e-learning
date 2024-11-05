@@ -68,6 +68,9 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
                 <span className="text-sm font-semibold text-violet-600">
                     {lessons} Lessons
                 </span>
+                <span className="text-sm font-semibold text-red-600">
+                    {difficulty}
+                </span>
                 <span className="text-sm font-semibold text-gray-600">
                     {price} TND
                 </span>

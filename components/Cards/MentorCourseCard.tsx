@@ -6,6 +6,7 @@ import Image from 'next/image'
 import SmallStarsComponent from '../Rating/SmallStars'
 import { useRouter } from 'next/navigation'
 import { Skeleton } from '../ui/skeleton'
+import { subString } from '@/lib/util/String'
 interface CourseCardProps {
     image: any
     title: string
@@ -13,9 +14,10 @@ interface CourseCardProps {
     users: number
     difficulty: string,
     price: number,
-    id: string
+    id: string,
+    description: string
   }
-function MentorCourseCard({image, title, lessons, users, difficulty, price, id}: CourseCardProps) {
+function MentorCourseCard({image, title, lessons, users, difficulty, price, id, description}: CourseCardProps) {
     const router = useRouter() 
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
@@ -49,9 +51,10 @@ function MentorCourseCard({image, title, lessons, users, difficulty, price, id}:
         <div className="w-full flex flex-col gap-3 px-2">
             <div className="gap-1 flex flex-col w-full">
                 <h1 className="text-sm self-start text-black font-semibold max-w-full truncate"> {title} </h1>
-                <p className="text-xs text-gray-600">
-                    Le lorem ipsum est, en imprimerie,
-                    une suite de mots sans signification utilisée à titre provisoire...
+                <p className="text-xs text-gray-600 break-words">
+                    {
+                        subString(description, 150)
+                    }
                 </p>
             </div>
 
