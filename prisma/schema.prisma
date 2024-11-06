@@ -50,6 +50,7 @@ model User {
   phone               String? 
   bio                 String? @db.VarChar(500)
   courses             SubscribedCourses[]
+  createdCourses      Course[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   @@id([email, provider])
@@ -65,6 +66,8 @@ model Course {
   difficulty          String
   image               Image?  @relation("CourseImage")
   subscribers         SubscribedCourses[]
+  creator             User?    @relation(fields: [creatorID], references: [id])
+  creatorID           String?
   lessons             Lesson[]
 }
 

@@ -15,9 +15,10 @@ interface CourseCardProps {
     difficulty: string,
     price: number,
     description: string,
-    id: string
+    id: string,
+    mentor: string
   }
-function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price, id}: CourseCardProps) {
+function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price, id, mentor}: CourseCardProps) {
     const router = useRouter() 
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
@@ -57,7 +58,7 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
             </div>
 
             <div className="gap-1 flex flex-col w-full mt-2">
-                <h1 className="text-sm self-start text-gray-800 font-semibold max-w-full truncate"> M.Mouhib </h1>
+                <h1 className="text-sm self-start text-gray-800 font-semibold max-w-full truncate"> {mentor} </h1>
                 <div className="flex w-full items-center gap-1">
                     <span className="text-xs font-semibold text-gray-700"> 4.7 </span>
                     <SmallStarsComponent />

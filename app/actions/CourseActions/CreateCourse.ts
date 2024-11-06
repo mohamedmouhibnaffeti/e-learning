@@ -54,6 +54,11 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
                         path: courseimagepath,
                         location: "local"
                     }
+                },
+                creator: {
+                    connect: {
+                        id: user.id
+                    }
                 }
             }
         })
