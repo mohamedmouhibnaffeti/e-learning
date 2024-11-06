@@ -1,7 +1,6 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
-import image from "@/components/Images/Courses/webdev.jpg"
 import mentor from "@/components/Images/mentors/mentor1.jpg"
 import { BookIcon, BookOpenIcon, ChartNoAxesColumnIncreasingIcon, CheckCheckIcon, Clock10Icon, EarthIcon, FileText, LibraryIcon, PlayCircleIcon, PlayIcon, ShieldOff, Tally2Icon, UserIcon } from 'lucide-react'
 import SmallStarsComponent from '@/components/Rating/SmallStars'
@@ -11,6 +10,7 @@ import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icon
 import CourseAccordion from '@/components/Accordions/CourseAccordion'
 import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
 import {Course, Lesson, Chapter, Quiz} from '@prisma/client'
+import axios from 'axios'
 
 export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     lessons: Array<Lesson & {
@@ -28,12 +28,31 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
         const lessonDuration = lesson.chapters.reduce((chapterAcc, chapter) => chapterAcc + chapter.duration, 0);
         return acc + lessonDuration;
     }, 0);
+    const [image, setImage] = useState<string>()
+    const getCourseThumbnail = async() => {
+        const response = await axios.post("/api/courses/getcoursethumbnail", {courseID: course.id})
+        const {ImageData} = response.data
+        setImage(ImageData)
+    }
+
+    useLayoutEffect(()=>{
+        getCourseThumbnail()
+    }, [course.id])
       return (
     <div className="flex flex-wrap mt-8 max-md:gap-8">
         <div className="lg:w-8/12 w-full">
-            <div className="w-full lg:h-[30rem]">
-                <Image src={image} alt='' className="w-full rounded-xl h-full object-cover" />
-            </div>
+            {
+                image? (
+                    <div className="w-full lg:h-[30rem]">
+                        <Image src={image as string} alt='' width={100} height={100} className="w-full rounded-xl h-full object-cover" />
+                    </div>
+                ):
+                (
+                    <div className="w-full lg:h-[30rem] bg-gray-100 flex items-center justify-center rounded-xl">
+                        <FileText className="w-12 h-12 text-gray-400" />
+                    </div>
+                )
+            }
             {
                 payed && !started && 
                     <div className="w-full flex sm:justify-end">

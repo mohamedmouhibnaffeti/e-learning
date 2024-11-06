@@ -3,7 +3,7 @@
 import CourseDetails from '@/components/Courses/CourseDetails'
 import prisma from '@/lib/util/db'
 import { getParams } from '@/lib/util/params'
-import { headers } from 'next/headers'
+import { headers } from 'next/headers' 
 
 async function CoursePage() {
     const headerlist = headers()
