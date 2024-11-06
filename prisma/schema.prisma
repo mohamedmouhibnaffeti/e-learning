@@ -49,6 +49,7 @@ model User {
   location            String?
   phone               String? 
   bio                 String? @db.VarChar(500)
+  courses             SubscribedCourses[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   @@id([email, provider])
@@ -63,6 +64,7 @@ model Course {
   category            String
   difficulty          String
   image               Image?  @relation("CourseImage")
+  subscribers         SubscribedCourses[]
   lessons             Lesson[]
 }
 
@@ -101,6 +103,14 @@ model Question {
   answer              String
   max_score           Float
   model_score         Float?
+}
+
+model SubscribedCourses {
+  id                  String  @unique @default(cuid())
+  user                User    @relation(fields: [userid], references: [id])
+  course              Course  @relation(fields: [courseid], references: [id])
+  courseid            String
+  userid              String
 }
 
 
