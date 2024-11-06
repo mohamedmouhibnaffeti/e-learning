@@ -14,9 +14,10 @@ interface CourseCardProps {
     users: number
     difficulty: string,
     price: number,
-    description: string
+    description: string,
+    id: string
   }
-function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price}: CourseCardProps) {
+function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price, id}: CourseCardProps) {
     const router = useRouter() 
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
@@ -26,7 +27,7 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
                     <>
                         <Image width={100} height={100} src={image} alt='' className="object-cover w-full h-full rounded-t-lg" />
                         <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <button onClick={()=>router.push(`/courses/course`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                            <button onClick={()=>router.push(`/courses/course?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
                                 View Course
                                 <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                             </button>
@@ -38,7 +39,7 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
                     <>
                         <Skeleton className="w-full h-full rounded-t-lg " />
                         <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <button onClick={()=>router.push(`/courses/course`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                            <button onClick={()=>router.push(`/courses/course?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
                                 View Course
                                 <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                             </button>

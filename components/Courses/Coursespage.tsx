@@ -142,7 +142,7 @@ function Coursespage({courses}: {courses: any}) {
                   selectedCourses.map((course: any, index: number) => {
                       const courseImage = thumbnails.find((thumbnail) => thumbnail.CourseID === course.id)?.data
                       return(
-                          <CoursesPageCourseCard key={index} image={courseImage} price={course.price} title={course.title} lessons={course.lessons.length} difficulty={course.difficulty} description={course.description} users={course.users} />
+                          <CoursesPageCourseCard id={course.id} key={index} image={courseImage} price={course.price} title={course.title} lessons={course.lessons.length} difficulty={course.difficulty} description={course.description} users={course.users} />
                       )
                   })   
               }
