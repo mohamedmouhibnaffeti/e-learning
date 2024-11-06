@@ -11,7 +11,7 @@ async function CoursePage() {
     const params: URLSearchParams = getParams(pathname)
     const id = params.get("id") as string
     
-    const course = await prisma.course.findUnique({where: {id: id}, include: {lessons: {include: {quiz: true, chapters: true}}}}) as any
+    const course = await prisma.course.findUnique({where: {id: id}, include: {creator: true,lessons: {include: {quiz: true, chapters: true}}}}) as any
     
     if(!course){
         return null

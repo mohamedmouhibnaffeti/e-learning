@@ -9,14 +9,15 @@ import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icon
 
 import CourseAccordion from '@/components/Accordions/CourseAccordion'
 import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
-import {Course, Lesson, Chapter, Quiz} from '@prisma/client'
+import {Course, Lesson, Chapter, Quiz, User} from '@prisma/client'
 import axios from 'axios'
 
 export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     lessons: Array<Lesson & {
         chapters: Chapter[],
-        quiz: Quiz
+        quiz: Quiz,
     }>
+    creator: User
 };
 
 function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz}) {
@@ -69,7 +70,7 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
                         <div className="w-12 h-12">
                             <Image src={mentor} alt='' className="w-full rounded-full h-full object-cover" />
                         </div>
-                        <span className="text-black font-medium max-md:text-sm"> Dane Shadow </span>
+                        <span className="text-black font-medium max-md:text-sm"> {course.creator.name} </span>
                     </div>
                     <span className="text-purple-500 text-sm flex gap-2 items-center"> <Tally2Icon className="text-gray-500" /> 4700 Enrolled Students </span>
                 </div>
@@ -117,7 +118,7 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
                                 <UserIcon className="text-purple-600 h-4 w-4 -translate-y-px" />
                                 <span className="text-gray-600"> Instructor </span>
                             </div>
-                            <span className="text-gray-600/70"> John Shadow </span>
+                            <span className="text-gray-600/70"> {course.creator.name} </span>
                         </div>
                     
                         <GraySeperator classname="mt-5" />
@@ -162,7 +163,7 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
                         
                         <GraySeperator classname="mt-5" />
 
-                        <a href="/confirm-paiement" className="py-3 bg-purple-500 text-white hover:bg-purple-500/90 active:bg-purple-600 px-4 w-fit max-sm:w-full mt-7 rounded-lg transition-all duration-150">
+                        <a href={`/confirm-paiement?courseid=${course.id}&price=${course.price}`} className="py-3 bg-purple-500 text-white hover:bg-purple-500/90 active:bg-purple-600 px-4 w-fit max-sm:w-full mt-7 rounded-lg transition-all duration-150">
                             Enroll Now
                         </a>
 
