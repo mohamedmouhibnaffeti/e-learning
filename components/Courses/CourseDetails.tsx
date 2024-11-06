@@ -147,7 +147,7 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
                                 <ChartNoAxesColumnIncreasingIcon className="text-purple-600 h-4 w-4 -translate-y-px" />
                                 <span className="text-gray-600"> Level </span>
                             </div>
-                            <span className="text-gray-600/70"> {course.difficulty} </span>
+                            <span className="text-gray-600/70 capitalize"> {course.difficulty} </span>
                         </div>
                         
                         <GraySeperator classname="mt-5" />
