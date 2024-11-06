@@ -1,15 +1,21 @@
 "use server"
 
 import CourseDetails from '@/components/Courses/CourseDetails'
+import AuthOptions from '@/lib/util/AuthOptions'
 import prisma from '@/lib/util/db'
 import { getParams } from '@/lib/util/params'
+import { User } from '@prisma/client'
+import { getServerSession } from 'next-auth'
 import { headers } from 'next/headers' 
 
 async function CoursePage() {
+    const session = await getServerSession(AuthOptions)
+    if(!session) return null
     const headerlist = headers()
     const pathname = headerlist.get("x-current-path")
     const params: URLSearchParams = getParams(pathname)
     const id = params.get("id") as string
+    const {user} = session
     
     const course = await prisma.course.findUnique({where: {id: id}, include: {creator: true,lessons: {include: {quiz: true, chapters: true}}}}) as any
     
@@ -20,7 +26,7 @@ async function CoursePage() {
     return (
         <div className="w-full h-full md:px-8 sm:px-4 px-2 max-w-[1400px] mx-auto mb-8">
             <h1 className="md:text-base text-sm mt-4"> <a href="/courses" className="no-underline"> Courses </a> &gt; <span className="text-purple-500"> Course Details </span> </h1>
-            <CourseDetails course={course} />
+            <CourseDetails course={course} user={user as User} />
         </div>
     )
 }

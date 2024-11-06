@@ -11,6 +11,7 @@ import CourseAccordion from '@/components/Accordions/CourseAccordion'
 import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
 import {Course, Lesson, Chapter, Quiz, User} from '@prisma/client'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     lessons: Array<Lesson & {
@@ -20,7 +21,20 @@ export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     creator: User
 };
 
-function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz}) {
+function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: User}) {
+    const router = useRouter()
+    const checkCoursePayed = async() => {
+        const response = await axios.post("/api/courses/CheckCoursebought", {courseid: course.id, userid: user.id})
+        if(response.status !== 200){
+            router.push("/courses")
+        }else{
+            if(response.data.bougth){
+                setPayed(true)
+            }else{
+                setPayed(false)
+            }
+        }
+    }
     const [payed, setPayed] = useState(false)
     const [started, setStarted] = useState(false)
     const lessonsNumber = course.lessons.length
@@ -38,7 +52,8 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
 
     useLayoutEffect(()=>{
         getCourseThumbnail()
-    }, [course.id])
+        checkCoursePayed()
+    }, [course.id, user])
       return (
     <div className="flex flex-wrap mt-8 max-md:gap-8">
         <div className="lg:w-8/12 w-full">
@@ -103,7 +118,11 @@ function CourseDetails({course}: {course: ExtendedCourseWithLessonsAndChaptersAn
                     <span> {totalDuration} hours total length </span>
                 </div>
             </div>
-            <CourseAccordion />
+            {
+                payed && (
+                    <CourseAccordion />
+                )
+            }
         </div>
         {
             !payed && (
