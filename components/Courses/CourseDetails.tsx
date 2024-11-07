@@ -23,7 +23,7 @@ export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     creator: User
 };
 
-function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: User}) {
+function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: any}) {
     const router = useRouter()
     const [subCourse, setSubCourse] = useState<string>()
     const checkCoursePayed = async() => {
@@ -40,7 +40,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         }
     }
     const [payed, setPayed] = useState(false)
-    const [started, setStarted] = useState(false)
+    const [rendered, setRendered] = useState(false)
     const lessonsNumber = course.lessons.length
     const chaptersNumber = course.lessons.reduce((acc, lesson) => acc + lesson.chapters.length, 0)
     const totalDuration = course.lessons.reduce((acc, lesson) => {
@@ -63,6 +63,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         getCourseThumbnail()
         checkCoursePayed()
         getfinishedchapters()
+        setRendered(true)
     }, [course.id, user])
     const [chapterid, setChapterID] = useState<string>()
     const [video, setVideo] = useState<string>()
@@ -101,7 +102,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
                 <div className="flex items-center gap-4 flex-wrap">
                     <div className="flex gap-1 items-center">
                         <div className="w-12 h-12">
-                            <Image src={mentor} alt='' className="w-full rounded-full h-full object-cover" />
+                            <Image src={user.image.path} alt='' width={100} height={100} className="w-full rounded-full h-full object-cover" />
                         </div>
                         <span className="text-black font-medium max-md:text-sm"> {course.creator.name} </span>
                     </div>
@@ -143,7 +144,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             }
         </div>
         {
-            !payed && (
+            !payed && rendered && (
                 <div className="lg:w-1/3 w-full">
                     <div className="md:mx-8 mx-2 bg-purple-400/30 flex flex-col justify-center items-center py-6 rounded-xl px-6">
                         <h4 className="lg:text-xl md:text-lg font-semibold text-purple-600"> {course.price} TND </h4>
@@ -254,6 +255,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
                         src={video as string}
                         frameBorder="0"
                         title="Product Overview Video"
+                        allowFullScreen
                         aria-hidden="true"
                     />
                     <button className="w-full py-3 bg-black text-white font-medium mt-3 rounded-lg flex gap-2 items-center justify-center hover:bg-black/90 active:bg-black/85 transition-all duration-150">
