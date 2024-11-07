@@ -12,6 +12,8 @@ import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
 import {Course, Lesson, Chapter, Quiz, User} from '@prisma/client'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { markChapterAsFinished } from '@/app/actions/CourseActions/Chapter'
+import { toast } from 'sonner'
 
 export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     lessons: Array<Lesson & {
@@ -23,6 +25,7 @@ export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
 
 function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: User}) {
     const router = useRouter()
+    const [subCourse, setSubCourse] = useState<string>()
     const checkCoursePayed = async() => {
         const response = await axios.post("/api/courses/CheckCoursebought", {courseid: course.id, userid: user.id})
         if(response.status !== 200){
@@ -30,6 +33,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         }else{
             if(response.data.bougth){
                 setPayed(true)
+                setSubCourse(response.data.subscribedCourse)
             }else{
                 setPayed(false)
             }
@@ -49,11 +53,23 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         const {ImageData} = response.data
         setImage(ImageData)
     }
-
+    const [finishedChapters, setFinishedChapters] = useState<{chapterID: string}[]>([])
+    const getfinishedchapters = async() => {
+        const response = await axios.post("/api/courses/getFinishedChapters", {courseID: course.id, userID: user.id})
+        const {finishedchapters} = response.data
+        setFinishedChapters(finishedchapters)
+    }
     useLayoutEffect(()=>{
         getCourseThumbnail()
         checkCoursePayed()
+        getfinishedchapters()
     }, [course.id, user])
+    const [chapterid, setChapterID] = useState<string>()
+    const [video, setVideo] = useState<string>()
+    const startchapter = (chapterID: string, video: string) => {
+        setChapterID(chapterID)
+        setVideo(video)
+    }
       return (
     <div className="flex flex-wrap mt-8 max-md:gap-8">
         <div className="lg:w-8/12 w-full">
@@ -70,10 +86,12 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
                 )
             }
             {
-                payed && !started && 
+             /*
+             payed && !started && 
                     <div className="w-full flex sm:justify-end">
                         <button onClick={() => setStarted(true)} className="flex items-center gap-1 justify-center py-2 px-4 justify-self-end sm:w-fit w-full text-white bg-black hover:bg-black/90 active:bg-black/85 transition-all duration-150 mt-3 rounded-lg"> <LightningBoltIcon className="-translate-y-px" /> Start Now </button>
                     </div>
+             */
             }
             <h1 className="max-md:text-lg text-xl max-sm:text-sm self-start text-black font-semibold max-w-full truncate mt-6"> {course.title} </h1>
             <p className="text-sm max-sm:text-xs font-semi text-gray-700 mt-3 capitalize">
@@ -120,7 +138,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             </div>
             {
                 payed && (
-                    <CourseAccordion />
+                    <CourseAccordion lessons={course.lessons} finishedchapters={finishedChapters} startChapter={startchapter} />
                 )
             }
         </div>
@@ -191,11 +209,49 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             )
         }
         {
-            true && (
-                <div className="lg:w-1/3 w-full px-4">
+            chapterid && (
+                <form action={
+                    async(formdata: FormData) => {
+                            try{
+                                console.log({user, chapterid, subCourse})
+                                formdata.append("userid", user.id)
+                                formdata.append("chapterid", chapterid)
+                                formdata.append("subscribedcourseid", subCourse as string)
+                                const response = await markChapterAsFinished(formdata)
+                                if(response){
+                                    toast("Chapter Finished", {
+                                        description: "You have successfully marked this chapter as finished",
+                                        action: {
+                                            label: "Ok",
+                                            onClick: () => {},
+                                        },
+                                    })
+                                    window.location.reload()
+                                }else{
+                                    toast("An error occurred", {
+                                        description: "An internal error has occurred",
+                                        action: {
+                                            label: "Retry",
+                                            onClick: () => {},
+                                        },
+                                    });
+                                }
+                            }catch(err){
+                                console.error(err)
+                                toast("An error occurred", {
+                                    description: "An internal error has occurred",
+                                    action: {
+                                        label: "Retry",
+                                        onClick: () => {},
+                                    },
+                                });
+                            }
+                        }
+                } className="lg:w-1/3 w-full px-4"
+                >
                     <iframe
                         className="w-full aspect-video self-stretch md:min-h-96 rounded-xl"
-                        src="https://www.youtube.com/embed/1FLYZdxsteo"
+                        src={video as string}
                         frameBorder="0"
                         title="Product Overview Video"
                         aria-hidden="true"
@@ -204,7 +260,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
                         Mark as Finished
                         <CheckCheckIcon />
                     </button>
-                </div>
+                </form>
             )
         }
     </div>

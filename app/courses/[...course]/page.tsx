@@ -18,15 +18,15 @@ async function CoursePage() {
     const {user} = session
     
     const course = await prisma.course.findUnique({where: {id: id}, include: {creator: true,lessons: {include: {quiz: true, chapters: true}}}}) as any
-    
+    const userdetails = await prisma.user.findUnique({where: {email_provider: {email: user?.email as string, provider: user?.provider as string}}}) as User
     if(!course){
         return null
     }
 
     return (
         <div className="w-full h-full md:px-8 sm:px-4 px-2 max-w-[1400px] mx-auto mb-8">
-            <h1 className="md:text-base text-sm mt-4"> <a href="/courses" className="no-underline"> Courses </a> &gt; <span className="text-purple-500"> Course Details </span> </h1>
-            <CourseDetails course={course} user={user as User} />
+            <h1 className="md:text-base text-sm mt-4"> <a href="/courses" className="no-underline"> Courses </a> &gt; <span className="text-purple-500"> {course.title} </span> </h1>
+            <CourseDetails course={course} user={userdetails as User} />
         </div>
     )
 }

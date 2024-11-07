@@ -5,11 +5,11 @@ export async function POST(req: Request) {
     try{
         const {courseid, userid} = await req.json()
         const response = await checkCoursebought(courseid, userid)
-        if(response){
-            return NextResponse.json({bougth: true}, {status: 200})
+        if(response.length > 0){
+            return NextResponse.json({bougth: true, subscribedCourse: response}, {status: 200})
         }
         else{
-            return NextResponse.json({bougth: false}, {status: 200})
+            return NextResponse.json({bougth: false}, {status: 400})
         }
     }catch(err: any){
         console.log(err)

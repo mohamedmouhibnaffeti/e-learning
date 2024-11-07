@@ -50,6 +50,7 @@ model User {
   phone               String? 
   bio                 String? @db.VarChar(500)
   courses             SubscribedCourses[]
+  finishedchapters    CompletedChapter[]
   createdCourses      Course[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
@@ -88,6 +89,8 @@ model Chapter {
   score               Float
   lesson              Lesson?   @relation(fields: [lessonID], references: [id])
   lessonID            String?
+  completedChapters   CompletedChapter[]
+
 }
 
 model Quiz {
@@ -109,11 +112,21 @@ model Question {
 }
 
 model SubscribedCourses {
-  id                  String  @unique @default(cuid())
-  user                User    @relation(fields: [userid], references: [id])
-  course              Course  @relation(fields: [courseid], references: [id])
+  id                  String             @unique @default(cuid())
+  user                User               @relation(fields: [userid], references: [id])
+  course              Course             @relation(fields: [courseid], references: [id])
   courseid            String
   userid              String
+  completedChapters   CompletedChapter[]
 }
 
-
+model CompletedChapter {
+  id                 String            @unique @default(cuid())
+  subscribedCourse   SubscribedCourses @relation(fields: [subscribedCourseID], references: [id])
+  subscribedCourseID String
+  chapter            Chapter           @relation(fields: [chapterID], references: [id])
+  chapterID          String
+  user                User               @relation(fields: [userid], references: [id])
+  userid              String
+  completedAt        DateTime          @default(now())
+}

@@ -72,7 +72,6 @@ function Coursespage({courses}: {courses: any}) {
         getThumbnails()
     }, [selectedCourses])
 
-    console.log(selectedCourses)
   return (
     <div className="w-full h-full flex mb-16">
       <ProductsFiltersSideBar getCoursesbyFilter={getCoursesbyFilter} className='w-80 md:flex flex-col hidden min-h-screen border-r dark:border-r-gray-400 border-r-infinity-border px-4' inputClassName='' setExpanded={() => {}} />
@@ -84,7 +83,7 @@ function Coursespage({courses}: {courses: any}) {
                         <span>
                             Courses :
                         </span>
-                        <span> {courses.length} </span>
+                        <span> {selectedCourses.length} </span>
                     </p>
                 )
                 :

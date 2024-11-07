@@ -38,7 +38,7 @@ export async function BuyCourse(formdata: FormData): Promise<{success: boolean, 
     }
 }
 
-export async function checkCoursebought(courseid: string, userid: string): Promise<boolean> {
+export async function checkCoursebought(courseid: string, userid: string): Promise<string> {
     try{
         const course = await prisma.subscribedCourses.findFirst({
             where: {
@@ -47,13 +47,13 @@ export async function checkCoursebought(courseid: string, userid: string): Promi
             }
         })
         if(!course){
-            return false
+            return ""
         }
         else{
-            return true
+            return course.id
         }
     }catch(err: any){
         console.error(err)
-        return false
+        return ""
     }
 }
