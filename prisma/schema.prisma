@@ -52,6 +52,7 @@ model User {
   courses             SubscribedCourses[]
   finishedchapters    CompletedChapter[]
   createdCourses      Course[]
+  answeredQuestions   AnsweredQuestion[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   @@id([email, provider])
@@ -98,7 +99,8 @@ model Quiz {
   title               String
   lesson              Lesson    @relation("LessonQuiz", fields: [lessonID], references: [id])
   lessonID            String    @unique
-  questions           Question[]
+  questions           Question[]   
+  answeredQuestions   AnsweredQuestion[]
 }
 
 model Question {
@@ -108,8 +110,22 @@ model Question {
   quizID              String
   answer              String
   max_score           Float
-  model_score         Float?
+  answeredQuestions   AnsweredQuestion[]
 }
+
+model AnsweredQuestion {
+  id                  String    @unique @default(cuid())
+  user                User      @relation(fields: [userID], references: [id])
+  userID              String
+  question           Question   @relation(fields: [questionID], references: [id])
+  quiz                Quiz      @relation(fields: [quizID], references: [id])
+  quizID              String
+  questionID         String
+  answer             String
+  model_score        Float
+  answeredAt         DateTime  @default(now())
+}
+
 
 model SubscribedCourses {
   id                  String             @unique @default(cuid())

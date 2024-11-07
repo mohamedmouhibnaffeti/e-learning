@@ -9,7 +9,7 @@ import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icon
 
 import CourseAccordion from '@/components/Accordions/CourseAccordion'
 import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
-import {Course, Lesson, Chapter, Quiz, User} from '@prisma/client'
+import {Course, Lesson, Chapter, Quiz, User, Question} from '@prisma/client'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { markChapterAsFinished } from '@/app/actions/CourseActions/Chapter'
@@ -18,7 +18,7 @@ import { toast } from 'sonner'
 export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
     lessons: Array<Lesson & {
         chapters: Chapter[],
-        quiz: Quiz,
+        quiz: Quiz & {questions: Question[]},
     }>
     creator: User
 };
