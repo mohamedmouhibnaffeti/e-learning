@@ -40,9 +40,6 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter}: {use
             };
         });
     };
-    useEffect(()=> {
-        console.log({quizState})
-    }, [quizState])
     if(!finishedchapters) return null
   return (
     <Accordion type="single" collapsible className="mt-3">
