@@ -37,3 +37,26 @@ export async function AnswerQuiz (formdata: FormData): Promise<boolean> {
         return false
     }
 }
+
+export async function getFinishedQuizes(
+    userid: string, 
+    quizids: string[],
+){
+    try{
+        const finishedQuizes = await prisma.answeredQuiz.findMany({
+            where: {
+                userID: userid,
+                quizID: {
+                    in: quizids
+                }
+            },
+            select: {
+                quizID: true
+            }
+        })
+        return finishedQuizes
+    }catch(err){
+        console.log(err)
+        return []
+    }
+}

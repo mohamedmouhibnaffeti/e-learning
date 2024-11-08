@@ -39,7 +39,6 @@ export const getFinishedChaptersForUser = async (
             chapterID: true,
         }
         });
-        console.log('Finished chapters:', finishedChapters);
         return finishedChapters;
     } catch (error) {
         console.error('Error fetching finished chapters for user:', error);

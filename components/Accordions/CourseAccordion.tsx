@@ -15,11 +15,11 @@ interface QuizState {
     questionResponses: { questionID: string; answer: string }[];
 }
 
-function CourseAccordion({userid, lessons, finishedchapters, startChapter}: {userid: string, lessons: extendedLessonWithChapters[], finishedchapters: {chapterID: string}[], startChapter: (chapterID: string, video: string) => void}) {
+function CourseAccordion({userid, lessons, finishedchapters, startChapter, answeredQuizes}: {userid: string, lessons: extendedLessonWithChapters[], finishedchapters: {chapterID: string}[], startChapter: (chapterID: string, video: string) => void, answeredQuizes: {quizID: string}[]}) {
     const [quizState, setQuizState] = useState<QuizState | null>(null)
     const handleOpenQuizButtonClick = (questions: Question[], lessonID: string) => {
         setQuizState((prevState) => {
-            const isOpen = prevState?.lessonID === lessonID ? !prevState.isOpen : true; // Toggle if the same lesson, otherwise open
+            const isOpen = prevState?.lessonID === lessonID ? !prevState.isOpen : true;
             return {
                 lessonID,
                 isOpen,
@@ -58,6 +58,7 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter}: {use
                       / lesson.chapters.reduce((totalScore, chapter) => totalScore + chapter.score, 0)) * 100
                   )
                 : 0;
+                const quizAnswered = answeredQuizes.some(answered => answered.quizID === lesson.quiz.id )
                 return(
                     <AccordionItem key={index} value={`Week${index}`}>
                         <AccordionTrigger className="font-medium lg:text-lg"><div className="flex gap-2 items-center"> <CircularProgress percentage={percentage} /> Week 1 - Beginner - Introduction to Web Development </div></AccordionTrigger>
@@ -83,13 +84,17 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter}: {use
                                 )
                             })}
 
-                            <div onClick={()=>handleOpenQuizButtonClick(lesson.quiz.questions, lesson.id)} className="w-full flex justify-between items-center hover:text-violet-500 transition-all duration-150 cursor-pointer group">
+                            <div 
+                                aria-disabled={quizAnswered}
+                                onClick={()=>{!quizAnswered && handleOpenQuizButtonClick(lesson.quiz.questions, lesson.id)}}
+                                className={`w-full flex justify-between items-center ${quizAnswered ? "text-violet-600 cursor-default" : "hover:text-violet-500 transition-all duration-150 cursor-pointer group"}`}
+                            >
                                 <div className="flex gap-1 items-center">
-                                    <QuestionMarkCircledIcon className="-translate-y-px w-5 h-5 text-gray-500 group-hover:text-violet-500 transition-all duration-150" />
+                                    <QuestionMarkCircledIcon className={`-translate-y-px w-5 h-5 ${quizAnswered ? "text-violet-600 cursor-default" : "text-gray-500 group-hover:text-violet-500 transition-all duration-150"}`} />
                                     <span> Practice knowledge </span>
                                 </div>
                                 {
-                                    false &&
+                                    quizAnswered &&
                                         <CheckCheckIcon className="w-5 h-5 text-violet-600" />
                                 }
                             </div>

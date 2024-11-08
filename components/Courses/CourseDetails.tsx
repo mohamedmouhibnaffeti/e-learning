@@ -1,5 +1,5 @@
 "use client"
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
 import mentor from "@/components/Images/mentors/mentor1.jpg"
 import { BookIcon, BookOpenIcon, ChartNoAxesColumnIncreasingIcon, CheckCheckIcon, Clock10Icon, EarthIcon, FileText, LibraryIcon, PlayCircleIcon, PlayIcon, ShieldOff, Tally2Icon, UserIcon } from 'lucide-react'
@@ -59,10 +59,20 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         const {finishedchapters} = response.data
         setFinishedChapters(finishedchapters)
     }
+    const quizIDs = course.lessons.map((lesson) => (lesson.quiz.id))
+    const [answeredQuizes, setAnsweredQuizes] = useState<{quizID: string}[]>([])
+    const getAnsweredQuizes = async() => {
+        const response = await axios.post("/api/courses/checkQuizAnswered", {
+            userid: user.id,
+            quizids: quizIDs
+        })
+        setAnsweredQuizes(response.data.answeredQuizes)
+    }
     useLayoutEffect(()=>{
         getCourseThumbnail()
         checkCoursePayed()
         getfinishedchapters()
+        getAnsweredQuizes()
         setRendered(true)
     }, [course.id, user])
     const [chapterid, setChapterID] = useState<string>()
@@ -139,7 +149,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             </div>
             {
                 payed && (
-                    <CourseAccordion userid={user.id} lessons={course.lessons} finishedchapters={finishedChapters} startChapter={startchapter} />
+                    <CourseAccordion answeredQuizes={answeredQuizes} userid={user.id} lessons={course.lessons} finishedchapters={finishedChapters} startChapter={startchapter} />
                 )
             }
         </div>
