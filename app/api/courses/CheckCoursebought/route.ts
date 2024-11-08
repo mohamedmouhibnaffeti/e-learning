@@ -9,7 +9,7 @@ export async function POST(req: Request) {
             return NextResponse.json({bougth: true, subscribedCourse: response}, {status: 200})
         }
         else{
-            return NextResponse.json({bougth: false}, {status: 400})
+            return NextResponse.json({bougth: false}, {status: 200})
         }
     }catch(err: any){
         console.log(err)

@@ -147,7 +147,7 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                                         return (
                                         <div key={question.id} className="w-full flex flex-col gap-2 pl-4 text-gray-500">
                                             <div className="w-full flex gap-2 items-center">
-                                            <span className="text-gray-500">{index + 1} - </span>
+                                            <span className="text-gray-500">{index + 1}- </span>
                                             <span>{question.content}</span>
                                             </div>
                                             <div className="relative w-full">
