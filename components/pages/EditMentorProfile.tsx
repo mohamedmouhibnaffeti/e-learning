@@ -225,8 +225,8 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                                     <div className="relative w-full">
                                         <input
                                             type="text"
+                                            disabled
                                             value={userForm.generalInfo.data.email as string}
-                                            onChange={(e) => handleGeneralInfo(e.target.value, "email")}
                                             className="outline-none peer pl-10 pt-[2px] focus:border-blue-500 appearance-none no-arrows text-sm border-2 rounded-xl h-[2.6rem] focus:caret-indigo-500 w-full"
                                         />
                                         <MailIcon className="top-0 peer-focus:text-blue-500 translate-y-[11px] translate-x-4 absolute w-[1.2rem] h-[1.2rem]" />
