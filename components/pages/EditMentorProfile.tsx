@@ -3,13 +3,27 @@ import ProfileProgress from '@/components/Progress/ProfileProgress';
 import { BriefcaseBusinessIcon, CaptionsIcon, CheckIcon, CircleDollarSignIcon, CompassIcon, MailIcon, PencilLineIcon, Phone, PhoneIcon, TextIcon, UserPenIcon, XIcon } from 'lucide-react';
 import { useDropzone } from "react-dropzone";
 import DragAndDrop from '@/components/Inputs/DragAndDrop'
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { Image, User } from "@prisma/client";
+import { toast } from 'sonner';
+import { updateUserProfile } from '@/app/actions/UserActions/UpdateUser';
+import axios from 'axios';
 
 type UserWithImage = User & {image: Image}
 
 function EditMentorProfile({user}: {user: UserWithImage}) {
+
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(user.image.path)
+
+    const fetchUserImage = async() => {
+        if(user.image.location === "local"){
+            const response = await axios.post("/api/user/getUserImage", {email: user.email, provider: user.provider})
+            setPreview(response.data.image)
+        }
+    }
+    useLayoutEffect(()=>{
+        fetchUserImage()
+    }, [])
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
         const reader = new FileReader();
@@ -38,15 +52,15 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                 name: user.name,
                 job: user.job,
                 email: user.email,
-                phone: user.phone,
+                phone: user.phone || "",
             }
         },
         location: {
-            value: user.location,
+            value: user.location || "",
             open: false
         },
         bio: {
-            value: user.bio,
+            value: user.bio || "",
             open: false
         }
     })
@@ -98,13 +112,56 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
     const percentages = {
         account: 50,
         photo: 10,
-        phone: user.phone ? 10 : 0,
-        location: user.location ? 10 : 0,
-        bio: user.bio ? 20 : 0
+        phone: user.phone && user.phone.length > 0 ? 10 : 0,
+        location: user.location && user.location.length > 0 ? 10 : 0,
+        bio: user.bio && user.bio.length > 0 ? 20 : 0
     }
     const totalPercentage = Object.values(percentages).reduce((acc, curr) => acc + curr, 0)
     return (
-        <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
+        <form
+            action={
+                async(formdata: FormData) => {
+                    try{
+                        formdata.append("phone", userForm.generalInfo.data.phone as string)
+                        formdata.append("location", userForm.location.value as string)
+                        formdata.append("bio", userForm.bio.value as string)
+                        formdata.append("image", preview as string)
+                        formdata.append("email", user.email)
+                        formdata.append("provider", user.provider)
+
+                        const response = await updateUserProfile(formdata)
+                        if(response?.success === false){
+                            toast("Sorry", {
+                                description: response?.error || "an error has occured.",
+                                action: {
+                                    label: "Retry",
+                                    onClick: () => {},
+                                },
+                            });
+                        }
+                        if(response.success){
+                            toast("Success", {
+                                description: "Course updated successfully",
+                                action: {
+                                    label: "Ok",
+                                    onClick: () => {},
+                                },
+                            });
+                            window.location.reload()
+                        }
+                    }catch(err){
+                        toast("An internal error has occured", {
+                            description: "Please try again later",
+                            action: {
+                                label: "Close",
+                                onClick: () => {},
+                            }
+                        })
+                    }
+                }
+            }
+            className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center"
+        >
             <div className="py-14 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full">
             <div className="flex gap-4 items-center px-14 max-sm:px-2 max-sm:justify-center">
                 <DragAndDrop preview={preview} setPreview={setPreview} />
@@ -301,21 +358,21 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                     <span>Upload your photo</span>
                     <span className="text-gray-400">10%</span>
                 </p>
-                <p className={`gap-2 flex items-center font-medium ${percentages.location === 10 ? "text-slate-900" : "text-gray-400"}`}>
+                <p className={`gap-2 flex items-center font-medium ${percentages.phone === 10 ? "text-slate-900" : "text-gray-400"}`}>
                     {
                         percentages.phone === 10 ? <CheckIcon className="" /> : <XIcon className="" />
                     }
                     <span> Phone Number </span>
-                    <span className={`${percentages.phone === 20 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.phone === 20) ? "+" : ""}10%</span>
+                    <span className={`${percentages.phone === 10 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.phone === 10) ? "+" : ""}10%</span>
                 </p>
                 <p className={`gap-2 flex items-center font-medium ${percentages.location === 10 ? "text-slate-900" : "text-gray-400"}`}>
                     {
                         percentages.location === 10 ? <CheckIcon className="" /> : <XIcon className="" />
                     }
                     <span>Location</span>
-                    <span className={`${percentages.location === 20 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.location === 20) ? "+" : ""}10%</span>
+                    <span className={`${percentages.location === 10 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.location === 10) ? "+" : ""}10%</span>
                 </p>
-                <p className={`gap-2 flex items-center font-medium ${percentages.location === 10 ? "text-slate-900" : "text-gray-400"}`}>
+                <p className={`gap-2 flex items-center font-medium ${percentages.bio === 20 ? "text-slate-900" : "text-gray-400"}`}>
                     {
                         percentages.bio === 20 ? <CheckIcon className="" /> : <XIcon className="" />
                     }
@@ -324,7 +381,7 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                 </p>
             </div>
             </div>
-        </div>
+        </form>
     )
 }
 

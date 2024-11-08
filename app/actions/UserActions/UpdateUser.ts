@@ -2,6 +2,7 @@
 
 import AuthOptions from "@/lib/util/AuthOptions"
 import prisma from "@/lib/util/db"
+import { saveBase64Image } from "@/lib/util/Images"
 import { getServerSession } from "next-auth"
 
 export const UpdateUserPreferences = async(formdata: FormData): Promise<{success: boolean, error?: string}> => {
@@ -26,3 +27,57 @@ export const UpdateUserPreferences = async(formdata: FormData): Promise<{success
         return {success: false, error: err.message || "an error has occured"}
     }
 }
+
+export const updateUserProfile = async (formdata: FormData): Promise<{ success: boolean, error?: string }> => {
+    try {
+        const phone = formdata.get("phone") || ""
+        const bio = formdata.get("bio") || ""
+        const location = formdata.get("location") || ""
+        const image = formdata.get("image") as string
+        const email = formdata.get("email") as string
+        const provider = formdata.get("provider") as string;
+
+        let userimagepath;
+        if (image) {
+            userimagepath = saveBase64Image(image, email + provider);
+        }
+
+        // Construct data only with non-empty fields
+        const updateData: Record<string, any> = {};
+        if (phone) updateData.phone = phone;
+        if (bio) updateData.bio = bio;
+        if (location) updateData.location = location;
+        if (userimagepath) {
+            updateData.image = {
+                update: {
+                    path: userimagepath,
+                    location: "local",
+                }
+            };
+        }
+
+        // Ensure updateData is not empty before making the update call
+        if (Object.keys(updateData).length === 0) {
+            return { success: false, error: "No valid fields to update" };
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                email_provider: {
+                    email: email,
+                    provider: provider
+                }
+            },
+            data: updateData
+        });
+
+        if (!updatedUser) {
+            return { success: false, error: "Error updating user profile" };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.log(err);
+        return { success: false, error: "An error has occurred" };
+    }
+};
