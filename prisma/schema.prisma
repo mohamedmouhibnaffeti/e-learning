@@ -53,6 +53,7 @@ model User {
   finishedchapters    CompletedChapter[]
   createdCourses      Course[]
   answeredQuestions   AnsweredQuestion[]
+  answeredQuizzes     answeredQuiz[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   @@id([email, provider])
@@ -101,6 +102,7 @@ model Quiz {
   lessonID            String    @unique
   questions           Question[]   
   answeredQuestions   AnsweredQuestion[]
+  answeredQuiz       answeredQuiz?
 }
 
 model Question {
@@ -113,6 +115,16 @@ model Question {
   answeredQuestions   AnsweredQuestion[]
 }
 
+model answeredQuiz {
+  id                  String    @unique @default(cuid())
+  user                User      @relation(fields: [userID], references: [id])
+  userID              String
+  quiz                Quiz      @relation(fields: [quizID], references: [id])
+  quizID              String    @unique
+  answeredQuestions   AnsweredQuestion[]
+  answeredAt          DateTime  @default(now())
+}
+
 model AnsweredQuestion {
   id                  String    @unique @default(cuid())
   user                User      @relation(fields: [userID], references: [id])
@@ -120,9 +132,11 @@ model AnsweredQuestion {
   question           Question   @relation(fields: [questionID], references: [id])
   quiz                Quiz      @relation(fields: [quizID], references: [id])
   quizID              String
+  answeredQuiz        answeredQuiz @relation(fields: [answeredquizID], references: [id])
+  answeredquizID      String
   questionID         String
   answer             String
-  model_score        Float
+  model_score        Float?
   answeredAt         DateTime  @default(now())
 }
 

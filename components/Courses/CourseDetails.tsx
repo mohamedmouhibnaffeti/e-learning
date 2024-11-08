@@ -139,7 +139,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             </div>
             {
                 payed && (
-                    <CourseAccordion lessons={course.lessons} finishedchapters={finishedChapters} startChapter={startchapter} />
+                    <CourseAccordion userid={user.id} lessons={course.lessons} finishedchapters={finishedChapters} startChapter={startchapter} />
                 )
             }
         </div>
