@@ -2,6 +2,7 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { ImagePlus } from "lucide-react";
+import Image from "next/image";
 
 interface ImageUploaderProps {
   preview: string | ArrayBuffer | null
@@ -37,10 +38,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ preview, setPreview }) =>
         className="flex w-36 h-36 cursor-pointer flex-col items-center justify-center rounded-full shadow-sm"
       >
         {preview && (
-          <img
+          <Image
             src={preview as string}
             alt="Uploaded image"
             className="w-full h-full rounded-full object-cover"
+            width={100}
+            height={100}
+            unoptimized={true}
+            quality={100}
           />
         )}
         <ImagePlus className={`size-40 ${preview ? "hidden" : "block"}`} />
