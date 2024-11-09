@@ -84,8 +84,10 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         checkCoursePayed()
         getfinishedchapters()
         getAnsweredQuizes()
-        setRendered(true)
     }, [course.id, user])
+    useEffect(()=>{
+        setRendered(true)
+    }, [payed, course, subCourse])
     const [chapterid, setChapterID] = useState<string>()
     const [video, setVideo] = useState<string>()
     const startchapter = (chapterID: string, video: string) => {
@@ -176,7 +178,8 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             }
         </div>
         {
-            !payed && rendered && (
+            rendered &&
+            !payed && (
                 <div className={`lg:w-1/3 w-full ${payed && "hidden"}`}>
                     <div className="md:mx-8 mx-2 bg-purple-400/30 flex flex-col justify-center items-center py-6 rounded-xl px-6">
                         <h4 className="lg:text-xl md:text-lg font-semibold text-purple-600"> {course.price} TND </h4>
