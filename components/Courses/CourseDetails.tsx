@@ -38,6 +38,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
 
 
     const [subCourse, setSubCourse] = useState<string>()
+    const [payed, setPayed] = useState(false)
     const checkCoursePayed = async() => {
         const response = await axios.post("/api/courses/CheckCoursebought", {courseid: course.id, userid: user.id})
         if(response.status !== 200){
@@ -46,12 +47,9 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             if(response.data.bougth){
                 setPayed(true)
                 setSubCourse(response.data.subscribedCourse)
-            }else{
-                setPayed(false)
             }
         }
     }
-    const [payed, setPayed] = useState(false)
     const [rendered, setRendered] = useState(false)
     const lessonsNumber = course.lessons.length
     const chaptersNumber = course.lessons.reduce((acc, lesson) => acc + lesson.chapters.length, 0)
@@ -80,7 +78,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         })
         setAnsweredQuizes(response.data.answeredQuizes)
     }
-    useLayoutEffect(()=>{
+    useEffect(()=>{
         fetchUserImage()
         getCourseThumbnail()
         checkCoursePayed()
@@ -93,6 +91,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
     const startchapter = (chapterID: string, video: string) => {
         setChapterID(chapterID)
         setVideo(video)
+        window.scrollTo({top: 0, behavior: "smooth"})
     }
       return (
     <div className="flex flex-wrap mt-8 max-md:gap-8">
@@ -177,8 +176,8 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             }
         </div>
         {
-            !payed && rendered && (
-                <div className="lg:w-1/3 w-full">
+            payed && rendered && (
+                <div className={`lg:w-1/3 w-full ${payed && "hidden"}`}>
                     <div className="md:mx-8 mx-2 bg-purple-400/30 flex flex-col justify-center items-center py-6 rounded-xl px-6">
                         <h4 className="lg:text-xl md:text-lg font-semibold text-purple-600"> {course.price} TND </h4>
                         

@@ -6,6 +6,7 @@ import { BookIcon, BookOpenIcon, CaptionsIcon, ChartNoAxesColumnIncreasingIcon, 
 import { Chapter, Lesson, Question, Quiz } from '@prisma/client'
 import { toast } from 'sonner'
 import { AnswerQuiz } from '@/app/actions/CourseActions/Quiz'
+import { revalidatePath } from 'next/cache'
 
 type extendedLessonWithChapters = Lesson & { chapters: Chapter[], quiz: Quiz & {questions: Question[]}, }
 
@@ -127,7 +128,7 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                                                         onClick: () => {}
                                                     }
                                                 })
-                                                window.location.reload()
+                                                revalidatePath("/courses/course")
                                             }
                                         }catch(err){
                                             toast("Failed to submit quiz", {
