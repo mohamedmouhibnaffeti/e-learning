@@ -108,7 +108,13 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
         })
     }
     
-    console.log(userForm)
+    const percentages = {
+        account: 50,
+        photo: 10,
+        phone: user.phone ? 10 : 0,
+        languages: userForm.preferences.languages.length > 0 ? 15 : 0,
+        categories: userForm.preferences.categories.length > 0 ? 15 : 0
+    }
 
     return (
         <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
@@ -348,21 +354,37 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                 </h1>
                 <ProfileProgress value={40} />
                 <div className="flex flex-col gap-2">
-                <p className="gap-2 flex items-center font-medium text-slate-900">
-                    <CheckIcon className="" />
-                    <span>Setup Account</span>
-                    <span className="text-gray-400">10%</span>
-                </p>
-                <p className="gap-2 flex items-center font-medium text-slate-900">
-                    <CheckIcon className="" />
-                    <span>Upload your photo</span>
-                    <span className="text-gray-400">5%</span>
-                </p>
-                <p className="gap-2 flex items-center font-medium text-gray-400">
-                    <XIcon className="w-6 h-6" />
-                    <span>Courses Preferences</span>
-                    <span className="text-green-500 font-semibold">+25%</span>
-                </p>
+                    <p className="gap-2 flex items-center font-medium text-slate-900">
+                        <CheckIcon className="" />
+                        <span>Setup Account</span>
+                        <span className="text-gray-400">50%</span>
+                    </p>
+                    <p className="gap-2 flex items-center font-medium text-slate-900">
+                        <CheckIcon className="" />
+                        <span>Upload your photo</span>
+                        <span className="text-gray-400">10%</span>
+                    </p>
+                    <p className={`gap-2 flex items-center font-medium ${percentages.phone === 10 ? "text-slate-900" : "text-gray-400"}`}>
+                        {
+                            percentages.phone === 10 ? <CheckIcon className="" /> : <XIcon className="" />
+                        }
+                        <span> Phone Number </span>
+                        <span className={`${percentages.phone === 10 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.phone === 10) ? "+" : ""}10%</span>
+                    </p>
+                    <p className={`gap-2 flex items-center font-medium ${percentages.languages === 15 ? "text-slate-900" : "text-gray-400"}`}>
+                        {
+                            percentages.languages === 15 ? <CheckIcon className="" /> : <XIcon className="" />
+                        }
+                        <span>Languages</span>
+                        <span className={`${percentages.languages === 15 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.languages === 15) ? "+" : ""}15%</span>
+                    </p>
+                    <p className={`gap-2 flex items-center font-medium ${percentages.languages === 15 ? "text-slate-900" : "text-gray-400"}`}>
+                        {
+                            percentages.categories === 15 ? <CheckIcon className="" /> : <XIcon className="" />
+                        }
+                        <span>Categories</span>
+                        <span className={`${percentages.categories === 15 ? "text-gray-400" : "text-green-500"} font-semibold`}>{!(percentages.categories === 15) ? "+" : ""}15%</span>
+                    </p>
                 </div>
             </div>
             </div>
