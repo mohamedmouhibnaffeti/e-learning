@@ -6,7 +6,7 @@ import mentor1 from "../../components/Images/mentors/mentor1.jpg"
 import mentor2 from "../../components/Images/mentors/mentor2.jpg"
 import mentor3 from "../../components/Images/mentors/mentor3.jpg"
 import mentor4 from "../../components/Images/mentors/mentor4.jpg"
-import MentorCard from '@/components/Cards/MentorsPageMentorCard'
+import MentorsComponent from '@/components/pages/Mentors'
 
 const mentors = [
     {
@@ -83,15 +83,7 @@ function Mentors() {
             <Input className="" placeholder="ex. John Doe"/>
             <SearchIcon className="absolute right-2 top-0 translate-y-2 w-5 h-5 hover:text-violet-600 transition-all duration-150 cursor-pointer" />
         </div>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 w-full max-w-[1980px]">
-            {
-                mentors.map((mentor, index) => {
-                    return(
-                        <MentorCard image={mentor.image} name={mentor.name} email={mentor.email} jobTitle={mentor.jobTitle} jobLocation={mentor.jobLocation} courses={mentor.courses} />
-                    )
-                })   
-            }
-        </div>
+        <MentorsComponent mentors={mentors} />
     </div>
   )
 }
