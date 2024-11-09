@@ -115,6 +115,7 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
         languages: userForm.preferences.languages.length > 0 ? 15 : 0,
         categories: userForm.preferences.categories.length > 0 ? 15 : 0
     }
+    const totalPercentage = Object.values(percentages).reduce((acc, curr) => acc + curr, 0)
 
     return (
         <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
@@ -352,7 +353,7 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                 <h1 className="text-lg font-semibold">
                 Complete your profile
                 </h1>
-                <ProfileProgress value={40} />
+                <ProfileProgress value={totalPercentage} />
                 <div className="flex flex-col gap-2">
                     <p className="gap-2 flex items-center font-medium text-slate-900">
                         <CheckIcon className="" />

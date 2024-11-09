@@ -9,12 +9,14 @@ import CourseProvider from '../context/CourseContext'
 async function CoursesPage() {
   const session = await getServerSession(AuthOptions)
   console.log(session)
-  const user = await prisma.user.findUnique({where: {email_provider: {email: session?.user?.email as string, provider: session?.user?.provider as string}}}) as User
+  let user
+  if(session?.user) user = await prisma.user.findUnique({where: {email_provider: {email: session?.user?.email as string, provider: session?.user?.provider as string}}}) as User
   const courses = await prisma.course.findMany({include: {lessons: true, creator: true}})
   return (
     <CourseProvider>
       {
-        (user?.preferredLanguages?.length === 0 && user?.preferredCategories?.length === 0) && false && <CourseRecommendationModal />
+        user &&
+        (user?.preferredLanguages?.length === 0 && user?.preferredCategories?.length === 0) && <CourseRecommendationModal />
       }
       <Coursespage courses={courses} />
     </CourseProvider>
