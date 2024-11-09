@@ -25,6 +25,18 @@ export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
 
 function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: any}) {
     const router = useRouter()
+    const [userImage, setUserImage] = useState<string>()
+    const fetchUserImage = async() => {
+        if(user.image.location === "local"){
+            const response = await axios.post("/api/user/getUserImage", {email: user.email, provider: user.provider})
+            const {image} = response.data
+            setUserImage(image)
+        }else{
+            setUserImage(user.image.path)
+        }
+    }
+
+
     const [subCourse, setSubCourse] = useState<string>()
     const checkCoursePayed = async() => {
         const response = await axios.post("/api/courses/CheckCoursebought", {courseid: course.id, userid: user.id})
@@ -69,6 +81,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
         setAnsweredQuizes(response.data.answeredQuizes)
     }
     useLayoutEffect(()=>{
+        fetchUserImage()
         getCourseThumbnail()
         checkCoursePayed()
         getfinishedchapters()
@@ -111,9 +124,19 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             <div className="flex w-full justify-between items-center flex-wrap mt-6 gap-4">
                 <div className="flex items-center gap-4 flex-wrap">
                     <div className="flex gap-1 items-center">
-                        <div className="w-12 h-12">
-                            <Image src={user.image.path} alt='' width={100} height={100} className="w-full rounded-full h-full object-cover" />
-                        </div>
+                        {
+                            userImage ? (
+                                <div className="w-12 h-12">
+                                    <Image src={userImage as string} alt='' width={100} height={100} className="w-full rounded-full h-full object-cover" />
+                                </div>
+                            )
+                            :
+                            (
+                                <div className="w-12 h-12 bg-gray-100 flex items-center justify-center rounded-full">
+                                    <FileText className="w-4 h-4 text-gray-400" />
+                                </div>
+                            )
+                        }
                         <span className="text-black font-medium max-md:text-sm"> {course.creator.name} </span>
                     </div>
                     <span className="text-purple-500 text-sm flex gap-2 items-center"> <Tally2Icon className="text-gray-500" /> 4700 Enrolled Students </span>
