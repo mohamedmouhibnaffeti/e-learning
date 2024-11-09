@@ -141,7 +141,7 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                         }
                         if(response.success){
                             toast("Success", {
-                                description: "Course updated successfully",
+                                description: "Profile updated successfully",
                                 action: {
                                     label: "Ok",
                                     onClick: () => {},
@@ -338,7 +338,7 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
                             type='submit'
                             className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150 mt-4"
                         >
-                            Confirm Changes
+                            Save Changes
                         </button>
                     </div>
                 </div>

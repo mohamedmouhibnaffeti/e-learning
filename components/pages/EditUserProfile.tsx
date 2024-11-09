@@ -1,7 +1,7 @@
 "use client"
 import DragAndDrop from '@/components/Inputs/DragAndDrop'
 import { useDropzone } from "react-dropzone";
-import React from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import image from "@/components/Images/mentors/mentor3.jpg"
 import ProfileProgress from '@/components/Progress/ProfileProgress';
 import { CaptionsIcon, CheckIcon, CompassIcon, LanguagesIcon, LibraryBigIcon, MailIcon, PencilLineIcon, PhoneIcon, UserPenIcon, XIcon } from 'lucide-react';
@@ -16,13 +16,27 @@ import {
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu"
+import { toast } from 'sonner';
+import { revalidatePath } from 'next/cache';
+import { updateClientProfile } from '@/app/actions/UserActions/UpdateUser';
+import axios from 'axios';
 
 const existinglanguages = ["English", "French", "Spanish", "German", "Italian"]
 const existingCategories = ["Web Development", "Mobile Development", "Data Science", "Machine Learning", "Artificial Intelligence"]
 
 
 function EditUserProfile({user}: {user: User & {image: Image}}) {
-    const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(user.image.path)
+    const [preview, setPreview] = useState<string | ArrayBuffer | null>(user.image.path)
+
+    const fetchUserImage = async() => {
+        if(user.image.location === "local"){
+            const response = await axios.post("/api/user/getUserImage", {email: user.email, provider: user.provider})
+            setPreview(response.data.image)
+        }
+    }
+    useLayoutEffect(()=>{
+        fetchUserImage()
+    }, [])
     const onDrop = React.useCallback(
       (acceptedFiles: File[]) => {
         const reader = new FileReader();
@@ -266,7 +280,7 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                             <>
                                 <div className="flex flex-col">
                                     <span className="text-gray-400">Languages</span>
-                                    <span className="text-slate-700">{userForm.preferences.categories.length > 0 ? userForm.preferences.languages.join(", ") : (<span className="text-red-500"> No categories preferences added </span>)}</span>
+                                    <span className="text-slate-700">{userForm.preferences.languages.length > 0 ? userForm.preferences.languages.join(", ") : (<span className="text-red-500"> No languages preferences added </span>)}</span>
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-gray-400">Courses Categories</span>
@@ -275,8 +289,58 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                             </>
                         }
                     </div>
+                    
                 </div>
-
+                <form
+                    action={
+                        async(formdata: FormData) => {
+                            try{
+                                formdata.append("name", userForm.personalInfo.name as string)
+                                formdata.append("email", userForm.personalInfo.email as string)
+                                formdata.append("provider", user.provider as string)
+                                formdata.append("phone", userForm.personalInfo.phone || "")
+                                formdata.append("image", preview as string)
+                                userForm.preferences.languages.forEach(lang => formdata.append("languages", lang))
+                                userForm.preferences.categories.forEach(category => formdata.append("categories", category))
+                                const response = await updateClientProfile(formdata)
+                                if(response?.success === false){
+                                    toast("Sorry", {
+                                        description:"an error has occured.",
+                                        action: {
+                                            label: "Retry",
+                                            onClick: () => {},
+                                        },
+                                    });
+                                }
+                                if(response.success){
+                                    toast("Success", {
+                                        description: "Profile updated successfully",
+                                        action: {
+                                            label: "Ok",
+                                            onClick: () => {},
+                                        },
+                                    });
+                                }
+                            }catch(err){
+                                toast("Sorry", {
+                                    description: "an internal error has occured",
+                                    action: {
+                                        label: "Revalidate",
+                                        onClick: () => {},
+                                    },
+                                })
+                            }
+                        }
+                    }
+                    className="flex sm:justify-end px-4"
+                >
+                    <button
+                        type='submit'
+                        className="max-sm:w-full whitespace-nowrap px-4 py-2 w-fit h-fit text-white bg-blue-600 rounded-lg hover:bg-blue-700/90 active:bg-blue-700 transition-all duration-150 mt-4"
+                    >
+                        Save Changes
+                    </button>
+                </form>
             </div>
             <div className="p-8 rounded-3xl bg-white mt-4 flex flex-col justify-center items-center gap-4 h-fit w-max col-span-2">
                 <h1 className="text-lg font-semibold">
