@@ -84,6 +84,16 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
         }));
     };
     
+    const handleDetailsChagne = (field: keyof typeof userForm.personalInfo, value: string) => {
+        setUserForm({
+            ...userForm,
+            personalInfo: {
+                ...userForm.personalInfo,
+                [field]: value
+            }
+        })
+    }
+    
     console.log(userForm)
 
     return (
@@ -128,6 +138,7 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                                             <input
                                                 type="text"
                                                 value={userForm.personalInfo.name as string}
+                                                onChange={(e)=>handleDetailsChagne("name", e.target.value)}
                                                 className="outline-none peer pl-10 pt-[2px] focus:border-blue-500 appearance-none no-arrows text-sm border-2 rounded-xl h-[2.6rem] focus:caret-indigo-500 w-full"
                                             />
                                             <CaptionsIcon className="top-0 peer-focus:text-blue-500 translate-y-[11px] translate-x-4 absolute w-[1.2rem] h-[1.2rem]" />
@@ -150,6 +161,8 @@ function EditUserProfile({user}: {user: User & {image: Image}}) {
                                         <div className="relative w-full">
                                             <input
                                                 type="text"
+                                                value={userForm.personalInfo.phone as string}
+                                                onChange={(e)=>handleDetailsChagne("phone", e.target.value)}
                                                 className="outline-none peer pt-[2px] pl-10 focus:border-blue-500 appearance-none no-arrows text-sm border-2 rounded-xl h-[2.6rem] focus:caret-indigo-500 w-full"
                                             />
                                             <PhoneIcon className="top-0 peer-focus:text-blue-500 translate-y-[11px] translate-x-4 absolute w-[1.2rem] h-[1.2rem]" />
