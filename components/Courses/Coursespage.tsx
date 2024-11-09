@@ -2,19 +2,9 @@
 import CourseCard from '@/components/Cards/CourseCard'
 import ProductsFiltersSideBar from '@/components/sidebars/CoursesFilterSidebar'
 import SmallLoader3Points from '@/components/loaders/SmallLoader3Points'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import React, { useContext, useEffect, useState } from 'react'
 
-import ui from "../../components/Images/Courses/UI.png"
-import sport from "../../components/Images/Courses/sports.png"
-import entr from "../../components/Images/Courses/entr.png"
-import guitar from "../../components/Images/Courses/guitar.png"
-import ionic from "../../components/Images/Courses/ionic.png"
-import marketing from "../../components/Images/Courses/marketing.png"
-import mobile from "../../components/Images/Courses/mobile.png"
-import python from "../../components/Images/Courses/python.png"
 import CoursesPageCourseCard from '@/components/Cards/CoursesPageCourseCard'
-import CourseRecommendationModal from '@/components/Modals/CourseRecommendationModal'
 import { CourseContext } from '@/app/context/CourseContext'
 import axios from 'axios'
 import { toast } from 'sonner'

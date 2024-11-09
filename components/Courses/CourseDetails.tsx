@@ -176,7 +176,7 @@ function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChap
             }
         </div>
         {
-            payed && rendered && (
+            !payed && rendered && (
                 <div className={`lg:w-1/3 w-full ${payed && "hidden"}`}>
                     <div className="md:mx-8 mx-2 bg-purple-400/30 flex flex-col justify-center items-center py-6 rounded-xl px-6">
                         <h4 className="lg:text-xl md:text-lg font-semibold text-purple-600"> {course.price} TND </h4>

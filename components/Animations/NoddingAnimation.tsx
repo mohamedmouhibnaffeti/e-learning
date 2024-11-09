@@ -1,10 +1,11 @@
+"use client"
 import React from 'react'
 import Lottie from "react-lottie"
-import animation from "../Lottie/searchAnimation.json"
+import animation from "../Lottie/noddingman.json"
 
-function SearchAnimation() {
+function NoddingAnimation() {
     const defaultOptions = {
-        loop: true,
+        loop: false,
         autoplay: true,
         animationData: animation,
         rendererSettings: {
@@ -14,7 +15,7 @@ function SearchAnimation() {
   return (
     <div>
       <Lottie 
-	      options={defaultOptions}
+	    options={defaultOptions}
         height={400}
         width={400}
       />
@@ -22,4 +23,4 @@ function SearchAnimation() {
   )
 }
 
-export default SearchAnimation
+export default NoddingAnimation
