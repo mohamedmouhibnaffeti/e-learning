@@ -4,18 +4,9 @@ import path from "path";
 import { supabase } from "./supabaseClient";
 
 function base64ToImageFile(base64String: string, fileName: string) {
-  const byteString = atob(base64String.split(',')[1]);
-
-  const byteArray = new Uint8Array(byteString.length);
-  for (let i = 0; i < byteString.length; i++) {
-    byteArray[i] = byteString.charCodeAt(i);
-  }
-
-  const blob = new Blob([byteArray], { type: 'image/png' })
-
-  const imageFile = new File([blob], fileName || 'image.png', { type: 'image/png' });
-
-  return imageFile;
+  const byteArray = Uint8Array.from(atob(base64String.split(',')[1]), char => char.charCodeAt(0));
+  const blob = new Blob([byteArray], { type: 'image/png' });
+  return new File([blob], fileName || 'image.png', { type: 'image/png' });
 }
 
 export async function deleteImageByPath(imagePath: string): Promise<boolean> {
