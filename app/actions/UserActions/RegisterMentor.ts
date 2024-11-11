@@ -27,7 +27,12 @@ export const RegisterMentor = async (formData: FormData): Promise<{success: bool
             data: {
                 email,
                 name: username,
-                image: `https://ui-avatars.com/api/?name=${username[0] + username[1]}&bold=true&background=ADD8E6&color=4682B4`,
+                image: {
+                    create: {
+                        path: `https://ui-avatars.com/api/?name=${username[0] + username[1]}&bold=true&background=ADD8E6&color=4682B4`,
+                        location: "online"
+                    }
+                },
                 provider,
                 password: hashedPasswd,
                 role: role,

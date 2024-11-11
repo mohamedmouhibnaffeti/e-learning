@@ -23,7 +23,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "No image available for the given course" }, { status: 400 });
         }
         const imagePath = `${user?.image?.path}`;
-        const base64Image = getImageByPath(imagePath);
+        const base64Image = await getImageByPath(imagePath);
         if(base64Image){
             return NextResponse.json({ image: base64Image }, { status: 200 });
         }

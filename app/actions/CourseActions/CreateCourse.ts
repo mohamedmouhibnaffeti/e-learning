@@ -14,7 +14,7 @@ export async function CreateCourse(formdata: FormData): Promise<{success: boolea
         if(user?.role !== "mentor") throw new Error("User is not a mentor")
         const coursedatails = JSON.parse(formdata.get("course") as string) as Course
         const lessons = JSON.parse(formdata.get("lessons") as string) as Lesson[]
-        const courseimagepath = saveBase64Image(coursedatails.image as string, coursedatails.title)
+        const courseimagepath = await saveBase64Image(coursedatails.image as string, coursedatails.title)
 
         const newCourse = await prisma.course.create({
             data: {

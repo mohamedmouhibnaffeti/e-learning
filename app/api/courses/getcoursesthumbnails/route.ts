@@ -18,7 +18,7 @@ export async function POST(req: Request) {
                 continue;
             }
             const imagePath = `${course.image.path}`;
-            const base64Image = getImageByPath(imagePath);
+            const base64Image = await getImageByPath(imagePath);
             if(base64Image){
                 Images.push({
                     CourseID: course.id,

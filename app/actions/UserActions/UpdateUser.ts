@@ -40,9 +40,9 @@ export const updateUserProfile = async (formdata: FormData): Promise<{ success: 
 
         let userimagepath;
         if (image) {
-            userimagepath = saveBase64Image(image, email + provider);
+            userimagepath = await saveBase64Image(image, email + provider);
         }
-
+        console.log(userimagepath)
         // Construct data only with non-empty fields
         const updateData: Record<string, any> = {};
         if (phone) updateData.phone = phone;
@@ -93,7 +93,7 @@ export const updateClientProfile = async (formdata: FormData): Promise<{ success
         const categories = formdata.getAll("categories") as string[]
         let userimagepath;
         if (image) {
-            userimagepath = saveBase64Image(image, email + provider);
+            userimagepath = await saveBase64Image(image, email + provider);
         }
         // Construct data only with non-empty fields
         const updateData: Record<string, any> = {};

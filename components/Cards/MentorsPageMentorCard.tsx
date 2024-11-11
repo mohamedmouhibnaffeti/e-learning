@@ -17,7 +17,7 @@ function MentorCard({image, name, email, jobTitle, jobLocation,courses}: MentorC
     const router = useRouter() 
     return (
         <div className="group flex flex-col items-center rounded-lg gap-3 md:pb-3 border-2">
-            <div className="relative overflow-hidden w-full h-[8rem]">
+            <div className="relative overflow-hidden w-full sm:h-[8rem] h-[13rem]">
                 {
                     image? (
                         <>

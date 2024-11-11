@@ -25,7 +25,7 @@ export async function POST(req: Request){
             const imagelocation = user.image.location
             if(imagelocation === "local"){
                 const imagepath = user.image.path
-                const base64Image = getImageByPath(imagepath)
+                const base64Image = await getImageByPath(imagepath)
                 if(base64Image){
                     Images.push({
                         userid: user.id,

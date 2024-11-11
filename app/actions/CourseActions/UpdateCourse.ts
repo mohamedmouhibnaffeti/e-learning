@@ -18,7 +18,7 @@ export async function UpdateCourse(formdata: FormData): Promise<{success: boolea
         const deletedImage = deleteImageByPath(course?.image?.path as string)
         if(!deletedImage) throw new Error("Failed to delete image")
         
-        const courseimagepath = saveBase64Image(image as string, title)
+        const courseimagepath = await saveBase64Image(image as string, title)
         const updatedCourse = await prisma.course.update({
             where: {
                 id: courseId

@@ -1,63 +1,78 @@
+
 import fs from "fs";
 import path from "path";
+import { supabase } from "./supabaseClient";
 
-export function saveBase64Image(base64Image: string, courseName: string): string | undefined {
+function base64ToImageFile(base64String: string, fileName: string) {
+  const byteString = atob(base64String.split(',')[1]);
+
+  const byteArray = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) {
+    byteArray[i] = byteString.charCodeAt(i);
+  }
+
+  const blob = new Blob([byteArray], { type: 'image/png' })
+
+  const imageFile = new File([blob], fileName || 'image.png', { type: 'image/png' });
+
+  return imageFile;
+}
+
+export async function deleteImageByPath(imagePath: string): Promise<boolean> {
+  const bucket = "elearningbucket"
+  try {        
+    const { data, error } = await supabase.storage.from(bucket).remove([imagePath])
+    if (error) {
+        console.error(`Error deleting ${imagePath}: `, error)
+        return false
+    } else {
+        console.log(`Successfully deleted ${imagePath}`);
+        return true
+    }
+  } catch (error) {
+      console.error(`Error in deleting ${imagePath}: `, error)
+      return false
+  }
+}
+
+
+export async function saveBase64Image(base64Image: string, courseName: string): Promise<string | undefined> {
     try {
-      const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
-      
-      const buffer = Buffer.from(base64Data, 'base64');
-      
+      const bucket = "elearningbucket"
       const sanitizedCourseName = `${courseName
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w\s]/g, "")
-        .replace(/\s+/g, "_")}`;
-      
-      const filename = `${sanitizedCourseName}_${Date.now()}.png`;
-      const filePath = path.join(process.cwd(), 'uploads', filename);
-  
-      fs.writeFileSync(filePath, buffer);
-      
-      return filePath;
+        .replace(/\s+/g, "_")}` + Date.now()
+      const image = base64ToImageFile(base64Image, sanitizedCourseName)
+      const {data, error} = await supabase.storage.from(bucket).upload(`/Images/${sanitizedCourseName}`, image)
+      console.log(error)
+        if(error) {
+          alert('Error uploading file.');
+          return undefined
+        }
+      return `/Images/${sanitizedCourseName}`
     } catch (error) {
       console.error('Failed to process image:', error);
       return undefined;
     }
 }
 
-export function getImageByPath(imagePath: string): string | undefined {
+export async function getImageByPath(imagePath: string): Promise<string | undefined> {
   try {
-    const filePath = path.resolve(process.cwd(), 'uploads', imagePath);
-    
-    if (fs.existsSync(filePath)) {
-      const fileBuffer = fs.readFileSync(filePath);
-      return `data:image/png;base64,${fileBuffer.toString('base64')}`;
-      
-      //return fileBuffer;
-    } else {
-      console.error('Image not found at path:', filePath);
-      return undefined;
+    const {data, error} = await supabase.storage.from("elearningbucket").download(imagePath)
+
+    if (error) {
+        console.error(error);
+        return undefined
     }
+
+    const imageBuffer = await data?.arrayBuffer();
+    const base64Image = Buffer.from(imageBuffer).toString("base64");
+    return `data:image/png;base64,${base64Image}`;
+
   } catch (error) {
     console.error('Failed to retrieve image:', error);
     return undefined;
-  }
-}
-
-export function deleteImageByPath(imagePath: string): boolean {
-  try {
-    const filePath = path.resolve(process.cwd(), 'uploads', imagePath);
-    
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      console.log('Image deleted successfully:', filePath);
-      return true;
-    } else {
-      console.error('Image not found at path:', filePath);
-      return false;
-    }
-  } catch (error) {
-    console.error('Failed to delete image:', error);
-    return false;
   }
 }
