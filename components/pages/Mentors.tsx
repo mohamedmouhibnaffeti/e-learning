@@ -1,15 +1,28 @@
 "use client"
-import React from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import MentorCard from '@/components/Cards/MentorsPageMentorCard'
+import axios from 'axios'
 
 
-function MentorsComponent({mentors}: {mentors: any}) {
+function MentorsComponent({mentors}: {mentors: Array<any>}) {
+  const [userimages, setuserimages] = useState<{userid: string, data: string}[]>([])
+  const getImages = async() => {
+    const response = await axios.post("/api/user/getUserImages", {
+      userids: Array.from(mentors.map((mentor: any) => mentor.id))
+    })
+    const {images} = response.data
+    setuserimages(images)
+  }
+  useLayoutEffect(()=>{
+    getImages()
+  }, [])
   return (
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 w-full max-w-[1980px]">
         {
             mentors.map((mentor: any, index: number) => {
+                const userimage = userimages.find((image) => image.userid === mentor.id)
                 return(
-                    <MentorCard key={index} image={mentor.image} name={mentor.name} email={mentor.email} jobTitle={mentor.jobTitle} jobLocation={mentor.jobLocation} courses={mentor.courses} />
+                    <MentorCard key={index} image={userimage?.data} name={mentor.name} email={mentor.email} jobTitle={mentor.job} jobLocation={mentor.location} courses={mentor?.createdCourses?.length || 0} />
                 )
             })   
         }

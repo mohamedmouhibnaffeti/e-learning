@@ -3,6 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ChevronRightIcon, GraduationCap, MapPin } from 'lucide-react'
+import { Skeleton } from '../ui/skeleton'
 interface MentorCardProps {
     image: any,
     email: string,
@@ -16,14 +17,32 @@ function MentorCard({image, name, email, jobTitle, jobLocation,courses}: MentorC
     const router = useRouter() 
     return (
         <div className="group flex flex-col items-center rounded-lg gap-3 md:pb-3 border-2">
-            <div className="relative overflow-hidden w-full ">
-                <Image src={image} alt='' className="object-cover w-full rounded-t-lg" />
-                <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <button onClick={()=>router.push("/mentors/mentor")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
-                        Visit Mentor
-                        <ChevronRightIcon className="w-4 h-4 transition duration-200" />
-                    </button>
-                </div>
+            <div className="relative overflow-hidden w-full h-[8rem]">
+                {
+                    image? (
+                        <>
+                            <Image src={image} alt='' width={100} height={100} className="object-cover w-full rounded-t-lg" />
+                            <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                <button onClick={()=>router.push("/mentors/mentor")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                                    Visit Mentor
+                                    <ChevronRightIcon className="w-4 h-4 transition duration-200" />
+                                </button>
+                            </div>
+                        </>
+                    )
+                    :
+                    (
+                        <>
+                            <Skeleton className="w-full h-full rounded-t-lg " />
+                            <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                <button onClick={()=>router.push("/mentors/mentor")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                                    Visit Mentor
+                                    <ChevronRightIcon className="w-4 h-4 transition duration-200" />
+                                </button>
+                            </div>
+                        </>
+                    )
+                }
             </div>
             <div className="w-full px-2">
                 <div className="max-w-full flex justify-between items-center">
