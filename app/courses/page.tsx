@@ -11,6 +11,7 @@ async function CoursesPage() {
   console.log(session)
   let user
   if(session?.user) user = await prisma.user.findUnique({where: {email_provider: {email: session?.user?.email as string, provider: session?.user?.provider as string}}}) as User
+  console.log(user)
   const courses = await prisma.course.findMany({include: {lessons: true, creator: true}})
   return (
     <CourseProvider>

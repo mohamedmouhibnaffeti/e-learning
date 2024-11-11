@@ -124,6 +124,7 @@ export const updateClientProfile = async (formdata: FormData): Promise<{ success
             },
             data: updateData
         });
+        console.log(updatedUser.id)
         if(!updatedUser){
             return {success: false, error: "error updating user profile"}
         }
