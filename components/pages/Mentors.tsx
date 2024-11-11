@@ -17,12 +17,12 @@ function MentorsComponent({mentors}: {mentors: Array<any>}) {
     getImages()
   }, [])
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 w-full max-w-[1980px]">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 w-full max-w-[1980px] xl:px-16 lg:px-12 md:px-8 px-4">
         {
             mentors.map((mentor: any, index: number) => {
                 const userimage = userimages.find((image) => image.userid === mentor.id)
                 return(
-                    <MentorCard key={index} image={userimage?.data} name={mentor.name} email={mentor.email} jobTitle={mentor.job} jobLocation={mentor.location} courses={mentor?.createdCourses?.length || 0} />
+                    <MentorCard bio={mentor.bio} key={index} image={userimage?.data} name={mentor.name} email={mentor.email} jobTitle={mentor.job} jobLocation={mentor.location} courses={mentor?.createdCourses?.length || 0} />
                 )
             })   
         }
