@@ -12,6 +12,7 @@ import { MultiSlider } from "../ui/multiple-slider";
 import { Button } from "../ui/button";
 
 import {CourseContext} from "@/app/context/CourseContext";
+import { useSession } from "next-auth/react";
 
 const existingCategories = ["Web Development", "Data Science", "Machine Learning", "Artificial Intelligence"]
 const existingLanguages = ["English", "French", "Arabic", "Spanish", "German", "Italian", "Chinese", "Japanese", "Russian", "Portuguese"]
@@ -19,7 +20,7 @@ const existinglevels = ["beginner", "intermediate", "advanced"]
 const existingDurations = ["1-3 hours", "3-6 hours", "6-12 hours", "12-24 hours", "24+ hours"]
 
 export default function ProductsFiltersSideBar({getCoursesbyFilter, className, inputClassName, setExpanded}: {className: string, inputClassName: string, setExpanded: any, getCoursesbyFilter: any}){
-
+    const {status} = useSession()
     const { courseLanguages, courseLevel, courseCategory, courseDuration, handleCategoryCheckboxChange, handleDurationCheckboxChange, handleLanguageCheckboxChange, handleLevelCheckboxChange, selectedPriceRange, setSelectedPriceRange } = useContext(CourseContext)
 
     return(
@@ -33,13 +34,16 @@ export default function ProductsFiltersSideBar({getCoursesbyFilter, className, i
                 */
             }
             <p className="text-gray-400 font-medium mt-8">Filtres</p>
-            <div className="flex gap-2 items-center mt-4">
-                <Checkbox
-                    checked={true}
-                    onCheckedChange={(checked) => {}}
-                />
-                <span className="text-sm capitalize"> Nos Recommendations </span>
-            </div>
+            {
+                status === "authenticated" &&
+                <div className="flex gap-2 items-center mt-4">
+                    <Checkbox
+                        checked={true}
+                        onCheckedChange={(checked) => {}}
+                    />
+                    <span className="text-sm capitalize"> Nos Recommendations </span>
+                </div>
+            }
             <div className="w-full h-px bg-gray-300 mt-4 " />      
             <Accordion type="single" collapsible>
                 <AccordionItem value="Category">

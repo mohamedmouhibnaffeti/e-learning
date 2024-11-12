@@ -7,6 +7,7 @@ import SmallStarsComponent from '../Rating/SmallStars'
 import { useRouter } from 'next/navigation'
 import { Skeleton } from '../ui/skeleton'
 import { subString } from '@/lib/util/String'
+import { useSession } from 'next-auth/react'
 interface CourseCardProps {
     image: any
     title: string
@@ -19,7 +20,9 @@ interface CourseCardProps {
     mentor: string
   }
 function CoursesPageCourseCard({image, title, lessons, users, difficulty, description, price, id, mentor}: CourseCardProps) {
+    const session  = useSession()
     const router = useRouter() 
+    const sessionstatus = session.status
     return (
     <div className="group flex flex-col items-center shadow-course-card rounded-lg gap-3 md:pb-3">
         <div className="relative overflow-hidden w-full h-[13rem] ">
@@ -28,7 +31,7 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
                     <>
                         <Image width={100} height={100} src={image} alt='' className="object-cover w-full h-full rounded-t-lg" />
                         <div className="absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <button onClick={()=>router.push(`/courses/course?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
+                            <button onClick={()=>router.push(sessionstatus === "authenticated" ? `/courses/course?id=${id}` : "/auth/sign-in")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md">
                                 View Course
                                 <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                             </button>
@@ -78,7 +81,7 @@ function CoursesPageCourseCard({image, title, lessons, users, difficulty, descri
                 </span>
             </div>
         </div>
-        <button onClick={()=>router.push("/courses/course")} className="flex md:hidden bg-black text-white w-full py-3 active:bg-black/80 transition-all duration-100 delay-75 justify-center items-center rounded-b-lg"> <span>Enroll Now</span> </button>
+        <button onClick={()=>router.push(sessionstatus === "authenticated" ? `/courses/course?id=${id}` : "/auth/sign-in")} className="flex md:hidden bg-black text-white w-full py-3 active:bg-black/80 transition-all duration-100 delay-75 justify-center items-center rounded-b-lg"> <span>Enroll Now</span> </button>
     </div>
   )
 }

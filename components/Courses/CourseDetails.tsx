@@ -9,7 +9,7 @@ import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icon
 
 import CourseAccordion from '@/components/Accordions/CourseAccordion'
 import { ExtendedCourseWithLessons } from '../pages/CoursesPageMentor'
-import {Course, Lesson, Chapter, Quiz, User, Question} from '@prisma/client'
+import {Course, Lesson, Chapter, Quiz, User, Question, Image as imagetype} from '@prisma/client'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { markChapterAsFinished } from '@/app/actions/CourseActions/Chapter'
@@ -20,19 +20,19 @@ export type ExtendedCourseWithLessonsAndChaptersAndQuiz = Course & {
         chapters: Chapter[],
         quiz: Quiz & {questions: Question[]},
     }>
-    creator: User
+    creator: User & {image: imagetype}
 };
 
 function CourseDetails({course, user}: {course: ExtendedCourseWithLessonsAndChaptersAndQuiz, user: any}) {
     const router = useRouter()
     const [userImage, setUserImage] = useState<string>()
     const fetchUserImage = async() => {
-        if(user.image.location === "local"){
-            const response = await axios.post("/api/user/getUserImage", {email: user.email, provider: user.provider})
+        if(course.creator.image.location === "local"){
+            const response = await axios.post("/api/user/getUserImage", {email: course.creator.email, provider: course.creator.provider})
             const {image} = response.data
             setUserImage(image)
         }else{
-            setUserImage(user.image.path)
+            setUserImage(course.creator.image.path)
         }
     }
 

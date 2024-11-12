@@ -17,7 +17,7 @@ async function CoursePage() {
     const id = params.get("id") as string
     const {user} = session
     
-    const course = await prisma.course.findUnique({where: {id: id}, include: {creator: true,lessons: {include: {quiz: {include: {questions: true}}, chapters: true}}}}) as any
+    const course = await prisma.course.findUnique({where: {id: id}, include: {creator: {include: {image: true}},lessons: {include: {quiz: {include: {questions: true}}, chapters: true}}}}) as any
     const userdetails = await prisma.user.findUnique({where: {email_provider: {email: user?.email as string, provider: user?.provider as string}}, include: {image: true}}) as User
     if(!course){
         return null
