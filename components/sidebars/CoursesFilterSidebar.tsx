@@ -19,7 +19,7 @@ const existingLanguages = ["English", "French", "Arabic", "Spanish", "German", "
 const existinglevels = ["beginner", "intermediate", "advanced"]
 const existingDurations = ["1-3 hours", "3-6 hours", "6-12 hours", "12-24 hours", "24+ hours"]
 
-export default function ProductsFiltersSideBar({getCoursesbyFilter, className, inputClassName, setExpanded}: {className: string, inputClassName: string, setExpanded: any, getCoursesbyFilter: any}){
+export default function ProductsFiltersSideBar({loading, getCoursesbyFilter, className, inputClassName, setExpanded}: {loading: boolean, className: string, inputClassName: string, setExpanded: any, getCoursesbyFilter: any}){
     const {status} = useSession()
     const { courseLanguages, courseLevel, courseCategory, courseDuration, handleCategoryCheckboxChange, handleDurationCheckboxChange, handleLanguageCheckboxChange, handleLevelCheckboxChange, selectedPriceRange, setSelectedPriceRange } = useContext(CourseContext)
 
@@ -168,7 +168,7 @@ export default function ProductsFiltersSideBar({getCoursesbyFilter, className, i
                 <span className="text-xs font-medium text-infinity-text_secondary"> Min: {[selectedPriceRange[0]]} TND </span>
                 <span className="text-xs font-medium text-infinity-text_secondary"> Max: {selectedPriceRange[1]} TND </span>
             </div>
-            <Button onClick={getCoursesbyFilter} className="mt-6 flex items-center gap-2 group"> <span className="group-hover:opacity-80 transition duration-200"> Rechercher </span> <SearchIcon className="w-4 h-4 rotate-90 group-hover:opacity-80 transition duration-200" /> </Button>
+            <Button disabled={loading} variant={loading ? "secondary" : "default"} onClick={getCoursesbyFilter} className="mt-6 flex items-center gap-2 group"> <span className="group-hover:opacity-80 transition duration-200"> {loading ? "Searching..." : "Search"} </span> <SearchIcon className="w-4 h-4 rotate-90 group-hover:opacity-80 transition duration-200" /> </Button>
         </div>
     )
 }

@@ -39,8 +39,9 @@ export async function POST(req: Request) {
         lessons: {
           include: {
             chapters: true
-          }
-        }
+          },
+        },
+        creator: true
       }
     });
 

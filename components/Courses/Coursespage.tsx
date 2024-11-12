@@ -14,8 +14,9 @@ function Coursespage({courses}: {courses: any}) {
     const { courseCategory, courseLanguages, courseLevel, courseDuration, selectedPriceRange } = useContext(CourseContext)
     
     const [selectedCourses, setSelectedCourses] = useState<any>(courses)
-    
+    const [loading, setLoading] = useState(false)
     const getCoursesbyFilter = async() => {
+        setLoading(true)
         try {
             const response = await axios.post("/api/courses/getCourseByFilter", {
               courseCategory,
@@ -37,8 +38,10 @@ function Coursespage({courses}: {courses: any}) {
               const data = response.data as any
               setSelectedCourses(data.courses)
             }
+            setLoading(false)
           } catch (error) {
             console.error(error)
+            setLoading(false)
             toast("Sorry", {
               description: "An error occurred while fetching courses.",
               action: {
@@ -64,7 +67,7 @@ function Coursespage({courses}: {courses: any}) {
 
   return (
     <div className="w-full h-full flex mb-16">
-      <ProductsFiltersSideBar getCoursesbyFilter={getCoursesbyFilter} className='w-80 md:flex flex-col hidden min-h-screen border-r dark:border-r-gray-400 border-r-infinity-border px-4' inputClassName='' setExpanded={() => {}} />
+      <ProductsFiltersSideBar loading={loading} getCoursesbyFilter={getCoursesbyFilter} className='w-80 md:flex flex-col hidden min-h-screen border-r dark:border-r-gray-400 border-r-infinity-border px-4' inputClassName='' setExpanded={() => {}} />
       <div className="w-full h-full md:px-8 sm:px-4 px-2 max-w-[1980px] pt-[2rem]">
         <div className="justify-between items-center gap-2 md:flex hidden">
             {
