@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react'
-import { Button } from '../ui/button'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import SigninButton from '../buttons/SigninButton'
 
 function CredentialsLoginForm() {
     const [passwdOpen, setPasswdOpen] = useState(false)
@@ -79,7 +79,7 @@ function CredentialsLoginForm() {
                         <EyeIcon onClick={()=>setPasswdOpen(!passwdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
                 }
             </div>
-            <Button className="font-medium w-full mt-5 z-10 mb-3 bg-[#1f342d] hover:bg-[#1f342d]/95"> Connect </Button>
+            <SigninButton />
         </form>
     )
 }

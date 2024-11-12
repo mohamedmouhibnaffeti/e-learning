@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { isValidEmail } from '@/lib/util/String'
 import { RegisterMentor } from '@/app/actions/UserActions/RegisterMentor'
+import SignupButton from '../buttons/SignupButton'
 
 const verifyForm = (formData: FormData) => {
     if (formData.get("passwd") !== formData.get("confirmpasswd")) {
@@ -173,7 +174,7 @@ function SignupFormMentor() {
                         <EyeIcon onClick={()=>setConfirmPasswdOpen(!confirmpasswdOpen)} className="absolute right-16 -translate-x- cursor-pointer" />
                 }
             </div>
-            <Button className="font-medium w-full mt-5 z-10 mb-3 bg-[#1f342d] hover:bg-[#1f342d]/95"> Create Account </Button>
+            <SignupButton />
         </form>
     )
 }

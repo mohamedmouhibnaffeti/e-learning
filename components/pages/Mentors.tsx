@@ -18,7 +18,7 @@ function MentorsComponent({mentors}: {mentors: Array<any>}) {
     getImages()
   }, [])
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 w-full max-w-[1980px] xl:px-16 lg:px-12 md:px-8 px-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 mt-4 w-full max-w-[1980px] xl:px-16 lg:px-12 md:px-8 px-4">
         {
             mentors.map((mentor: any, index: number) => {
                 const color = generateRandomColor()

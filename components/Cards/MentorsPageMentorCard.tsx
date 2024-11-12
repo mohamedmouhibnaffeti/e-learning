@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { BriefcaseBusiness, ChevronRightIcon, GraduationCap, ImageIcon, MailIcon, MapPin } from 'lucide-react'
 import { Skeleton } from '../ui/skeleton'
+import { subString } from '@/lib/util/String'
 
 interface MentorCardProps {
     image: any,
@@ -43,10 +44,10 @@ function MentorCard({image, name, email, jobTitle, jobLocation,courses, bio, col
                 {name}
             </h1>
             <p className="text-gray-500">
-                {jobTitle}
+                {subString(jobTitle, 15)}
             </p>
             <div className="flex flex-col items-start w-full px-2">
-                <p className="text-gray-600 text-sm flex items-center gap-1 py-1"> <MapPin className="w-4 h-4 -translate-y-[2px]" /> {jobLocation} </p>
+                <p className="text-gray-600 text-sm flex items-center gap-1 py-1"> <MapPin className="w-4 h-4 -translate-y-[2px]" /> {jobLocation ? jobLocation : "No Location provided"} </p>
                 <p className="text-gray-600 text-sm flex items-center gap-1 py-1"> <MailIcon className="w-4 h-4 -translate-y-[2px]" /> {email} </p>
             </div>
             <button onClick={()=>router.push(`/mentors/mentor?id=${id}`)} className="flex md:hidden bg-black text-white w-full py-3 active:bg-black/80 transition-all duration-100 delay-75 justify-center items-center rounded-b-lg"> <span>Visit Mentor</span> </button>

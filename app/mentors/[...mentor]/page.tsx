@@ -14,8 +14,11 @@ async function Mentor() {
     const user = await prisma.user.findFirst({
       where: {
         id
+      },
+      include: {
+        image: true
       }
-    })
+    }) as any
     if(!user) return null
     const courses = await prisma.course.findMany({
       where: {
@@ -28,6 +31,9 @@ async function Mentor() {
       }
     })
 
+    if(!user){
+      return null
+    }
     
     return (
       <div className="w-full h-full xl:px-16 lg:px-12 md:px-8 px-4 max-w-[1400px] mx-auto mb-8 flex flex-col">
