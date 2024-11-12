@@ -10,21 +10,29 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import SearchAnimation from '../Animations/SearchAnimation'
 
-function Coursespage({courses}: {courses: any}) {
-    const { courseCategory, courseLanguages, courseLevel, courseDuration, selectedPriceRange } = useContext(CourseContext)
+function Coursespage({courses, userid}: {courses: any, userid: string | undefined}) {
+    const { courseCategory, courseLanguages, courseLevel, courseDuration, selectedPriceRange, modelrecommendationsSelected } = useContext(CourseContext)
     
     const [selectedCourses, setSelectedCourses] = useState<any>(courses)
     const [loading, setLoading] = useState(false)
     const getCoursesbyFilter = async() => {
         setLoading(true)
         try {
-            const response = await axios.post("/api/courses/getCourseByFilter", {
-              courseCategory,
-              courseLanguages,
-              courseLevel,
-              courseDuration,
-              selectedPriceRange
-            });
+            let response
+            if(modelrecommendationsSelected){
+              response = await axios.post("/api/courses/getModelRecommendations", {
+                userid: userid
+              })
+              console.log(response.data)
+            }else{
+              response = await axios.post("/api/courses/getCourseByFilter", {
+                courseCategory,
+                courseLanguages,
+                courseLevel,
+                courseDuration,
+                selectedPriceRange
+              });
+            }
         
             if (response.status !== 200) {
               toast("Sorry", {
@@ -76,7 +84,7 @@ function Coursespage({courses}: {courses: any}) {
                         <span>
                             Courses :
                         </span>
-                        <span> {selectedCourses.length} </span>
+                        <span> {selectedCourses && selectedCourses.length} </span>
                     </p>
                 )
                 :
@@ -121,7 +129,7 @@ function Coursespage({courses}: {courses: any}) {
             }
         </div>
         {
-          selectedCourses.length === 0 || !courses ?
+          !selectedCourses || selectedCourses.length === 0  ?
             <div className="w-full flex flex-col gap-3 justify-center items-center">
               <SearchAnimation />
               <p className="mx-8 text-center">

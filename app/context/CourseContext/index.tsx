@@ -11,7 +11,9 @@ type CourseContextType = {
     handleLevelCheckboxChange: any,
     handleDurationCheckboxChange: any,
     selectedPriceRange: Array<number>,
-    setSelectedPriceRange: any
+    setSelectedPriceRange: any,
+    modelrecommendationsSelected: boolean
+    setmodelrecommendationsselected: any
 }
 
 const initialState: CourseContextType = {
@@ -24,7 +26,9 @@ const initialState: CourseContextType = {
     handleLevelCheckboxChange: () => {},
     handleDurationCheckboxChange: () => {},
     selectedPriceRange: [0, 500],
-    setSelectedPriceRange: () => {}
+    setSelectedPriceRange: () => {},
+    modelrecommendationsSelected: false,
+    setmodelrecommendationsselected: () => {}
 }
 
 
@@ -37,6 +41,7 @@ export default function CourseProvider({children}: {children: React.ReactNode}){
     const [courseLevel, setCourseLevel] = useState<string[]>(["beginner", "intermediate", "advanced"])
     const [courseDuration, setCourseDuration] = useState<string[]>(["1-3 hours", "3-6 hours", "6-12 hours", "12-24 hours", "24+ hours"])
     const [selectedPriceRange, setSelectedPriceRange] = useState<Array<number>>([50, 500])
+    const [modelrecommendationsSelected, setmodelrecommendationsselected] = useState(false)
 
     const handleLanguageCheckboxChange = (value: string, isChecked: boolean) => {
         setCourseLanguages((prevSelectedLanguages) => {
@@ -89,7 +94,9 @@ export default function CourseProvider({children}: {children: React.ReactNode}){
             handleLevelCheckboxChange,
             handleDurationCheckboxChange,
             selectedPriceRange,
-            setSelectedPriceRange
+            setSelectedPriceRange,
+            modelrecommendationsSelected,
+            setmodelrecommendationsselected
         }}>
             {children}
         </CourseContext.Provider>

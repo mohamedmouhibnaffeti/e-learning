@@ -19,7 +19,7 @@ async function CoursesPage() {
         user &&
         (user?.preferredLanguages?.length === 0 && user?.preferredCategories?.length === 0) && <CourseRecommendationModal />
       }
-      <Coursespage courses={courses} />
+      <Coursespage courses={courses} userid={user?.id} />
     </CourseProvider>
   )
 }

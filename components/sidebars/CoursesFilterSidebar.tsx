@@ -21,7 +21,7 @@ const existingDurations = ["1-3 hours", "3-6 hours", "6-12 hours", "12-24 hours"
 
 export default function ProductsFiltersSideBar({loading, getCoursesbyFilter, className, inputClassName, setExpanded}: {loading: boolean, className: string, inputClassName: string, setExpanded: any, getCoursesbyFilter: any}){
     const {status} = useSession()
-    const { courseLanguages, courseLevel, courseCategory, courseDuration, handleCategoryCheckboxChange, handleDurationCheckboxChange, handleLanguageCheckboxChange, handleLevelCheckboxChange, selectedPriceRange, setSelectedPriceRange } = useContext(CourseContext)
+    const { modelrecommendationsSelected, setmodelrecommendationsselected, courseLanguages, courseLevel, courseCategory, courseDuration, handleCategoryCheckboxChange, handleDurationCheckboxChange, handleLanguageCheckboxChange, handleLevelCheckboxChange, selectedPriceRange, setSelectedPriceRange } = useContext(CourseContext)
 
     return(
         <div className={`${className}`}>         
@@ -38,8 +38,8 @@ export default function ProductsFiltersSideBar({loading, getCoursesbyFilter, cla
                 status === "authenticated" &&
                 <div className="flex gap-2 items-center mt-4">
                     <Checkbox
-                        checked={true}
-                        onCheckedChange={(checked) => {}}
+                        checked={modelrecommendationsSelected}
+                        onCheckedChange={(checked) => {setmodelrecommendationsselected(checked)}}
                     />
                     <span className="text-sm capitalize"> Nos Recommendations </span>
                 </div>
