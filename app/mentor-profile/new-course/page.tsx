@@ -12,7 +12,6 @@ import ChapterDetailsInput from "@/components/Inputs/ChapterDetailsInput";
 import { Lesson, Chapter, UpdateChapterValue, Course, UpdateCourseDetail, Question, UpdateQuizQuestionValue } from "@/types/types";
 import { toast } from "sonner";
 import { CreateCourse } from "@/app/actions/CourseActions/CreateCourse";
-import { set } from "react-hook-form";
 import QuizQuestionDetailsInput from "@/components/Inputs/QuizQuestionDetailsInput";
 
 const validateData = (course: Course, lessons: Lesson[]): boolean => {
