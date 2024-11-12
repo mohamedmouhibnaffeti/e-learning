@@ -24,7 +24,7 @@ function MentorsComponent({mentors}: {mentors: Array<any>}) {
                 const color = generateRandomColor()
                 const userimage = userimages.find((image) => image.userid === mentor.id)
                 return(
-                    <MentorCard color={color} bio={mentor.bio} key={index} image={userimage?.data} name={mentor.name} email={mentor.email} jobTitle={mentor.job} jobLocation={mentor.location} courses={mentor?.createdCourses?.length || 0} />
+                    <MentorCard id={mentor.id} color={color} bio={mentor.bio} key={index} image={userimage?.data} name={mentor.name} email={mentor.email} jobTitle={mentor.job} jobLocation={mentor.location} courses={mentor?.createdCourses?.length || 0} />
                 )
             })   
         }

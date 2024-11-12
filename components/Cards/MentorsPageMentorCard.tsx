@@ -13,15 +13,16 @@ interface MentorCardProps {
     jobLocation: string,
     courses: number,
     bio: string,
-    color: string
+    color: string,
+    id: string
 }
 
-function MentorCard({image, name, email, jobTitle, jobLocation,courses, bio, color}: MentorCardProps) {
+function MentorCard({image, name, email, jobTitle, jobLocation,courses, bio, color, id}: MentorCardProps) {
     const router = useRouter() 
     return (
         <div className="flex relative group flex-col items-center rounded-lg gap-2 md:pb-3 border w-full min-w-72 bg-white overflow-hidden">
             <div className={`absolute rounded-t-lg w-full h-full bg-black/40 hidden md:flex items-center justify-center -bottom-40 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10`}>
-                <button onClick={()=>router.push("/mentors/mentor")} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md ">
+                <button onClick={()=>router.push(`/mentors/mentor?id=${id}`)} className="flex items-center w-fit justify-center text-sm text-white bg-black hover:bg-black/80 transition-all duration-100 py-4 px-4 rounded-md ">
                     Visit Mentor
                     <ChevronRightIcon className="w-4 h-4 transition duration-200" />
                 </button>
@@ -48,7 +49,7 @@ function MentorCard({image, name, email, jobTitle, jobLocation,courses, bio, col
                 <p className="text-gray-600 text-sm flex items-center gap-1 py-1"> <MapPin className="w-4 h-4 -translate-y-[2px]" /> {jobLocation} </p>
                 <p className="text-gray-600 text-sm flex items-center gap-1 py-1"> <MailIcon className="w-4 h-4 -translate-y-[2px]" /> {email} </p>
             </div>
-            <button onClick={()=>router.push("/mentors/mentor")} className="flex md:hidden bg-black text-white w-full py-3 active:bg-black/80 transition-all duration-100 delay-75 justify-center items-center rounded-b-lg"> <span>Visit Mentor</span> </button>
+            <button onClick={()=>router.push(`/mentors/mentor?id=${id}`)} className="flex md:hidden bg-black text-white w-full py-3 active:bg-black/80 transition-all duration-100 delay-75 justify-center items-center rounded-b-lg"> <span>Visit Mentor</span> </button>
         </div>
     )
 }
