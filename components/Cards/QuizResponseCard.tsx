@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import data from "./responsesdata.json"
 import { BotIcon, ThumbsDown, ThumbsUp, User2Icon } from 'lucide-react'
@@ -18,23 +19,24 @@ type ExtendedType = answeredQuiz & {
 function QuizResponseCard({submission}: {submission: extedndedAnsweredQuizWithQuiz}) {
     const evaluateQuiz = async(Eval: number) => {
         try{
-            const response = await axios.post("http://127.0.0.1:5000/Evaluationfeedback", {
+            const response = await axios.post("/api/courses/EvaluateQuizModel", {
                 quiz_id: submission.quiz.id,
                 evaluation: Eval
             })
-            if(response.status !== 200){
-                toast("Failed to submit quiz", {
-                    description: "An internal error has occured please try again",
-                    action: {
-                        label: "Retry",
-                        onClick: () => {}
-                    }  
-                })
-            }else{
+            console.log(response.data)
+            if(response?.data?.success === true){
                 toast("Quiz Evaluated", {
                     description: "The quiz has been evaluated successfully",
                     action: {
                         label: "Close",
+                        onClick: () => {}
+                    }  
+                })
+            }else{
+                toast("Failed to submit quiz", {
+                    description: "The quiz has been evaluated successfully",
+                    action: {
+                        label: "Retry",
                         onClick: () => {}
                     }
                 })
@@ -85,8 +87,8 @@ function QuizResponseCard({submission}: {submission: extedndedAnsweredQuizWithQu
                 }
             </div>
             <div className="border-t flex justify-end gap-2 items-center text-gray-500 pt-4 w-full">
-                <ThumbsUp className="w-5 h-5 active:-translate-y-1 transition-all duration-500 cursor-pointer hover:text-gray-600" />
-                <ThumbsDown className="w-5 h-5 active:translate-y-1 transition-all duration-500 cursor-pointer hover:text-gray-600"/>
+                <ThumbsUp onClick={()=>evaluateQuiz(1)} className="w-5 h-5 active:-translate-y-1 transition-all duration-500 cursor-pointer hover:text-gray-600" />
+                <ThumbsDown onClick={()=>evaluateQuiz(-1)} className="w-5 h-5 active:translate-y-1 transition-all duration-500 cursor-pointer hover:text-gray-600"/>
             </div>
         </div>
     )
