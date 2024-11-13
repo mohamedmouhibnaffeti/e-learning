@@ -1,6 +1,5 @@
 "use client"
 import React from 'react'
-import data from "./responsesdata.json"
 import { BotIcon, ThumbsDown, ThumbsUp, User2Icon } from 'lucide-react'
 import { ExtendedAnsweredQuiz } from '../Accordions/CourseAccordion'
 import { AnsweredQuestion, answeredQuiz, Question, Quiz } from '@prisma/client'
@@ -26,7 +25,7 @@ function QuizResponseCard({submission}: {submission: extedndedAnsweredQuizWithQu
             console.log(response.data)
             if(response?.data?.success === true){
                 toast("Quiz Evaluated", {
-                    description: "The quiz has been evaluated successfully",
+                    description: "The quiz model has been evaluated successfully",
                     action: {
                         label: "Close",
                         onClick: () => {}
@@ -34,7 +33,7 @@ function QuizResponseCard({submission}: {submission: extedndedAnsweredQuizWithQu
                 })
             }else{
                 toast("Failed to submit quiz", {
-                    description: "The quiz has been evaluated successfully",
+                    description: "couldn't evaluate the quiz model",
                     action: {
                         label: "Retry",
                         onClick: () => {}

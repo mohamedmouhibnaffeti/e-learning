@@ -1,8 +1,9 @@
 "use client"
 import axios from 'axios'
-import { XIcon } from 'lucide-react'
+import { ThumbsDownIcon, ThumbsUpIcon, XIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import React, { useLayoutEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 function AssesmentAlertCard({id}: {id: string}) {
     const session = useSession()
@@ -20,6 +21,40 @@ function AssesmentAlertCard({id}: {id: string}) {
     useLayoutEffect(()=>{
         fetchModelAssement()
     }, [])
+    const evaluateModel = async(Eval: number) => {
+        try{
+            const response = await axios.post("/api/courses/EvaluateQuizModel", {
+                evaluation: Eval
+            })
+            console.log(response.data)
+            if(response?.data?.success === true){
+                toast("Model Evaluated", {
+                    description: "The model has been evaluated successfully",
+                    action: {
+                        label: "Close",
+                        onClick: () => {}
+                    }  
+                })
+            }else{
+                toast("Failed to submit Evaluation", {
+                    description: "couldn't evaluate the model",
+                    action: {
+                        label: "Retry",
+                        onClick: () => {}
+                    }
+                })
+            }
+        }catch(err){
+            toast("Failed to evaluate quiz", {
+                description: "An internal error has occured please try again",
+                action: {
+                    label: "Retry",
+                    onClick: () => {}
+                }  
+            })
+        }
+        setOpen(false)
+    }
     return (
         <>
             {
@@ -34,6 +69,10 @@ function AssesmentAlertCard({id}: {id: string}) {
                         </div>
                         <p className="text-sm max-w-96">{assessmentdetails}</p>
                         </div>
+                    </div>
+                    <div className="w-full justify-end items-center gap-2 flex mt-2">
+                        <ThumbsUpIcon onClick={()=>evaluateModel(1)} className="w-5 h-5 cursor-pointer hover:text-teal-600 active:text-teal-500/80 active:-translate-y-px transition-all duration-150"/>
+                        <ThumbsDownIcon onClick={()=>evaluateModel(-1)} className="w-5 h-5 cursor-pointer hover:text-teal-600 active:text-teal-500/80 active:translate-y-px transition-all duration-150"/>
                     </div>
                 </div>
             }
