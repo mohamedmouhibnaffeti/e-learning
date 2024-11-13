@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         let modelResponse = response.data.evaluation as string
         modelResponse = modelResponse.replace(/'/g, '"');
         let parsedData = JSON.parse(modelResponse);
-        const quizanswered = await AnswerQuiz(userid, quizid, responses)
+        const quizanswered = await AnswerQuiz(userid, quizid, parsedData)
         if(!quizanswered){
             throw new Error("Error while saving quiz answers")
         }

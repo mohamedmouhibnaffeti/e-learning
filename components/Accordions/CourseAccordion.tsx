@@ -5,8 +5,6 @@ import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icon
 import { BookIcon, BookOpenIcon, CaptionsIcon, ChartNoAxesColumnIncreasingIcon, CheckCheckIcon, Clock10Icon, EarthIcon, FileText, LibraryIcon, PlayCircleIcon, PlayIcon, ShieldOff, Tally2Icon, UserIcon } from 'lucide-react'
 import { AnsweredQuestion, answeredQuiz, Chapter, Lesson, Question, Quiz } from '@prisma/client'
 import { toast } from 'sonner'
-import { AnswerQuiz } from '@/app/actions/CourseActions/Quiz'
-import { revalidatePath } from 'next/cache'
 import axios from 'axios'
 
 type extendedLessonWithChapters = Lesson & { chapters: Chapter[], quiz: Quiz & {questions: Question[]}, }
@@ -17,7 +15,7 @@ interface QuizState {
     questionResponses: { questionID: string; answer: string }[];
 }
 
-type ExtendedAnsweredQuiz = answeredQuiz & { answeredQuestions: AnsweredQuestion[] }
+export type ExtendedAnsweredQuiz = answeredQuiz & { answeredQuestions: AnsweredQuestion[] }
 
 function CourseAccordion({userid, lessons, finishedchapters, startChapter, answeredQuizes}: {userid: string, lessons: extendedLessonWithChapters[], finishedchapters: {chapterID: string}[], startChapter: (chapterID: string, video: string) => void, answeredQuizes: ExtendedAnsweredQuiz[]}) {
     const [quizState, setQuizState] = useState<QuizState | null>(null)
@@ -45,7 +43,9 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
         });
     };
     if(!finishedchapters) return null
+    const [loading, setloading] = useState(false)
     const handleSendRequest = async(lesson: any) => {
+        setloading(true)
         try{
             const response = await axios.post("/api/courses/EvaluateQuiz", {
                 quizid: lesson.quiz.id,
@@ -73,6 +73,7 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                 }  
             })
         }
+        setloading(false)
     }
   return (
     <Accordion type="single" collapsible className="mt-3">
@@ -167,8 +168,8 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                                         );
                                     })
                                 }
-                                <button onClick={() => handleSendRequest(lesson)} type='button' className="self-end bg-blue-600 hover:bg-blue-600/90 active:bg-blue-700 w-fit h-fit px-8 py-2 rounded-lg text-white">
-                                    Submit
+                                <button disabled={loading} onClick={() => handleSendRequest(lesson)} type='button' className={`self-end ${loading ? "bg-blue-500/70" : "bg-blue-600 hover:bg-blue-600/90 active:bg-blue-700"} w-fit h-fit px-8 py-2 rounded-lg text-white`}>
+                                    {loading ? "Submitting..." : "Submit"}
                                 </button>
                                 </div>
                             }

@@ -3,6 +3,7 @@
 import prisma from "@/lib/util/db"
 
 export async function AnswerQuiz (userid: string, quizid: string, responses: any): Promise<boolean> {
+    console.log(responses)
     try{
         const answeredQuiz = await prisma.answeredQuiz.create({
             data: {
@@ -14,7 +15,8 @@ export async function AnswerQuiz (userid: string, quizid: string, responses: any
                             answer: response.answer,
                             questionID: response.questionID,
                             userID: userid,
-                            quizID: quizid
+                            quizID: quizid,
+                            model_score: response.modelEval
                         };
                     })
                 }
