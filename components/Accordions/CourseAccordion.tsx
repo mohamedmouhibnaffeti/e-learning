@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import CircularProgress from '@/components/Progress/CircularProgress'
 import { LightningBoltIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons'
 import { BookIcon, BookOpenIcon, CaptionsIcon, ChartNoAxesColumnIncreasingIcon, CheckCheckIcon, Clock10Icon, EarthIcon, FileText, LibraryIcon, PlayCircleIcon, PlayIcon, ShieldOff, Tally2Icon, UserIcon } from 'lucide-react'
-import { Chapter, Lesson, Question, Quiz } from '@prisma/client'
+import { AnsweredQuestion, answeredQuiz, Chapter, Lesson, Question, Quiz } from '@prisma/client'
 import { toast } from 'sonner'
 import { AnswerQuiz } from '@/app/actions/CourseActions/Quiz'
 import { revalidatePath } from 'next/cache'
@@ -17,7 +17,9 @@ interface QuizState {
     questionResponses: { questionID: string; answer: string }[];
 }
 
-function CourseAccordion({userid, lessons, finishedchapters, startChapter, answeredQuizes}: {userid: string, lessons: extendedLessonWithChapters[], finishedchapters: {chapterID: string}[], startChapter: (chapterID: string, video: string) => void, answeredQuizes: {quizID: string}[]}) {
+type ExtendedAnsweredQuiz = answeredQuiz & { answeredQuestions: AnsweredQuestion[] }
+
+function CourseAccordion({userid, lessons, finishedchapters, startChapter, answeredQuizes}: {userid: string, lessons: extendedLessonWithChapters[], finishedchapters: {chapterID: string}[], startChapter: (chapterID: string, video: string) => void, answeredQuizes: ExtendedAnsweredQuiz[]}) {
     const [quizState, setQuizState] = useState<QuizState | null>(null)
     const handleOpenQuizButtonClick = (questions: Question[], lessonID: string) => {
         setQuizState((prevState) => {
@@ -44,13 +46,33 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
     };
     if(!finishedchapters) return null
     const handleSendRequest = async(lesson: any) => {
-        const response = await axios.post("/api/courses/EvaluateQuiz", {
-            quizid: lesson.quiz.id,
-            userid: userid,
-            responses: quizState?.questionResponses
-        })
-        const data = await response.data
-        console.log(data)
+        try{
+            const response = await axios.post("/api/courses/EvaluateQuiz", {
+                quizid: lesson.quiz.id,
+                userid: userid,
+                responses: quizState?.questionResponses
+            })
+            const success = await response.data.success
+            if(!success){
+                toast("Failed to submit quiz", {
+                    description: "Please try again",
+                    action: {
+                        label: "Retry",
+                        onClick: () => {}
+                    }  
+                })
+            }else{
+                window.location.reload()
+            }
+        }catch(err){
+            toast("Failed to submit quiz", {
+                description: "An internal error has occured please try again",
+                action: {
+                    label: "Retry",
+                    onClick: () => {}
+                }  
+            })
+        }
     }
   return (
     <Accordion type="single" collapsible className="mt-3">
@@ -70,6 +92,12 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                   )
                 : 0;
                 const quizAnswered = answeredQuizes.some(answered => answered.quizID === lesson.quiz.id )
+                const maxScore = lesson.quiz.questions.reduce((total, question) => total + question.max_score, 0)
+                const modelEvaluation = answeredQuizes.find(answered => answered.quizID === lesson.quiz.id);
+
+                const totalModelEval = modelEvaluation ? 
+                    modelEvaluation.answeredQuestions.reduce((total, question) => total + (question.model_score || 0), 0) : 
+                    0;
                 return(
                     <AccordionItem key={index} value={`Week${index}`}>
                         <AccordionTrigger className="font-medium lg:text-lg"><div className="flex gap-2 items-center"> <CircularProgress percentage={percentage} /> Week 1 - Beginner - Introduction to Web Development </div></AccordionTrigger>
@@ -106,7 +134,10 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                                 </div>
                                 {
                                     quizAnswered &&
-                                        <CheckCheckIcon className="w-5 h-5 text-violet-600" />
+                                        <span className="whitespace-nowrap flex gap-1">
+                                            {quizAnswered && <span className="text-violet-600 whitespace-nowrap"> {totalModelEval} / {maxScore}</span>}
+                                            <CheckCheckIcon className="w-5 h-5 text-violet-600" />
+                                        </span>
                                 }
                             </div>
 
