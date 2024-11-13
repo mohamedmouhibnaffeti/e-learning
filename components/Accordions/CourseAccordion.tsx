@@ -7,6 +7,7 @@ import { Chapter, Lesson, Question, Quiz } from '@prisma/client'
 import { toast } from 'sonner'
 import { AnswerQuiz } from '@/app/actions/CourseActions/Quiz'
 import { revalidatePath } from 'next/cache'
+import axios from 'axios'
 
 type extendedLessonWithChapters = Lesson & { chapters: Chapter[], quiz: Quiz & {questions: Question[]}, }
 
@@ -24,7 +25,7 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
             return {
                 lessonID,
                 isOpen,
-                questionResponses: questions.map(question => ({ questionID: question.id, answer: "" }))
+                questionResponses: questions.map(question => ({ questionID: question.id, answer: "", question: question.content, maxScore: question.max_score, actualAnswer: question.answer })),
             };
         });
     };
@@ -42,6 +43,15 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
         });
     };
     if(!finishedchapters) return null
+    const handleSendRequest = async(lesson: any) => {
+        const response = await axios.post("/api/courses/EvaluateQuiz", {
+            quizid: lesson.quiz.id,
+            userid: userid,
+            responses: quizState?.questionResponses
+        })
+        const data = await response.data
+        console.log(data)
+    }
   return (
     <Accordion type="single" collapsible className="mt-3">
 
@@ -102,7 +112,52 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
 
                             {
                                 quizState?.isOpen && quizState.lessonID === lesson.id &&
-                                <form action={
+                                <div 
+                                className="flex flex-col gap-4"
+                                >
+                                {
+                                    lesson.quiz.questions.map((question, index) => {
+                                        return (
+                                        <div key={question.id} className="w-full flex flex-col gap-2 pl-4 text-gray-500">
+                                            <div className="w-full flex gap-2 items-center">
+                                            <span className="text-gray-500">{index + 1}- </span>
+                                            <span>{question.content}</span>
+                                            </div>
+                                            <div className="relative w-full">
+                                            <input
+                                                type="text"
+                                                value={quizState.questionResponses.find(response => response.questionID === question.id)?.answer}
+                                                onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                                                className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
+                                            />
+                                            <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
+                                            </div>
+                                        </div>
+                                        );
+                                    })
+                                }
+                                <button onClick={() => handleSendRequest(lesson)} type='button' className="self-end bg-blue-600 hover:bg-blue-600/90 active:bg-blue-700 w-fit h-fit px-8 py-2 rounded-lg text-white">
+                                    Submit
+                                </button>
+                                </div>
+                            }
+
+                            
+
+                        </AccordionContent>
+                    </AccordionItem>
+                )
+            })
+        }
+    </Accordion>
+  )
+}
+
+export default CourseAccordion
+
+/*
+
+action={
                                     async(formdata: FormData) => {
                                         try{
                                             formdata.append('userid',userid)
@@ -141,44 +196,4 @@ function CourseAccordion({userid, lessons, finishedchapters, startChapter, answe
                                         }
                                     }
                                 }
-                                className="flex flex-col gap-4"
-                                >
-                                {
-                                    lesson.quiz.questions.map((question, index) => {
-                                        return (
-                                        <div key={question.id} className="w-full flex flex-col gap-2 pl-4 text-gray-500">
-                                            <div className="w-full flex gap-2 items-center">
-                                            <span className="text-gray-500">{index + 1}- </span>
-                                            <span>{question.content}</span>
-                                            </div>
-                                            <div className="relative w-full">
-                                            <input
-                                                type="text"
-                                                value={quizState.questionResponses.find(response => response.questionID === question.id)?.answer}
-                                                onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                                                className="outline-none peer focus:border-blue-500 text-sm border-2 rounded-xl h-[2.6rem] pl-10 focus:caret-indigo-500 w-full"
-                                            />
-                                            <CaptionsIcon className="top-0 translate-y-[11px] translate-x-2 absolute w-[1.2rem] h-[1.2rem] peer-focus:text-blue-500 transition-all duration-100" />
-                                            </div>
-                                        </div>
-                                        );
-                                    })
-                                }
-                                <button type='submit' className="self-end bg-blue-600 hover:bg-blue-600/90 active:bg-blue-700 w-fit h-fit px-8 py-2 rounded-lg text-white">
-                                    Submit
-                                </button>
-                                </form>
-                            }
-
-                            
-
-                        </AccordionContent>
-                    </AccordionItem>
-                )
-            })
-        }
-    </Accordion>
-  )
-}
-
-export default CourseAccordion
+ */
