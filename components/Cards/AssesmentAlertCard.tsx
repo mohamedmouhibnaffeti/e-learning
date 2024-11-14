@@ -20,7 +20,7 @@ function AssesmentAlertCard({id}: {id: string}) {
     }
     useLayoutEffect(()=>{
         fetchModelAssement()
-    }, [])
+    }, []) 
     const evaluateModel = async(Eval: number) => {
         try{
             const response = await axios.post("/api/courses/EvaluateQuizModel", {
