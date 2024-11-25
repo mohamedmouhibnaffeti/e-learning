@@ -31,6 +31,7 @@ export const UpdateUserPreferences = async(formdata: FormData): Promise<{success
 
 export const updateUserProfile = async (formdata: FormData): Promise<{ success: boolean, error?: string }> => {
     try {
+        const name = formdata.get("name") || ""
         const phone = formdata.get("phone") || ""
         const bio = formdata.get("bio") || ""
         const location = formdata.get("location") || ""
@@ -48,6 +49,7 @@ export const updateUserProfile = async (formdata: FormData): Promise<{ success: 
         if (phone) updateData.phone = phone;
         if (bio) updateData.bio = bio;
         if (location) updateData.location = location;
+        if (name) updateData.name = name;
         if (userimagepath) {
             updateData.image = {
                 update: {

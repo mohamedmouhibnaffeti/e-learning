@@ -122,6 +122,7 @@ function EditMentorProfile({user}: {user: UserWithImage}) {
             action={
                 async(formdata: FormData) => {
                     try{
+                        formdata.append("name", userForm.generalInfo.data.name as string)   
                         formdata.append("phone", userForm.generalInfo.data.phone as string)
                         formdata.append("location", userForm.location.value as string)
                         formdata.append("bio", userForm.bio.value as string)
