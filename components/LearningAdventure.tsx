@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import HeroSection from './Hero';
 import duo from "./Images/svg/Duolingo.svg"
 import codeCov from "./Images/svg/codecov.svg"
@@ -99,6 +99,7 @@ import mentor3 from "./Images/mentors/mentor3.jpg"
 import mentor4 from "./Images/mentors/mentor4.jpg"
 import TestimonialCard from './TestimonialCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from 'axios';
 
 const mentors = [
   {
@@ -127,7 +128,7 @@ const filters = [
   "All Courses", "Design", "Development", "Photography", "Music"
 ]
 
-const LearningAdventure: React.FC = () => {
+const LearningAdventure = ({courses}: {courses: any[]}) => {
   const testimonials = [
     {
       name: "Mouhib Naffeti",
@@ -150,6 +151,19 @@ const LearningAdventure: React.FC = () => {
       image: mentor2
     },
   ]
+  const [thumbnails, setThumbnails] = useState<Array<{CourseID: string; data: string}>>([])
+  const getThumbnails = async() => {
+      const response = await axios.post("/api/courses/getcoursesthumbnails", {
+          courseIDs: Array.from(courses.map((course: any) => course.id))
+      })
+      const {ImagesData} = response.data
+      setThumbnails(prev => ImagesData)
+  }
+
+  useLayoutEffect(()=>{
+      getThumbnails()
+  }, [])
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoTransitionEnabled, setAutoTransitionEnabled] = useState(true);
   const autoTransitionInterval = useRef<number | null>(null); // Type declaration for useRef
@@ -296,25 +310,37 @@ const LearningAdventure: React.FC = () => {
       <h1 className="text-5xl mt-8 max-md:text-2xl max-w-2xl text-center text-black font-bold" style={{fontFamily: condensedFont.style.fontFamily}}> Search Among <span className="text-violet-600"> 5900 </span> Courses and Find Your Favourite Course </h1>
       <section className="flex relative flex-col justify-center items-center max-xl:px-0 2xl:px-16 w-full bg-black bg-opacity-0 max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1089px] max-md:max-w-full justify-center items-center flex flex-col">
-          <div className="max-w-xl flex w-full mt-12">
-            <SearchComponent />
-          </div>
+          {
+            /*
+            <div className="max-w-xl flex w-full mt-12">
+              <SearchComponent />
+            </div>
+            */
+          }
         </div>
         <div className="w-full flex justify-between items-center mt-16">
           <h1 className="font-bold text-black flex items-center gap-1 text-lg" style={{fontFamily: robotomono.style.fontFamily}}> <span className="p-[2px] rounded-full w-fit h-fit bg-violet-600" /> Popular Courses </h1>
-          <div className="flex gap-4 items-center font-semibold translate-y-[2px]">
-            {
-              filters.map((filter, index) => (
-                <span key={index} className="text-black text-sm cursor-pointer hover:text-violet-700 transition duration-200" style={{fontFamily: robotomono.style.fontFamily}}> {filter} </span>
-              ))
-            }
-          </div>
+          {
+            /*
+            <div className="flex gap-4 items-center font-semibold translate-y-[2px]">
+              {
+                filters.map((filter, index) => (
+                  <span key={index} className="text-black text-sm cursor-pointer hover:text-violet-700 transition duration-200" style={{fontFamily: robotomono.style.fontFamily}}> {filter} </span>
+                ))
+              }
+            </div>
+            */
+          }
         </div>
         <div className="grid grid-cols-4 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2 mt-8 max-2xl:w-full"> 
           {
-            courses.map((course, index) => (
-              <CourseCard image={course.image} difficulty={course.difficulty} lessons={course.lessons} title={course.title} users={course.users} key={index} />
-            ))
+            courses.map((course, index) =>{
+              const courseImage = thumbnails.find((thumbnail) => thumbnail.CourseID === course.id)?.data
+              return (
+                  <CourseCard id={course.id} image={courseImage} difficulty={course.difficulty} lessons={course.lessons.length} title={course.title} price={course.price} users={course.users || 10} key={index} />
+                )
+              }
+            )          
           }
         </div>
       </section>

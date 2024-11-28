@@ -23,6 +23,7 @@ async function Course() {
           <span className="text-violet-600">
             {course?.title}
           </span>
+          &gt; 
         </h1>
         <EditCoursePageMentor course={course} />
       </div>

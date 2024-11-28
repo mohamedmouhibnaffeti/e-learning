@@ -1,7 +1,7 @@
 "use client";
 import React, { useLayoutEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { CaptionsIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilLineIcon, PlusCircle, UserPenIcon } from "lucide-react";
+import { CaptionsIcon, CircleDollarSignIcon, CompassIcon, LanguagesIcon, PencilLineIcon, PlusCircle, Trash2Icon, TrashIcon, UserPenIcon } from "lucide-react";
 import CourseThumbnailDragAndDrop from "@/components/Inputs/CourseThumbnailDragAndDrop";
 import MentorEditCourseAccordion from "@/components/Accordions/MentorEditCourseAccordion";
 import axios from "axios";
@@ -12,6 +12,7 @@ import { Label } from "../ui/label";
 import { json } from "stream/consumers";
 import { UpdateCourse } from "@/app/actions/CourseActions/UpdateCourse";
 import { toast } from "sonner";
+import { DeleteCourse } from "@/app/actions/CourseActions/DeleteCourse";
 
 const existinglanguages = ["English", "French", "Spanish", "German", "Italian"]
 const existingCategories = ["Web Development", "Mobile Development", "Data Science", "Machine Learning", "Artificial Intelligence"]
@@ -109,41 +110,74 @@ function EditCoursePageMentor({course}: {course: any}) {
 
   return (
     <div className="grid lg:grid-cols-6 gap-4 w-full max-w-[1500px] mx-auto justify-items-center max-sm:flex max-sm:flex-col max-sm:items-center">
+        
         <form
             action={
                 async(formdata: FormData) => {
-                    try{
-                        formdata.append("courseId", course.id)
-                        formdata.append("title", courseForm.title.data as string)
-                        formdata.append("price", courseForm.price.data as string)
-                        formdata.append("description", courseForm.description.data as string)
-                        formdata.append("language", courseForm.language.data as string)
-                        formdata.append("difficulty", courseForm.difficulty.data as string)
-                        formdata.append("category", courseForm.category.data as string)
-                        formdata.append("image", JSON.stringify(courseForm.image.data || ""))
-                        const response = await UpdateCourse(formdata)
-                        if(response?.success === false){
+                    const button = formdata.get("action") as string
+                    if(button === "save") {
+                        try{
+                            formdata.append("courseId", course.id)
+                            formdata.append("title", courseForm.title.data as string)
+                            formdata.append("price", courseForm.price.data as string)
+                            formdata.append("description", courseForm.description.data as string)
+                            formdata.append("language", courseForm.language.data as string)
+                            formdata.append("difficulty", courseForm.difficulty.data as string)
+                            formdata.append("category", courseForm.category.data as string)
+                            formdata.append("image", JSON.stringify(courseForm.image.data || ""))
+                            const response = await UpdateCourse(formdata)
+                            if(response?.success === false){
+                                toast("Sorry", {
+                                    description: response?.error || "an error has occured.",
+                                    action: {
+                                        label: "Retry",
+                                        onClick: () => {},
+                                    },
+                                });
+                            }
+                            if(response.success){
+                                toast("Success", {
+                                    description: "Course updated successfully",
+                                    action: {
+                                        label: "Ok",
+                                        onClick: () => {},
+                                    },
+                                });
+                                window.location.reload()
+                            }
+                        }catch(err: any){
                             toast("Sorry", {
-                                description: response?.error || "an error has occured.",
+                                description: err?.message || "an error has occured.",
                                 action: {
                                     label: "Retry",
                                     onClick: () => {},
                                 },
                             });
                         }
-                        if(response.success){
+                }else if(button === "delete"){
+                    const response = await DeleteCourse(course.id)
+                    try{
+                        if(response?.success === false){
+                            toast("Sorry", {
+                                description: response?.error || "an error has occured in course deletion.",
+                                action: {
+                                    label: "Retry",
+                                    onClick: () => {},
+                                },
+                            });
+                        }else{
                             toast("Success", {
-                                description: "Course updated successfully",
+                                description: "Course deleted successfully",
                                 action: {
                                     label: "Ok",
                                     onClick: () => {},
                                 },
                             });
-                            window.location.reload()
+                            window.location.href = "/mentor-profile/courses"
                         }
                     }catch(err: any){
                         toast("Sorry", {
-                            description: err?.message || "an error has occured.",
+                            description: "an internal error has occured.",
                             action: {
                                 label: "Retry",
                                 onClick: () => {},
@@ -151,7 +185,8 @@ function EditCoursePageMentor({course}: {course: any}) {
                         });
                     }
                 }
-            } 
+            }
+        }
             className="py-8 rounded-3xl bg-white mt-4 lg:col-span-4 col-span-3 min-w-full"
         >
         <div className="grid gap-4 mx-4 max-sm:mx-2 px-8 max-sm:px-2 border rounded-xl mt-4 py-8">
@@ -496,9 +531,12 @@ function EditCoursePageMentor({course}: {course: any}) {
             }
             </div>
         </div>
-        <div className="w-full flex justify-center items-center mt-4">
-            <button type="submit" className="bg-violet-700 text-white px-4 py-2 max-sm:w-full w-fit max-sm:mx-4 rounded-lg">
+        <div className="w-full flex max-sm:justify-center justify-end items-center mt-4 px-4 gap-3 max-sm:flex-col">
+            <button type="submit" name="action" value="save" className="bg-violet-700 hover:bg-violet-700/90 active:bg-violet-700/80 transition-all duration-150 text-white px-4 py-2 max-sm:w-full w-fit max-sm:mx-4 rounded-lg">
                 Save Changes
+            </button>
+            <button type="submit" name="action" value="delete" className="bg-red-700 hover:bg-red-700/90 active:bg-red-700/80 transition-all justify-center duration-150 text-white px-4 py-2 max-sm:w-full w-fit max-sm:mx-4 rounded-lg flex gap-2 items-center">
+                Delete Course <Trash2Icon className="w-4 h-4" />
             </button>
         </div>
         </form>

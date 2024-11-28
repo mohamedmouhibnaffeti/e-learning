@@ -4,9 +4,17 @@ import MentorProfileSidebar from '@/components/sidebars/MentorProfileSidebar'
 import React from 'react'
 import prisma from '@/lib/util/db'
 import CoursesPageMentor from '@/components/pages/CoursesPageMentor'
+import { getServerSession } from 'next-auth'
+import AuthOptions from '@/lib/util/AuthOptions'
 
 async function MentorCourses() {
-  const courses = await prisma.course.findMany({include: {lessons: true}})
+  const session = await getServerSession(AuthOptions)
+  const courses = await prisma.course.findMany({where: {
+    creator: {
+      email: session?.user?.email as string,
+      provider: session?.user?.provider as string
+    }
+  }, include: {lessons: true}})
   
   return (
     <div className="w-full mb-6 flex">

@@ -1,8 +1,10 @@
+"use server"
 import LearningAdventure from "@/components/LearningAdventure";
-import Image from "next/image";
+import prisma from "@/lib/util/db";
 
-export default function Home() {
+export default async function Home() {
+  const courses = await prisma.course.findMany({include: {lessons: true}, take: 4})
   return (
-    <LearningAdventure />
+    <LearningAdventure courses={courses} />
   );
 }

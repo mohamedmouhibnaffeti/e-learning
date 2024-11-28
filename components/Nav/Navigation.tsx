@@ -3,7 +3,6 @@ import React from 'react';
 const Navigation: React.FC = () => {
   const navItems = [
     { text: 'Courses', path: '/courses' },
-    { text: 'Mentors', path: '/mentors' },
     { text: 'Mentors', path: '/mentors' }
   ];
 
